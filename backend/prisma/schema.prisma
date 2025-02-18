@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id        Int      @id @default(autoincrement())
+  name String
+  email     String   @unique
+
+  events events[]
+  events_particpants events_particpants[]
+  participants_restrictions participants_restrictions[]
+  things_to_bring things_to_bring[]
+}
+
+model events {
+  id        Int      @id @default(autoincrement())
+  user_id Int
+  title String
+  thumbnail String
+  start_time DateTime
+  end_time DateTime
+  country String
+  postal_code String
+  province String
+  city String
+  address1 String
+  address2 String
+  isAskRestriction Boolean
+  event_type String
+  theme String
+  note_for_shopping String
+  note_for_things_to_bring String
+
+  events_particpants events_particpants[]
+  participants_restrictions participants_restrictions[]
+  things_to_bring things_to_bring[]
+  things_to_buy things_to_buy[]
+  timelines timelines[]
+  media media[]
+
+  user       users @relation(fields: [user_id], references: [id])
+}
+
+model events_particpants {
+  event_id     Int
+  user_id     Int
+  is_accepted Boolean
+  is_attended Boolean
+  
+  event       events @relation(fields: [event_id], references: [id])
+  user       users @relation(fields: [user_id], references: [id])
+
+  @@unique(fields: [event_id, user_id], name: "event_particpant")
+}
+
+model participants_restrictions {
+  id        Int      @id @default(autoincrement())
+  event_id     Int
+  user_id     Int
+  note String
+
+  event       events @relation(fields: [event_id], references: [id])
+  user       users @relation(fields: [user_id], references: [id])
+}
+
+model things_to_bring {
+  event_id     Int
+  user_id     Int
+  order Int
+  item String
+  is_added Boolean
+  
+  event       events @relation(fields: [event_id], references: [id])
+  user       users @relation(fields: [user_id], references: [id])
+
+  @@unique(fields: [event_id, user_id, order], name: "thing_to_bring")
+}
+
+model things_to_buy {
+  id        Int      @id @default(autoincrement())
+  event_id     Int
+  item String
+  is_purchase Boolean
+
+  event       events @relation(fields: [event_id], references: [id])
+}
+
+model timelines {
+  id        Int      @id @default(autoincrement())
+  event_id     Int
+  schedule_item String
+  description String
+  start_time DateTime
+  end_time DateTime
+
+  event       events @relation(fields: [event_id], references: [id])
+}
+
+model media {
+  id        Int      @id @default(autoincrement())
+  event_id     Int
+  image_title String
+  image_url String
+
+  event       events @relation(fields: [event_id], references: [id])
+}
