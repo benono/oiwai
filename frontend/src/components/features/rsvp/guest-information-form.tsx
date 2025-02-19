@@ -16,6 +16,10 @@ import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+type GuestInformationFormType = {
+  selection: string
+}
+
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
@@ -37,7 +41,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const GuestInformationForm = () => {
+const GuestInformationForm = ({ selection }: GuestInformationFormType) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -99,59 +103,66 @@ const GuestInformationForm = () => {
               )}
             />
           </div>
-          <div className="space-y-4">
-            <h3 className="font-bold text-lg">Companion</h3>
-            <FormField
-              control={form.control}
-              name="companionName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-bold text-sm">
-                    Companion name <span className="text-red-500">*</span>
-                  </FormLabel>
-                  <FormControl className="bg-white px-4 py-5">
-                    <Input
-                      placeholder="Enter your companion’s name"
-                      {...field}
-                      className="font-medium text-textSub"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <button className="ml-auto text-sm font-bold text-primary px-4 py-2 border border-primary bg-white rounded-full flex items-center gap-2">
-              <Image
-                src="/plus.svg"
-                width={16}
-                height={16}
-                alt="icon for shortening long url"
+
+          {/* Only attendees can see the companion and restrictions. */}
+          {selection === "accept" && (
+            <div className="space-y-4">
+              <h3 className="font-bold text-lg">Companion</h3>
+              <FormField
+                control={form.control}
+                name="companionName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-bold text-sm">
+                      Companion name <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <FormControl className="bg-white px-4 py-5">
+                      <Input
+                        placeholder="Enter your companion’s name"
+                        {...field}
+                        className="font-medium text-textSub"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <span>Add person</span>
-            </button>
-          </div>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <h3 className="font-bold text-lg">Allergies or dietary restrictions</h3>
-              <p className="font-medium text-sm">If you have any allergies or dietary restrictions, please let us know.</p>
+              <button className="ml-auto text-sm font-bold text-primary px-4 py-2 border border-primary bg-white rounded-full flex items-center gap-2">
+                <Image
+                  src="/plus.svg"
+                  width={16}
+                  height={16}
+                  alt="icon for shortening long url"
+                />
+                <span>Add person</span>
+              </button>
             </div>
-            <FormField
-              control={form.control}
-              name="restrictions"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl className="bg-white px-4 py-3">
-                    <Textarea
-                      placeholder="Enter your note"
-                      {...field}
-                      className="font-medium text-textSub h-28"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          )}
+          {selection === "accept" && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h3 className="font-bold text-lg">Allergies or dietary restrictions</h3>
+                <p className="font-medium text-sm">If you have any allergies or dietary restrictions, please let us know.</p>
+              </div>
+              <FormField
+                control={form.control}
+                name="restrictions"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl className="bg-white px-4 py-3">
+                      <Textarea
+                        placeholder="Enter your note"
+                        {...field}
+                        className="font-medium text-textSub h-28"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+
           <div className="space-y-4">
             <h3 className="font-bold text-lg">Message to the host</h3>
             <FormField

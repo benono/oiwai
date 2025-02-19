@@ -28,7 +28,7 @@ const RsvpForm = () => {
           onClick={handleSelect}
         />
       </div>
-      <GuestInformationForm />
+      <GuestInformationForm selection={selection}/>
     </div>
   );
 };
