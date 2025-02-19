@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
     darkMode: ["class"],
@@ -10,8 +11,18 @@ export default {
   theme: {
   	extend: {
   		colors: {
-  			background: 'hsl(var(--background))',
-  			foreground: 'hsl(var(--foreground))',
+  			background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        text: "hsl(60, 2%, 25%, 100%)",
+        textSub: "hsl(60, 1%, 62%, 100%)",
+        textBorder: "hsl(60, 7%, 82%, 100%)",
+        textBorderLight: "hsl(60, 9%, 96%, 100%)",
+        accentGreen: "hsl(172, 73%, 34%, 100%)",
+        accentGreenLight: "hsl(172, 73%, 34%, 70%)",
+        accentBlue: "hsl(200, 72%, 37%, 100%)",
+        accentPurple: "hsl(284, 29%, 44%, 100%)",
+        error: "hsl(0, 84%, 60%, 100%)",
+        warning: "hsl(25, 95%, 53%, 100%)",
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
@@ -90,5 +101,5 @@ export default {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;
