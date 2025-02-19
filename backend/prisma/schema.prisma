@@ -13,99 +13,132 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
+model Users {
   id        Int      @id @default(autoincrement())
   name String
   email     String   @unique
+  profileImageUrl String @map("profile_image_url")
 
-  events events[]
-  events_particpants events_particpants[]
-  participants_restrictions participants_restrictions[]
-  things_to_bring things_to_bring[]
+  userFamilies UserFamilies[]
+  events Events[]
+  eventParticipants EventParticipants[]
+  participantRestrictions ParticipantRestrictions[]
+  necessities Necessities[]
+
+  @@map("users")
 }
 
-model events {
+model UserFamilies {
   id        Int      @id @default(autoincrement())
-  user       users @relation(fields: [user_id], references: [id])
-  user_id Int
+  user       Users @relation(fields: [userId], references: [id])
+  userId  Int    @map("user_id")
+  name String
+  profileImageUrl String @map("profile_image_url")
+
+  eventParticipants EventParticipants[]
+
+  @@map("user_families")
+}
+
+model Events {
+  id        Int      @id @default(autoincrement())
+  user       Users @relation(fields: [userId], references: [id])
+  userId  Int    @map("user_id")
   title String
-  thumbnail String
-  start_time DateTime
-  end_time DateTime
+  thumbnailUrl String  @map("thumbnail_url")
+  startTime DateTime  @map("start_time")
+  endTime DateTime  @map("end_time")
   country String
-  postal_code String
+  postalCode String  @map("postal_code")
   province String
   city String
   address1 String
   address2 String
-  is_ask_restrictions Boolean
-  event_type String
+  isAskRestrictions Boolean  @map("is_ask_restrictions")
+  eventType String  @map("event_type")
+  designInfo String  @map("design_info")
   theme String
-  note_for_things_to_buy String
-  note_for_things_to_bring String
+  noteForThingsToBuy String  @map("note_for_things_to_buy")
+  noteForNecessities String  @map("note_for_necessities")
 
-  events_particpants events_particpants[]
-  participants_restrictions participants_restrictions[]
-  things_to_bring things_to_bring[]
-  things_to_buy things_to_buy[]
-  timelines timelines[]
-  media media[]
+  eventParticipants EventParticipants[]
+  participantRestrictions ParticipantRestrictions[]
+  necessities Necessities[]
+  thingsToBuy ThingsToBuy[]
+  timelines Timelines[]
+  medias Medias[]
+
+  @@map("events")
 }
 
-model events_particpants {
-  event       events @relation(fields: [event_id], references: [id])
-  event_id     Int
-  user       users @relation(fields: [user_id], references: [id])
-  user_id     Int
-  is_accepted Boolean
-  is_attended Boolean
+model EventParticipants {
+  event       Events @relation(fields: [eventId], references: [id])
+  eventId     Int    @map("event_id")
+  user       Users @relation(fields: [userId], references: [id])
+  userId  Int    @map("user_id")
+  userFamilies       UserFamilies @relation(fields: [userFamilyId], references: [id])
+  userFamilyId     Int    @map("user_family_id")
+  isAccepted Boolean    @map("is_accepted")
+  isAttended Boolean    @map("is_attended")
   
-  @@unique(fields: [event_id, user_id], name: "event_particpant")
+  @@unique(fields: [eventId, userId, userFamilyId], name: "event_participants_Id")
+
+  @@map("event_participants")
 }
 
-model participants_restrictions {
+model ParticipantRestrictions {
   id        Int      @id @default(autoincrement())
-  event       events @relation(fields: [event_id], references: [id])
-  event_id     Int
-  user       users @relation(fields: [user_id], references: [id])
-  user_id     Int
+  event       Events @relation(fields: [eventId], references: [id])
+  eventId     Int  @map("event_id")
+  user       Users @relation(fields: [userId], references: [id])
+  userId  Int    @map("user_id")
   note String
+
+  @@map("participant_restrictions")
 }
 
-model things_to_bring {
-  event       events @relation(fields: [event_id], references: [id])
-  event_id     Int
-  user       users @relation(fields: [user_id], references: [id])
-  user_id     Int
+model Necessities {
+  event       Events @relation(fields: [eventId], references: [id])
+  eventId     Int  @map("event_id")
+  user       Users @relation(fields: [userId], references: [id])
+  userId  Int    @map("user_id")
   order Int
   item String
-  is_added Boolean
+  isAdded Boolean    @map("is_added")
   
-  @@unique(fields: [event_id, user_id, order], name: "thing_to_bring")
+  @@unique(fields: [eventId, userId, order], name: "necessity_id")
+
+  @@map("necessities")
 }
 
-model things_to_buy {
+model ThingsToBuy {
   id        Int      @id @default(autoincrement())
-  event       events @relation(fields: [event_id], references: [id])
-  event_id     Int
+  event       Events @relation(fields: [eventId], references: [id])
+  eventId     Int  @map("event_id")
   item String
-  is_purchase Boolean
+  isPurchase Boolean    @map("is_purchase")
+
+    @@map("things_to_buy")
 }
 
-model timelines {
+model Timelines {
   id        Int      @id @default(autoincrement())
-  event       events @relation(fields: [event_id], references: [id])
-  event_id     Int
-  schedule_item String
+  event       Events @relation(fields: [eventId], references: [id])
+  eventId     Int  @map("event_id")
+  scheduleItem String    @map("schedule_item")
   description String
-  start_time DateTime
-  end_time DateTime 
+  startTime DateTime  @map("start_time")
+  endTime DateTime  @map("end_time")
+
+  @@map("timelines")
 }
 
-model media {
+model Medias {
   id        Int      @id @default(autoincrement())
-  event       events @relation(fields: [event_id], references: [id])
-  event_id     Int
-  image_title String
-  image_url String
+  event       Events @relation(fields: [eventId], references: [id])
+  eventId     Int  @map("event_id")
+  imageTitle String    @map("image_title")
+  imageUrl String    @map("image_url")
+
+  @@map("medias")
 }
