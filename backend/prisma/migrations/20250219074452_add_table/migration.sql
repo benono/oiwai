@@ -1,40 +1,34 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "users" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
 
-  - Added the required column `address1` to the `events` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `address2` to the `events` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `city` to the `events` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `country` to the `events` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `end_time` to the `events` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `event_type` to the `events` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `isAskRestriction` to the `events` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `note_for_shopping` to the `events` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `note_for_things_to_bring` to the `events` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `postal_code` to the `events` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `province` to the `events` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `start_time` to the `events` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `theme` to the `events` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `thumbnail` to the `events` table without a default value. This is not possible if the table is not empty.
-  - Changed the type of `user_id` on the `events` table. No cast exists, the column would be dropped and recreated, which cannot be done if there is data, since the column is required.
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
 
-*/
--- AlterTable
-ALTER TABLE "events" ADD COLUMN     "address1" TEXT NOT NULL,
-ADD COLUMN     "address2" TEXT NOT NULL,
-ADD COLUMN     "city" TEXT NOT NULL,
-ADD COLUMN     "country" TEXT NOT NULL,
-ADD COLUMN     "end_time" TIMESTAMP(3) NOT NULL,
-ADD COLUMN     "event_type" TEXT NOT NULL,
-ADD COLUMN     "isAskRestriction" BOOLEAN NOT NULL,
-ADD COLUMN     "note_for_shopping" TEXT NOT NULL,
-ADD COLUMN     "note_for_things_to_bring" TEXT NOT NULL,
-ADD COLUMN     "postal_code" TEXT NOT NULL,
-ADD COLUMN     "province" TEXT NOT NULL,
-ADD COLUMN     "start_time" TIMESTAMP(3) NOT NULL,
-ADD COLUMN     "theme" TEXT NOT NULL,
-ADD COLUMN     "thumbnail" TEXT NOT NULL,
-DROP COLUMN "user_id",
-ADD COLUMN     "user_id" INTEGER NOT NULL;
+-- CreateTable
+CREATE TABLE "events" (
+    "id" SERIAL NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "title" TEXT NOT NULL,
+    "thumbnail" TEXT NOT NULL,
+    "start_time" TIMESTAMP(3) NOT NULL,
+    "end_time" TIMESTAMP(3) NOT NULL,
+    "country" TEXT NOT NULL,
+    "postal_code" TEXT NOT NULL,
+    "province" TEXT NOT NULL,
+    "city" TEXT NOT NULL,
+    "address1" TEXT NOT NULL,
+    "address2" TEXT NOT NULL,
+    "is_ask_restrictions" BOOLEAN NOT NULL,
+    "event_type" TEXT NOT NULL,
+    "theme" TEXT NOT NULL,
+    "note_for_things_to_buy" TEXT NOT NULL,
+    "note_for_things_to_bring" TEXT NOT NULL,
+
+    CONSTRAINT "events_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "events_particpants" (
@@ -94,6 +88,9 @@ CREATE TABLE "media" (
 
     CONSTRAINT "media_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "events_particpants_event_id_user_id_key" ON "events_particpants"("event_id", "user_id");
