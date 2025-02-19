@@ -10,6 +10,7 @@ import {
   FormMessage
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Image from "next/image"
 import { useForm } from "react-hook-form"
@@ -30,6 +31,8 @@ const formSchema = z.object({
     companionName: z.string().min(2, {
     message: "Companion name must be at least 2 characters.",
   }),
+  restrictions: z.string().optional(),
+  message: z.string().optional(),
 })
 
 type FormValues = z.infer<typeof formSchema>;
@@ -41,6 +44,8 @@ const GuestInformationForm = () => {
       name: "",
       email: "",
       companionName: "",
+      restrictions: "",
+      message: "",
     },
   })
 
@@ -125,7 +130,48 @@ const GuestInformationForm = () => {
               <span>Add person</span>
             </button>
           </div>
-          <Button type="submit">Submit</Button>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h3 className="font-bold text-lg">Allergies or dietary restrictions</h3>
+              <p className="font-medium text-sm">If you have any allergies or dietary restrictions, please let us know.</p>
+            </div>
+            <FormField
+              control={form.control}
+              name="restrictions"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl className="bg-white px-4 py-3">
+                    <Textarea
+                      placeholder="Enter your note"
+                      {...field}
+                      className="font-medium text-textSub h-28"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-4">
+            <h3 className="font-bold text-lg">Message to the host</h3>
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl className="bg-white px-4 py-3">
+                    <Textarea
+                      placeholder="Enter your message"
+                      {...field}
+                      className="font-medium text-textSub h-28"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <Button type="submit" className="w-full rounded-[40px] py-8 text-lg">Submit</Button>
         </form>
       </Form>
     </div>
