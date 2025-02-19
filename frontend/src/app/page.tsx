@@ -26,8 +26,8 @@ const lato = Lato({
 
 export default function Home() {
   return (
-    <>
-      <header className="bg-white px-4 py-3">
+    <div>
+      <header className="sticky top-0 z-50 bg-white px-4 py-3">
         <div className="flex items-start justify-between gap-2.5">
           <h1 className="text-text text-xl font-bold">Oiwai</h1>
           <Button className="h-auto rounded-full px-4 py-1.5 text-xs font-bold">
@@ -35,13 +35,13 @@ export default function Home() {
           </Button>
         </div>
       </header>
-      <section className="bg-white px-4">
+      <section className="text-text bg-white px-4">
         <section className="grid justify-items-center gap-6 text-center">
-          <h1 className={`text-text text-[32px] font-bold ${lato.className}`}>
+          <h1 className={`text-[32px] font-bold ${lato.className}`}>
             Celebrate & Connect <br />
             with Ease!
           </h1>
-          <p className="text-text text-sm">
+          <p className="text-sm">
             Effortlessly plan and manage your child&apos;s birthday or special
             event. Create personalized invitations and share them with friends,
             all in one place!
@@ -54,7 +54,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section>
+        <section className="mt-10">
           <Tabs defaultValue="host">
             <TabsList className="w-full">
               <TabsTrigger value="host" className="w-full">
@@ -65,22 +65,24 @@ export default function Home() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="host">
-              <section>
-                <div>
+              <section className="grid gap-10">
+                <div className="grid gap-6">
                   <Image src={hostMainPic} alt="For the event host" />
-                  <h2
-                    className={`text-accentGreen text-2xl font-bold ${lato.className}`}
-                  >
-                    Create invitations effortlessly
-                  </h2>
-                  <p className="text-text text-base">
-                    Easily create event invitations with a few tap.
-                  </p>
-                </div>
-                <div>
-                  <div>
-                    <h3>Get AI-generated venue suggestions</h3>
-                    <p>
+                  <div className="grid gap-2">
+                    <h2
+                      className={`text-accentGreen text-2xl font-bold ${lato.className}`}
+                    >
+                      Create invitations effortlessly
+                    </h2>
+                    <p className="text-text text-base">
+                      Easily create event invitations with a few tap.
+                    </p>
+                  </div>
+                  <div className="text-text grid gap-2 rounded-lg border border-border px-4 py-6">
+                    <h3 className={`text-lg font-bold ${lato.className}`}>
+                      Get AI-generated venue suggestions
+                    </h3>
+                    <p className="text-sm">
                       Find recommended spots on the map based on activities.
                     </p>
                     <Image
@@ -89,9 +91,11 @@ export default function Home() {
                       className="w-full"
                     />
                   </div>
-                  <div>
-                    <h3>Various invitation theme</h3>
-                    <p>
+                  <div className="text-text grid gap-2 rounded-lg border border-border px-4 py-6">
+                    <h3 className={`text-lg font-bold ${lato.className}`}>
+                      Various invitation theme
+                    </h3>
+                    <p className="text-sm">
                       Find recommended spots on the map based on activities.
                     </p>
                     <Image
@@ -101,36 +105,50 @@ export default function Home() {
                     />
                   </div>
                 </div>
-                <div>
-                  <h2>
+                <div className="text-text grid gap-6 pb-20">
+                  <h2
+                    className={`text-center text-2xl font-bold ${lato.className}`}
+                  >
                     Make your event even more special with an exclusive group
                     for participants.
                   </h2>
-                  <div>
-                    <div>
+                  <div className="flex gap-4 overflow-x-scroll px-4">
+                    <div className="grid min-w-[280px] gap-6">
                       <Image
                         src={hostGroupPic1}
                         alt="AI suggests your schedule"
                       />
-                      <h3>AI suggests your schedule</h3>
-                      <p>
-                        Just enter a few details, and your timeline is ready!
-                      </p>
+                      <div className="grid gap-2">
+                        <h3 className={`text-lg font-bold ${lato.className}`}>
+                          AI suggests your schedule
+                        </h3>
+                        <p className="text-sm">
+                          Just enter a few details, and your timeline is ready!
+                        </p>
+                      </div>
                     </div>
-                    <div>
+                    <div className="grid min-w-[280px] gap-6">
                       <Image src={hostGroupPic2} alt="Manage necessity" />
-                      <h3>Manage necessity</h3>
-                      <p>
-                        Share a list of items you want participants to bring.
-                      </p>
+                      <div className="grid gap-2">
+                        <h3 className={`text-lg font-bold ${lato.className}`}>
+                          Manage necessity
+                        </h3>
+                        <p className="text-sm">
+                          Share a list of items you want participants to bring.
+                        </p>
+                      </div>
                     </div>
-                    <div>
+                    <div className="grid min-w-[280px] gap-6">
                       <Image src={hostGroupPic3} alt="Announcements" />
-                      <h3>Announcements</h3>
-                      <p>
-                        Send updates to participants through chat and collect
-                        their responses.
-                      </p>
+                      <div className="grid gap-2">
+                        <h3 className={`text-lg font-bold ${lato.className}`}>
+                          Announcements
+                        </h3>
+                        <p className="text-sm">
+                          Send updates to participants through chat and collect
+                          their responses.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -214,6 +232,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 }
