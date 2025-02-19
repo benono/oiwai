@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
+import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -18,10 +19,16 @@ const formSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }).min(2, {
-    message: "Email must be at least 2 characters.",
+  email: z
+    .string()
+    .email({
+      message: "Please enter a valid email address.",
+    })
+    .min(2, {
+      message: "Email must be at least 2 characters.",
+    }),
+    companionName: z.string().min(2, {
+    message: "Companion name must be at least 2 characters.",
   }),
 })
 
@@ -33,8 +40,9 @@ const GuestInformationForm = () => {
     defaultValues: {
       name: "",
       email: "",
+      companionName: "",
     },
-  });
+  })
 
   const onSubmit = (data: FormValues) => {
     console.log(data)
@@ -51,9 +59,15 @@ const GuestInformationForm = () => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold text-sm">Your name <span className="text-red-500">*</span></FormLabel>
+                  <FormLabel className="font-bold text-sm">
+                    Your name <span className="text-red-500">*</span>
+                  </FormLabel>
                   <FormControl className="bg-white px-4 py-5">
-                    <Input placeholder="Enter your name" {...field} className="font-medium text-textSub"/>
+                    <Input
+                      placeholder="Enter your name"
+                      {...field}
+                      className="font-medium text-textSub"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -64,7 +78,9 @@ const GuestInformationForm = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold text-sm">Email <span className="text-red-500">*</span></FormLabel>
+                  <FormLabel className="font-bold text-sm">
+                    Email <span className="text-red-500">*</span>
+                  </FormLabel>
                   <FormControl className="bg-white px-4 py-5">
                     <Input
                       type="email"
@@ -77,6 +93,37 @@ const GuestInformationForm = () => {
                 </FormItem>
               )}
             />
+          </div>
+          <div className="space-y-4">
+            <h3 className="font-bold text-lg">Companion</h3>
+            <FormField
+              control={form.control}
+              name="companionName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-bold text-sm">
+                    Companion name <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl className="bg-white px-4 py-5">
+                    <Input
+                      placeholder="Enter your companion’s name"
+                      {...field}
+                      className="font-medium text-textSub"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <button className="ml-auto text-sm font-bold text-primary px-4 py-2 border border-primary bg-white rounded-full flex items-center gap-2">
+              <Image
+                src="/plus.svg"
+                width={16}
+                height={16}
+                alt="icon for shortening long url"
+              />
+              <span>Add person</span>
+            </button>
           </div>
           <Button type="submit">Submit</Button>
         </form>
