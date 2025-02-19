@@ -155,18 +155,26 @@ export default function Home() {
               </section>
             </TabsContent>
             <TabsContent value="participants">
-              <div>
-                <Image src={guestMainPic} alt="For the participants" />
-                <h2>Easily check information, create special memories</h2>
-                <p>
-                  Keep scattered info in one place and share photos
-                  effortlessly.
-                </p>
-              </div>
-              <div>
-                <div>
-                  <h3>Check the schedule and necessity</h3>
-                  <p>
+              <section className="grid gap-10 pb-20">
+                <div className="grid gap-6">
+                  <Image src={guestMainPic} alt="For the participants" />
+                  <div className="grid gap-2">
+                    <h2
+                      className={`text-accentGreen text-2xl font-bold ${lato.className}`}
+                    >
+                      Easily check information, create special memories
+                    </h2>
+                    <p className="text-text text-base">
+                      Keep scattered info in one place and share photos
+                      effortlessly.
+                    </p>
+                  </div>
+                </div>
+                <div className="text-text grid gap-2 rounded-lg border border-border px-4 py-6">
+                  <h3 className={`text-lg font-bold ${lato.className}`}>
+                    Check the schedule and necessity
+                  </h3>
+                  <p className="text-sm">
                     Access host-shared information anytime. Engage with the host
                     on the feed to make the event even more exciting!
                   </p>
@@ -175,9 +183,11 @@ export default function Home() {
                     alt="Check announcement and necessity."
                   />
                 </div>
-                <div>
-                  <h3>Share and view group memories in one place</h3>
-                  <p>
+                <div className="text-text grid gap-2 rounded-lg border border-border px-4 py-6">
+                  <h3 className={`text-lg font-bold ${lato.className}`}>
+                    Share and view group memories in one place
+                  </h3>
+                  <p className="text-sm">
                     Easily find photos of your child with AI-powered sorting.
                   </p>
                   <Image
@@ -185,7 +195,7 @@ export default function Home() {
                     alt="Easy to find your child photos."
                   />
                 </div>
-              </div>
+              </section>
             </TabsContent>
           </Tabs>
         </section>
