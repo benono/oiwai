@@ -171,6 +171,11 @@ const GuestInformationForm = () => {
               )}
             />
           </div>
+          {form.formState.errors.email === undefined && form.getValues('email') && (
+            <div className="space-y-2">
+              <span>I agree with the Terms and Conditions.</span>
+            </div>
+          )}
           <Button type="submit" className="w-full rounded-[40px] py-8 text-lg">Submit</Button>
         </form>
       </Form>
