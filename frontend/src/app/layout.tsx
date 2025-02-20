@@ -1,3 +1,5 @@
+import Header from "@/components/layouts/Header";
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import "./globals.css";
@@ -20,8 +22,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${quicksand.className} antialiased`}>{children}</body>
-    </html>
+    <ClerkProvider
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+    >
+      <html lang="en">
+        <body className={`${quicksand.className} antialiased`}>
+          <Header />
+          <main>{children}</main>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

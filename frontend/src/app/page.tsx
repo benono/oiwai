@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import Footer from "@/components/layouts/Footer";
-import Header from "@/components/layouts/Header";
 import hostGroupPic1 from "@/public/images/eventhost_group_image1.png";
 import hostGroupPic2 from "@/public/images/eventhost_group_image2.png";
 import hostGroupPic3 from "@/public/images/eventhost_group_image3.png";
@@ -16,6 +15,7 @@ import mainPic from "@/public/images/main_image.png";
 import guestMainPic from "@/public/images/participants_main_image.png";
 import guestSubPic1 from "@/public/images/participants_sub_image1.png";
 import guestSubPic2 from "@/public/images/participants_sub_image2.png";
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
 
 const lato = Lato({
   weight: ["100", "300", "400", "700", "900"],
@@ -26,8 +26,7 @@ const lato = Lato({
 
 export default function Home() {
   return (
-    <div>
-      <Header />
+    <>
       <section className="text-text max-w-md bg-white px-4 pb-20 pt-10 md:mx-auto">
         <section className="grid justify-items-center gap-6 text-center">
           <h1 className={`text-[32px] font-bold ${lato.className}`}>
@@ -39,27 +38,29 @@ export default function Home() {
             event. Create personalized invitations and share them with friends,
             all in one place!
           </p>
-          <Button className="h-auto w-fit rounded-full px-10 py-3 text-base font-bold">
-            CREATE EVENT
-          </Button>
-          <div className="relative h-[300px] w-full">
+          <SignUpButton>
+            <Button className="h-auto w-fit rounded-full px-10 py-3 text-base font-bold">
+              CREATE EVENT
+            </Button>
+          </SignUpButton>
+          <div className="relative w-full">
             <Image src={mainPic} alt="Oiwai image" />
           </div>
         </section>
 
         <section className="mt-10">
           <Tabs defaultValue="host">
-            <div className="bg-white sticky top-[52px] py-2">
+            <div className="sticky top-[52px] bg-white py-2">
               <TabsList className="border-textBorder h-auto w-full border bg-white p-2">
                 <TabsTrigger
                   value="host"
-                  className="data-[state=active]:border-accentGreen data-[state=active]:text-accentGreen w-full border border-white data-[state=active]:border data-[state=active]:bg-white data-[state=active]:shadow-none"
+                  className="data-[state=active]:border-accentGreen data-[state=active]:text-accentGreen w-full border border-white data-[state=active]:border data-[state=active]:bg-white data-[state=active]:shadow-none hover:opacity-70"
                 >
                   EVENT HOST
                 </TabsTrigger>
                 <TabsTrigger
                   value="participants"
-                  className="data-[state=active]:border-accentGreen data-[state=active]:text-accentGreen w-full border border-white data-[state=active]:border data-[state=active]:bg-white data-[state=active]:shadow-none"
+                  className="data-[state=active]:border-accentGreen data-[state=active]:text-accentGreen w-full border border-white data-[state=active]:border data-[state=active]:bg-white data-[state=active]:shadow-none hover:opacity-70"
                 >
                   PARTICIPANTS
                 </TabsTrigger>
@@ -201,18 +202,22 @@ export default function Home() {
           </Tabs>
         </section>
         <section className="mt-10 flex justify-between gap-4 text-sm">
-          <Button
-            variant="outline"
-            className="h-auto w-full rounded-full border-2 border-primary bg-white py-3 font-bold text-primary"
-          >
-            Log in
-          </Button>
-          <Button className="h-auto w-full rounded-full py-3 font-bold">
-            CREATE EVENT
-          </Button>
+          <SignInButton>
+            <Button
+              variant="outline"
+              className="h-auto w-full rounded-full border-2 border-primary bg-white py-3 font-bold text-primary hover:bg-primary hover:text-white"
+            >
+              Log in
+            </Button>
+          </SignInButton>
+          <SignUpButton>
+            <Button className="h-auto w-full rounded-full py-3 font-bold">
+              CREATE EVENT
+            </Button>
+          </SignUpButton>
         </section>
       </section>
       <Footer />
-    </div>
+    </>
   );
 }
