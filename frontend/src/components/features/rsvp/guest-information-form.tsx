@@ -47,7 +47,9 @@ const formSchema = z.object({
     }),
   message: z.string().optional(),
   companions: z.array(z.string()).optional(),
-  termsAccepted: z.boolean(),
+  termsAccepted: z.boolean().refine((val) => val === true, {
+    message: "You must agree to the terms and conditions.",
+  }),
   updateUserInfo: z.boolean(),
   updateFamilyInfo: z.boolean(),
 });
@@ -381,34 +383,39 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
               )}
             />
           </div>
-          {form.formState.errors.email === undefined &&
-            form.getValues("email") && (
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleAgreeClick}
-                  className="rounded-full font-bold text-white"
-                >
-                  {form.getValues("termsAccepted") ? (
-                    <Image
-                      src="/checked.svg"
-                      width={16}
-                      height={16}
-                      alt="icon for add unchecked"
-                    />
-                  ) : (
-                    <Image
-                      src="/unchecked.svg"
-                      width={16}
-                      height={16}
-                      alt="icon for add checked"
-                    />
-                  )}
-                </button>
-                <span className="text-sm">
-                  I agree with the Terms and Conditions.
-                </span>
-              </div>
+          <FormField
+            control={form.control}
+            name="termsAccepted"
+            render={() => (
+              <FormItem>
+                <FormControl className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleAgreeClick}
+                    className="flex items-center gap-2 rounded-full font-bold text-white"
+                  >
+                    {form.getValues("termsAccepted") ? (
+                      <Image
+                        src="/checked.svg"
+                        width={16}
+                        height={16}
+                        alt="icon for add unchecked"
+                      />
+                    ) : (
+                      <Image
+                        src="/unchecked.svg"
+                        width={16}
+                        height={16}
+                        alt="icon for add checked"
+                      />
+                    )}
+                    <span className="text-sm font-medium text-text">
+                      I agree with the Terms and Conditions.
+                    </span>
+                  </button>
+                </FormControl>
+                <FormMessage className="mt-2 text-sm text-red-500" />
+              </FormItem>
             )}
           <Button
             type="submit"
