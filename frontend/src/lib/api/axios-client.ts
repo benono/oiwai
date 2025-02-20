@@ -2,7 +2,7 @@ import { useAuth } from "@clerk/clerk-react";
 import axios from "axios";
 import { useEffect } from "react";
 
-const baseURL = "http://localhost:3000/api/";
+const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const axiosInstance = axios.create({
   baseURL,
