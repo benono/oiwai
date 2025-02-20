@@ -4,18 +4,18 @@ import Image from "next/image";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import Footer from "@/components/layouts/Footer";
+import Header from "@/components/layouts/Header";
 import hostGroupPic1 from "@/public/images/eventhost_group_image1.png";
 import hostGroupPic2 from "@/public/images/eventhost_group_image2.png";
 import hostGroupPic3 from "@/public/images/eventhost_group_image3.png";
 import hostMainPic from "@/public/images/eventhost_main_image.png";
 import hostSubPic1 from "@/public/images/eventhost_sub_image1.png";
 import hostSubPic2 from "@/public/images/eventhost_sub_image2.png";
-import linkedInLogo from "@/public/images/LI-In-Bug.png";
 import mainPic from "@/public/images/main_image.png";
 import guestMainPic from "@/public/images/participants_main_image.png";
 import guestSubPic1 from "@/public/images/participants_sub_image1.png";
 import guestSubPic2 from "@/public/images/participants_sub_image2.png";
-import Link from "next/link";
 
 const lato = Lato({
   weight: ["100", "300", "400", "700", "900"],
@@ -27,15 +27,8 @@ const lato = Lato({
 export default function Home() {
   return (
     <div>
-      <header className="sticky top-0 z-50 bg-white px-4 py-3">
-        <div className="flex items-start justify-between gap-2.5">
-          <h1 className="text-text text-xl font-bold">Oiwai</h1>
-          <Button className="h-auto rounded-full px-4 py-1.5 text-xs font-bold">
-            CREATE EVENT
-          </Button>
-        </div>
-      </header>
-      <section className="text-text bg-white px-4">
+      <Header />
+      <section className="text-text max-w-md bg-white px-4 pb-20 pt-10 md:mx-auto">
         <section className="grid justify-items-center gap-6 text-center">
           <h1 className={`text-[32px] font-bold ${lato.className}`}>
             Celebrate & Connect <br />
@@ -56,14 +49,22 @@ export default function Home() {
 
         <section className="mt-10">
           <Tabs defaultValue="host">
-            <TabsList className="w-full">
-              <TabsTrigger value="host" className="w-full">
-                EVENT HOST
-              </TabsTrigger>
-              <TabsTrigger value="participants" className="w-full">
-                PARTICIPANTS
-              </TabsTrigger>
-            </TabsList>
+            <div className="bg-white sticky top-[52px] py-2">
+              <TabsList className="border-textBorder h-auto w-full border bg-white p-2">
+                <TabsTrigger
+                  value="host"
+                  className="data-[state=active]:border-accentGreen data-[state=active]:text-accentGreen w-full border border-white data-[state=active]:border data-[state=active]:bg-white data-[state=active]:shadow-none"
+                >
+                  EVENT HOST
+                </TabsTrigger>
+                <TabsTrigger
+                  value="participants"
+                  className="data-[state=active]:border-accentGreen data-[state=active]:text-accentGreen w-full border border-white data-[state=active]:border data-[state=active]:bg-white data-[state=active]:shadow-none"
+                >
+                  PARTICIPANTS
+                </TabsTrigger>
+              </TabsList>
+            </div>
             <TabsContent value="host">
               <section className="grid gap-10">
                 <div className="grid gap-6">
@@ -105,14 +106,14 @@ export default function Home() {
                     />
                   </div>
                 </div>
-                <div className="text-text grid gap-6 pb-20">
+                <div className="text-text grid gap-6">
                   <h2
                     className={`text-center text-2xl font-bold ${lato.className}`}
                   >
                     Make your event even more special with an exclusive group
                     for participants.
                   </h2>
-                  <div className="flex gap-4 overflow-x-scroll px-4">
+                  <div className="flex gap-4 overflow-x-scroll px-4 pb-6">
                     <div className="grid min-w-[280px] gap-6">
                       <Image
                         src={hostGroupPic1}
@@ -199,49 +200,19 @@ export default function Home() {
             </TabsContent>
           </Tabs>
         </section>
+        <section className="mt-10 flex justify-between gap-4 text-sm">
+          <Button
+            variant="outline"
+            className="h-auto w-full rounded-full border-2 border-primary bg-white py-3 font-bold text-primary"
+          >
+            Log in
+          </Button>
+          <Button className="h-auto w-full rounded-full py-3 font-bold">
+            CREATE EVENT
+          </Button>
+        </section>
       </section>
-      <footer className="text-text grid gap-4 px-4 py-8">
-        <div className="flex flex-col gap-6">
-          <h1 className="text-xl font-bold">Oiwai</h1>
-          <div className="text-textSub grid gap-2 text-xs">
-            <Link href="/">Privacy policy</Link>
-            <Link href="/">Terms and Conditions</Link>
-          </div>
-        </div>
-        <div className="grid gap-2">
-          <p className="text-text text-xs">Created by</p>
-          <div className="flex items-center gap-4">
-            <Link
-              href="https://www.linkedin.com/in/risa-yamamoto-profile/"
-              className="flex items-center gap-1"
-            >
-              <Image src={linkedInLogo} alt="LinkedIn" width={20} height={20} />
-              <p className="text-text text-sm">Risa</p>
-            </Link>
-            <Link
-              href="https://www.linkedin.com/in/ben-ono-profile/"
-              className="flex items-center gap-1"
-            >
-              <Image src={linkedInLogo} alt="LinkedIn" width={20} height={20} />
-              <p className="text-text text-sm">Ben</p>
-            </Link>
-            <Link
-              href="http://linkedin.com/in/nao-g-55822a2bb"
-              className="flex items-center gap-1"
-            >
-              <Image src={linkedInLogo} alt="LinkedIn" width={20} height={20} />
-              <p className="text-text text-sm">Nao</p>
-            </Link>
-            <Link
-              href="https://www.linkedin.com/in/haruka-kakiuchi-profile/"
-              className="flex items-center gap-1"
-            >
-              <Image src={linkedInLogo} alt="LinkedIn" width={20} height={20} />
-              <p className="text-text text-sm">Haruka</p>
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
