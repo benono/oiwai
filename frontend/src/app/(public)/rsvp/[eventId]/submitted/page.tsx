@@ -1,7 +1,5 @@
 const SubmittedPage = () => {
-  return (
-    <div>page</div>
-  )
-}
+  return <div>page</div>;
+};
 
 export default SubmittedPage;

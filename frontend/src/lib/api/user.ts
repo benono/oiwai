@@ -4,7 +4,7 @@ import { UserType } from "@/types/user";
 export const getUserInfo = async (): Promise<UserType> => {
   try {
     // const axios = useAuthAxios();
-    // const response = await axios.get('/me');
+    // const response = await axios.get("/me");
 
     return {
       // Dummy data

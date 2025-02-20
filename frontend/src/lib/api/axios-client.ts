@@ -10,7 +10,7 @@ export const axiosInstance = axios.create({
 
 // custom hook to use auth token
 export const useAuthAxios = () => {
-  const { getToken } = useAuth();
+  // const { getToken } = useAuth();
 
   useEffect(() => {
     const requestInterceptor = axiosInstance.interceptors.request.use(
@@ -39,4 +39,3 @@ export const useAuthAxios = () => {
 export const publicAxios = axios.create({
   baseURL,
 });
-

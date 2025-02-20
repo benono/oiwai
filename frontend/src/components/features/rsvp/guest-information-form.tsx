@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -19,17 +19,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea"
+import { Textarea } from "@/components/ui/textarea";
 import { getUserInfo } from "@/lib/api/user";
-import { ResponseType } from "@/types/response"
-import { useAuth } from "@clerk/clerk-react";
-import { zodResolver } from "@hookform/resolvers/zod"
-import axios from "axios"
-import Image from "next/image"
-import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { ResponseType } from "@/types/response";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 // import { useAuth } from "@clerk/clerk-react";
 
 const formSchema = z.object({
@@ -194,7 +193,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
     <div>
       <h2 className="mb-4 mt-12 text-xl font-bold">Your Information</h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mb-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="mb-6 space-y-8">
           <div className="space-y-6">
             <FormField
               control={form.control}
@@ -420,7 +419,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
         </form>
       </Form>
     </div>
-  )
-}
+  );
+};
 
 export default GuestInformationForm;
