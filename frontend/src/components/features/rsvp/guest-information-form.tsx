@@ -263,7 +263,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                       className="text-red-500"
                     >
                       <Image
-                        src="/delete.svg"
+                        src="/images/delete.svg"
                         width={200}
                         height={200}
                         alt="delete icon"
@@ -321,7 +321,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                   className="ml-auto flex items-center gap-2 rounded-full border border-primary bg-white px-4 py-2 text-sm font-bold text-primary"
                 >
                   <Image
-                    src="/plus.svg"
+                    src="/images/plus.svg"
                     width={16}
                     height={16}
                     alt="icon for add person"
@@ -396,14 +396,14 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                   >
                     {form.getValues("termsAccepted") ? (
                       <Image
-                        src="/checked.svg"
+                        src="/images/checked.svg"
                         width={16}
                         height={16}
                         alt="icon for add unchecked"
                       />
                     ) : (
                       <Image
-                        src="/unchecked.svg"
+                        src="/images/unchecked.svg"
                         width={16}
                         height={16}
                         alt="icon for add checked"
