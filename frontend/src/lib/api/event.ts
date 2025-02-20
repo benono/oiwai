@@ -1,5 +1,5 @@
 import { EventType } from "@/types/event";
-import { useAuthAxios } from "./axios-client";
+// import { useAuthAxios } from "./axios-client";
 
 // Fetch event information
 export const getEventInfo = async (eventId: string): Promise<EventType> => {

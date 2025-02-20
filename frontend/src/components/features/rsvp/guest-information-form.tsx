@@ -30,6 +30,7 @@ import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+// import { useAuth } from "@clerk/clerk-react";
 
 const formSchema = z.object({
   status: z.enum(["ACCEPT", "DECLINE"]),
@@ -75,7 +76,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   });
 
   const params = useParams();
-  const { isLoaded, isSignedIn } = useAuth();
+  // const { isLoaded, isSignedIn } = useAuth();
   const [family, setFamily] = useState<
     { id: string; profileImageUrl: string; name: string }[]
   >([]);
@@ -104,13 +105,13 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
     };
 
     fetchUserInfo();
-  }, []);
+  }, [form]);
 
   const onSubmit = async (data: FormValues) => {
     try {
-      if (isLoaded && !isSignedIn) {
-        return
-      }
+      // if (isLoaded && !isSignedIn) {
+      //   return
+      // }
 
       const id = params?.eventId;
       const postData: ResponseType = {
@@ -242,6 +243,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                   </div>
                 ))}
               </div>
+              {/* If the user is logged in, they can select companions from their family. */}
               {family.length > 0 && (
                 <FormField
                   control={form.control}
