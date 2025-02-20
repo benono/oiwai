@@ -1,15 +1,14 @@
 export type ResponseType = {
-  response: {
     status: "ACCEPT" | "DECLINE",
     restriction: string,
     guest: {
       name: string,
-      email: string
+      email: string,
     },
     companions: { name: string }[],
-    message: string,
+    message: strin,
     termsAccepted: boolean,
     updateUserInfo: boolean,
-    updateFamilyInfo: boolean
+    updateFamilyInfo: boolean,
   }
-}
+

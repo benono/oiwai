@@ -21,13 +21,17 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea"
 import { getUserInfo } from "@/lib/api/user";
+import { ResponseType } from "@/types/response"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Image from "next/image"
+import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 const formSchema = z.object({
+  status: z.enum(["ACCEPT", "DECLINE"]),
+  restriction: z.string().optional(),
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
@@ -41,7 +45,10 @@ const formSchema = z.object({
     }),
   restrictions: z.string().optional(),
   message: z.string().optional(),
-  companion: z.string().optional(),
+  companions: z.array(z.string()).optional(),
+  termsAccepted: z.boolean(),
+  updateUserInfo: z.boolean(),
+  updateFamilyInfo: z.boolean(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -50,14 +57,19 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      status: "ACCEPT",
+      restriction: "",
       name: "",
       email: "",
-      restrictions: "",
       message: "",
-      companion: "",
+      companions: [],
+      termsAccepted: false,
+      updateUserInfo: false,
+      updateFamilyInfo: false,
     },
   });
 
+  const params = useParams();
   const [family, setFamily] = useState<
     { id: string; profileImageUrl: string; name: string }[]
   >([]);
@@ -78,9 +90,41 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
     fetchUserInfo();
   }, []);
 
-  const onSubmit = (data: FormValues) => {
-    console.log({ ...data, companions });
-    alert("Form submitted successfully!");
+  const onSubmit = async (data: FormValues) => {
+    try {
+      // TODO ログイン済みか確認
+      const id = params?.eventId;
+
+      const postData: ResponseType = {
+        status: data.status,
+        restriction: data.restriction || "",
+        guest: {
+          name: data.name,
+          email: data.email,
+        },
+        companions: companions.map((companionName) => ({
+          name: companionName,
+        })),
+        message: data.message || "",
+        termsAccepted: termsAccepted,
+        updateUserInfo: data.updateUserInfo,
+        updateFamilyInfo: data.updateFamilyInfo,
+      };
+
+      console.log("Sending data:", postData);
+
+      const response = await axios.post(`/event/${id}/rsvp-form`, postData);
+      const { success, message } = response.data;
+
+      if (success) {
+        alert("Form submitted successfully!");
+      } else {
+        alert(`Error: ${message}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to submit form");
+    }
   };
 
   const handleCompanionSelectChange = (selectedValue: string) => {

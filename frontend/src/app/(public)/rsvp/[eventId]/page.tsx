@@ -1,10 +1,10 @@
 import EventInformation from "@/components/features/rsvp/event-information"
 import RsvpForm from "@/components/features/rsvp/rsvp-form"
 
-const RSVP = () => {
+const RSVP = ({ params }: { params: { id: string } }) => {
   return (
-    <section className="w-full h-full max-w-screen-sm mx-auto bg-red-200">
-      <EventInformation />
+    <section className="mx-auto h-full w-full max-w-[375px] bg-red-200">
+      <EventInformation id={params.id} />
       <RsvpForm />
     </section>
   )
