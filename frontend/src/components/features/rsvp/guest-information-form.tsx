@@ -221,6 +221,35 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
               </div>
             </div>
           )}
+          {selection === "accept" && (
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-bold">
+                  Allergies or dietary restrictions
+                </h3>
+                <p className="text-sm">
+                  If you have any allergies or dietary restrictions, please let
+                  us know.
+                </p>
+              </div>
+              <FormField
+                control={form.control}
+                name="restriction"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl className="bg-white px-4 py-3">
+                      <Textarea
+                        placeholder="Enter your note"
+                        {...field}
+                        className="h-28 font-medium text-textSub"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
           <div className="space-y-4">
             <h3 className="text-lg font-bold">Message to the host</h3>
             <FormField
