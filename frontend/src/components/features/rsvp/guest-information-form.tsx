@@ -22,7 +22,9 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { getUserInfo } from "@/lib/api/user";
 import { ResponseType } from "@/types/response"
+import { useAuth } from "@clerk/clerk-react";
 import { zodResolver } from "@hookform/resolvers/zod"
+import axios from "axios"
 import Image from "next/image"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -69,6 +71,7 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
   });
 
   const params = useParams();
+  const { isLoaded, isSignedIn } = useAuth();
   const [family, setFamily] = useState<
     { id: string; profileImageUrl: string; name: string }[]
   >([]);
@@ -79,6 +82,10 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
   );
 
   useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      return;
+    }
+
     const fetchUserInfo = async () => {
       const response = await getUserInfo();
       form.setValue("name", response.user.name);
@@ -91,9 +98,11 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      // TODO ログイン済みか確認
-      const id = params?.eventId;
+      if (isLoaded && !isSignedIn) {
+        return
+      }
 
+      const id = params?.eventId;
       const postData: ResponseType = {
         status: data.status,
         restriction: data.restriction || "",
@@ -110,8 +119,6 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
         updateFamilyInfo: data.updateFamilyInfo,
       };
 
-      console.log("Sending data:", postData);
-
       const response = await axios.post(`/event/${id}/rsvp-form`, postData);
       const { success, message } = response.data;
 
@@ -121,7 +128,6 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
         alert(`Error: ${message}`);
       }
     } catch (err) {
-      console.error(err);
       alert("Failed to submit form");
     }
   };
