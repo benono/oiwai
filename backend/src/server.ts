@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import usersRouter from './routes/user.routes'
+import rsvpRouter from './routes/rsvp.routes'
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use(clerkMiddleware());
 
 // Routes
 app.use('/api/users', usersRouter)
+app.use('/api/v1', rsvpRouter)
 
 
 // Start server
