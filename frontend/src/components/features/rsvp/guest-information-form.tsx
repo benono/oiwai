@@ -54,7 +54,11 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const GuestInformationForm = ({ selection }: { selection: string }) => {
+type GuestInformationFormProps = {
+  selection: ResponseType["status"];
+};
+
+const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -195,7 +199,7 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
               )}
             />
           </div>
-          {selection === "accept" && (
+          {selection === "ACCEPT" && (
             <div className="space-y-4">
               <h3 className="text-lg font-bold">Companion</h3>
               <div className="mt-4">
@@ -287,7 +291,7 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
               </div>
             </div>
           )}
-          {selection === "accept" && (
+          {selection === "ACCEPT" && (
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-bold">
@@ -318,7 +322,7 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
           )}
           <div className="space-y-4">
             <h3
-              className={`text-lg font-bold ${selection !== "accept" ? "text-sm" : ""}`}
+              className={`text-lg font-bold ${selection !== "ACCEPT" ? "text-sm" : ""}`}
             >
               Message to the host
             </h3>

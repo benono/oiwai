@@ -1,34 +1,35 @@
-'use client'
+"use client";
 
+import { ResponseType } from "@/types/response";
 import { useState } from "react";
 import GuestInformationForm from "./guest-information-form";
 import RsvpButton from "./rsvp-button";
 
 const RsvpForm = () => {
-  const [selection, setSelection] = useState('accept');
+  const [selection, setSelection] = useState<ResponseType["status"]>("ACCEPT");
 
-  const handleSelect = (value: string) => {
+  const handleSelect = (value: ResponseType["status"]) => {
     setSelection(value);
   };
 
   return (
-    <div className="px-4 space-y-2 mt-8">
-      <h2 className="font-bold text-lg">RSVP</h2>
-      <div className="flex justify-between gap-2 w-full border border-textBorder rounded-lg p-2 bg-white">
+    <div className="mt-8 space-y-2 px-4">
+      <h2 className="text-lg font-bold">RSVP</h2>
+      <div className="flex w-full justify-between gap-2 rounded-lg border border-textBorder bg-white p-2">
         <RsvpButton
           label="Accept"
-          value="accept"
+          value="ACCEPT"
           selection={selection}
           onClick={handleSelect}
         />
         <RsvpButton
           label="Decline"
-          value="decline"
+          value="DECLINE"
           selection={selection}
           onClick={handleSelect}
         />
       </div>
-      <GuestInformationForm selection={selection}/>
+      <GuestInformationForm selection={selection} />
     </div>
   );
 };

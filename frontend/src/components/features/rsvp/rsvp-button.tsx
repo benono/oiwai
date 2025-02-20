@@ -1,21 +1,23 @@
-type RsvpButtonType = {
+import { ResponseType } from "@/types/response";
+
+type RsvpButtonProps = {
   label: string;
-  value: string;
+  value: "ACCEPT" | "DECLINE";
   selection: string;
-  onClick: (value: string) => void;
+  onClick: (value: ResponseType["status"]) => void;
 };
 
-const RsvpButton = ({ label, value, selection, onClick }: RsvpButtonType) => {
+const RsvpButton = ({ label, value, selection, onClick }: RsvpButtonProps) => {
   return (
     <button
       type="button"
-      className={`p-4 flex-1 rounded-lg font-bold transition-all duration-300
-        ${selection === value
-          ? value === 'accept'
-            ? 'bg-primary text-white transform scale-100 border-2 border-white/50'
-            : 'bg-textSub text-white transform scale-100 border-2 border-white/50'
-          : 'bg-white text-black transform scale-95 border-2 border-transparent'}
-        box-border`}
+      className={`flex-1 rounded-lg p-4 font-bold transition-all duration-300 ${
+        selection === value
+          ? value === "ACCEPT"
+            ? "scale-100 transform border-2 border-white/50 bg-primary text-white"
+            : "scale-100 transform border-2 border-white/50 bg-textSub text-white"
+          : "scale-95 transform border-2 border-transparent bg-white text-black"
+      } box-border`}
       onClick={() => onClick(value)}
     >
       {label}
