@@ -43,7 +43,6 @@ const formSchema = z.object({
     .min(2, {
       message: "Email must be at least 2 characters.",
     }),
-  restrictions: z.string().optional(),
   message: z.string().optional(),
   companions: z.array(z.string()).optional(),
   termsAccepted: z.boolean(),
@@ -162,7 +161,7 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
                     <Input
                       placeholder="Enter your name"
                       {...field}
-                      className="font-medium text-textSub"
+                      className="font-medium text-text"
                     />
                   </FormControl>
                   <FormMessage />
@@ -182,7 +181,7 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
                       type="email"
                       placeholder="Enter your email address"
                       {...field}
-                      className="font-medium text-textSub"
+                      className="text-te font-medium"
                     />
                   </FormControl>
                   <FormMessage />
@@ -190,13 +189,12 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
               )}
             />
           </div>
-
           {selection === "accept" && (
             <div className="space-y-4">
               <h3 className="text-lg font-bold">Companion</h3>
               <div className="mt-4">
                 {companions.map((companion, index) => (
-                  <div key={index} className="mt-2">
+                  <div key={index} className="mt-2 flex items-center space-x-2">
                     <Input
                       value={companion}
                       onChange={(e) => {
@@ -205,18 +203,31 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
                       }}
                       className="mt-2 bg-white px-4 py-5 font-semibold"
                     />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updatedCompanions = companions.filter(
+                          (companion) => companion !== companions[index],
+                        );
+                        setCompanions(updatedCompanions);
+                      }}
+                      className="text-red-500"
+                    >
+                      Delete
+                    </button>
                   </div>
                 ))}
               </div>
               {family.length > 0 && (
                 <FormField
                   control={form.control}
-                  name="companion"
+                  name="companions"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl className="w-full rounded-md bg-white px-4 py-5">
                         <Select
                           {...field}
+                          value={undefined}
                           onValueChange={handleCompanionSelectChange}
                         >
                           <SelectTrigger className="w-full bg-white px-4 py-5 text-sm font-medium text-textSub">
@@ -238,7 +249,6 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
                   )}
                 />
               )}
-
               <div className="mt-4 space-y-2">
                 <label className="pt-4 text-sm font-bold">
                   Companion name
@@ -295,7 +305,11 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
             </div>
           )}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold">Message to the host</h3>
+            <h3
+              className={`text-lg font-bold ${selection !== "accept" ? "text-sm" : ""}`}
+            >
+              Message to the host
+            </h3>
             <FormField
               control={form.control}
               name="message"
