@@ -10,16 +10,22 @@ import {
   FormMessage
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea"
+import { getUserInfo } from "@/lib/api/user";
 import { zodResolver } from "@hookform/resolvers/zod"
 import Image from "next/image"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { useState } from "react"
-
-type GuestInformationFormType = {
-  selection: string
-}
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -35,11 +41,12 @@ const formSchema = z.object({
     }),
   restrictions: z.string().optional(),
   message: z.string().optional(),
-})
+  companion: z.string().optional(),
+});
 
 type FormValues = z.infer<typeof formSchema>;
 
-const GuestInformationForm = ({ selection }: GuestInformationFormType) => {
+const GuestInformationForm = ({ selection }: { selection: string }) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,28 +54,43 @@ const GuestInformationForm = ({ selection }: GuestInformationFormType) => {
       email: "",
       restrictions: "",
       message: "",
+      companion: "",
     },
   });
 
+  const [family, setFamily] = useState<
+    { id: string; profileImageUrl: string; name: string }[]
+  >([]);
   const [companions, setCompanions] = useState<string[]>([]);
   const [newCompanionName, setNewCompanionName] = useState<string>("");
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const response = await getUserInfo();
+      form.setValue("name", response.user.name);
+      form.setValue("email", response.user.email);
+      setFamily(response.user.family);
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  const onSubmit = (data: FormValues) => {
+    console.log({ ...data, companions });
+    alert("Form submitted successfully!");
+  };
+
+  const handleCompanionSelectChange = (selectedValue: string) => {
+    if (selectedValue && !companions.includes(selectedValue)) {
+      setCompanions([...companions, selectedValue]);
+    }
+  };
 
   const addCompanion = () => {
     if (newCompanionName.trim() === "") return;
     setCompanions([...companions, newCompanionName]);
     setNewCompanionName("");
   };
-
-  const handleCompanionChange = (index: number, newName: string) => {
-    const updatedCompanions = [...companions];
-    updatedCompanions[index] = newName;
-    setCompanions(updatedCompanions);
-  };
-
-  const onSubmit = (data: FormValues) => {
-    console.log({ ...data, companions });
-    alert("Form submitted successfully!");
-  }
 
   return (
     <div>
@@ -116,21 +138,55 @@ const GuestInformationForm = ({ selection }: GuestInformationFormType) => {
               )}
             />
           </div>
-          {/* Only attendees can see the companion and restrictions. */}
+
           {selection === "accept" && (
             <div className="space-y-4">
               <h3 className="text-lg font-bold">Companion</h3>
-              {companions.map((companion, index) => (
-                <div key={index} className="space-y-2">
-                  <Input
-                    value={companion}
-                    onChange={(e) =>
-                      handleCompanionChange(index, e.target.value)
-                    }
-                    className="bg-white px-4 py-5 font-semibold"
-                  />
-                </div>
-              ))}
+              <div className="mt-4">
+                {companions.map((companion, index) => (
+                  <div key={index} className="mt-2">
+                    <Input
+                      value={companion}
+                      onChange={(e) => {
+                        companions[index] = e.target.value;
+                        setCompanions([...companions]);
+                      }}
+                      className="mt-2 bg-white px-4 py-5 font-semibold"
+                    />
+                  </div>
+                ))}
+              </div>
+              {family.length > 0 && (
+                <FormField
+                  control={form.control}
+                  name="companion"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl className="w-full rounded-md bg-white px-4 py-5">
+                        <Select
+                          {...field}
+                          onValueChange={handleCompanionSelectChange}
+                        >
+                          <SelectTrigger className="w-full bg-white px-4 py-5 text-sm font-medium text-textSub">
+                            <SelectValue placeholder="Select from your family" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Companion</SelectLabel>{" "}
+                              {family.map((companion, index) => (
+                                <SelectItem key={index} value={companion.name}>
+                                  {companion.name}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              )}
+
               <div className="mt-4 space-y-2">
                 <label className="pt-4 text-sm font-bold">
                   Companion name
@@ -157,39 +213,8 @@ const GuestInformationForm = ({ selection }: GuestInformationFormType) => {
               </div>
             </div>
           )}
-          {selection === "accept" && (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <h3 className="text-lg font-bold">
-                  Allergies or dietary restrictions
-                </h3>
-                <p className="text-sm font-medium">
-                  If you have any allergies or dietary restrictions, please let
-                  us know.
-                </p>
-              </div>
-              <FormField
-                control={form.control}
-                name="restrictions"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl className="bg-white px-4 py-3">
-                      <Textarea
-                        placeholder="Enter your note"
-                        {...field}
-                        className="h-28 font-medium text-textSub"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          )}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold">
-              Message to the host
-            </h3>
+            <h3 className="text-lg font-bold">Message to the host</h3>
             <FormField
               control={form.control}
               name="message"
