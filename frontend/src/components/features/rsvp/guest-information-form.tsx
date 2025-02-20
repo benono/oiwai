@@ -213,7 +213,13 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
                       }}
                       className="text-red-500"
                     >
-                      Delete
+                      <Image
+                        src="/delete.svg"
+                        width={200}
+                        height={200}
+                        alt="delete icon"
+                        className="w-full"
+                      />
                     </button>
                   </div>
                 ))}
@@ -329,15 +335,31 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
           </div>
           {form.formState.errors.email === undefined &&
             form.getValues("email") && (
-              <div className="space-y-2">
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={handleAgreeClick}
-                  className={`rounded-full px-4 py-2 font-bold text-white ${form.getValues("termsAccepted") ? "bg-green-500" : "bg-red-500"}`}
+                  className="rounded-full font-bold text-white"
                 >
-                  {form.getValues("termsAccepted") ? "Unagree" : "Agree"}
+                  {form.getValues("termsAccepted") ? (
+                    <Image
+                      src="/checked.svg"
+                      width={16}
+                      height={16}
+                      alt="icon for add unchecked"
+                    />
+                  ) : (
+                    <Image
+                      src="/unchecked.svg"
+                      width={16}
+                      height={16}
+                      alt="icon for add checked"
+                    />
+                  )}
                 </button>
-                <span>I agree with the Terms and Conditions.</span>
+                <span className="text-sm">
+                  I agree with the Terms and Conditions.
+                </span>
               </div>
             )}
           <Button
