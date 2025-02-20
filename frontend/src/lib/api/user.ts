@@ -8,24 +8,22 @@ export const getUserInfo = async (): Promise<UserType> => {
 
     return {
       // Dummy data
-      user: {
-        id: "12345",
-        name: "John Doe",
-        profileImageUrl: "https://example.com/profile.jpg",
-        email: "johndoe@example.com",
-        family: [
-          {
-            id: "67890",
-            profileImageUrl: "https://example.com/family_member.jpg",
-            name: "Jane Doe",
-          },
-          {
-            id: "11223",
-            profileImageUrl: "https://example.com/family_member_2.jpg",
-            name: "Sam Doe",
-          },
-        ],
-      },
+      id: "12345",
+      name: "John Doe",
+      profileImageUrl: "https://example.com/profile.jpg",
+      email: "johndoe@example.com",
+      family: [
+        {
+          id: "67890",
+          profileImageUrl: "https://example.com/family_member.jpg",
+          name: "Jane Doe",
+        },
+        {
+          id: "11223",
+          profileImageUrl: "https://example.com/family_member_2.jpg",
+          name: "Sam Doe",
+        },
+      ],
     };
   } catch (err) {
     throw new Error("User not found");
