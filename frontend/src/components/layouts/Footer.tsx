@@ -24,7 +24,7 @@ export default function Footer() {
               className="flex items-center gap-1 hover:opacity-70"
               target="_blank"
             >
-              <Image src="/images/LI-In-Bug.png" alt="LinkedIn" width={20} height={20} />
+              <Image src="/images/linkedin_logo.png" alt="LinkedIn" width={20} height={20} />
               <p className="text-text text-sm">Risa</p>
             </Link>
             <Link
@@ -32,7 +32,7 @@ export default function Footer() {
               className="flex items-center gap-1 hover:opacity-70"
               target="_blank"
             >
-              <Image src="/images/LI-In-Bug.png" alt="LinkedIn" width={20} height={20} />
+              <Image src="/images/linkedin_logo.png" alt="LinkedIn" width={20} height={20} />
               <p className="text-text text-sm">Ben</p>
             </Link>
             <Link
@@ -40,7 +40,7 @@ export default function Footer() {
               className="flex items-center gap-1 hover:opacity-70"
               target="_blank"
             >
-              <Image src="/images/LI-In-Bug.png" alt="LinkedIn" width={20} height={20} />
+              <Image src="/images/linkedin_logo.png" alt="LinkedIn" width={20} height={20} />
               <p className="text-text text-sm">Nao</p>
             </Link>
             <Link
@@ -48,7 +48,7 @@ export default function Footer() {
               className="flex items-center gap-1 hover:opacity-70"
               target="_blank"
             >
-              <Image src="/images/LI-In-Bug.png" alt="LinkedIn" width={20} height={20} />
+              <Image src="/images/linkedin_logo.png" alt="LinkedIn" width={20} height={20} />
               <p className="text-text text-sm">Haruka</p>
             </Link>
           </div>

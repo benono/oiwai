@@ -4,8 +4,8 @@ import Image from "next/image";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import Footer from "@/components/layouts/Footer";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import Footer from "@/components/layouts/footer";
 
 const lato = Lato({
   weight: ["100", "300", "400", "700", "900"],

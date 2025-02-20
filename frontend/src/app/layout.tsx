@@ -1,4 +1,4 @@
-import Header from "@/components/layouts/Header";
+import Header from "@/components/layouts/header";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
