@@ -25,7 +25,7 @@ import { RsvpResponseType } from "@/types/rsvp-response";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -77,6 +77,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   });
 
   const params = useParams();
+  const router = useRouter();
   // const { isLoaded, isSignedIn } = useAuth();
   const [family, setFamily] = useState<
     { id: string; profileImageUrl: string; name: string }[]
@@ -161,13 +162,11 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
       };
 
       const response = await axios.post(`/event/${id}/rsvp-form`, postData);
-      const { success, message } = response.data;
 
-      if (success) {
-        alert("Form submitted successfully!");
-      } else {
-        alert(`Error: ${message}`);
+      if (response.status !== 200) {
+        throw new Error();
       }
+      router.push(`/rsvp/${id}/submitted`);
     } catch (err) {
       alert("Failed to submit form"); // TODO: use toast
     }
