@@ -44,21 +44,21 @@ const EventInformation = async ({ id }: EventInformationProps) => {
   return (
     <section className="w-full space-y-4">
       <Image
-        src={response.event.thumbnail}
+        src={response.thumbnail}
         width={200}
         height={200}
         alt="thumbnail"
         className="w-full"
       />
       <div className="space-y-2 px-4">
-        <h1 className="text-2xl font-bold">{response.event.title}</h1>
+        <h1 className="text-2xl font-bold">{response.title}</h1>
         <div>
           <p className="font-semibold">
-            {formatDateTime(response.event.startTime, dateFormatOptions)}
+            {formatDateTime(response.startTime, dateFormatOptions)}
           </p>
           <p className="text-sm font-medium">
-            {formatDateTime(response.event.startTime, timeFormatOptions)} -
-            {formatDateTime(response.event.endTime, timeFormatOptions)}
+            {formatDateTime(response.startTime, timeFormatOptions)} -
+            {formatDateTime(response.endTime, timeFormatOptions)}
           </p>
         </div>
       </div>

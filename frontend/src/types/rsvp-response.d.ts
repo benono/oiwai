@@ -1,4 +1,4 @@
-export type ResponseType = {
+export type RsvpResponseType = {
   status: "ACCEPT" | "DECLINE";
   restriction: string;
   guest: {

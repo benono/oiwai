@@ -1,14 +1,15 @@
 "use client";
 
-import { ResponseType } from "@/types/response";
+import { RsvpResponseType } from "@/types/rsvp-response";
 import { useState } from "react";
 import GuestInformationForm from "./guest-information-form";
 import RsvpButton from "./rsvp-button";
 
 const RsvpForm = () => {
-  const [selection, setSelection] = useState<ResponseType["status"]>("ACCEPT");
+  const [selection, setSelection] =
+    useState<RsvpResponseType["status"]>("ACCEPT");
 
-  const handleSelect = (value: ResponseType["status"]) => {
+  const handleSelect = (value: RsvpResponseType["status"]) => {
     setSelection(value);
   };
 

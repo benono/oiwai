@@ -1,10 +1,10 @@
-import { ResponseType } from "@/types/response";
+import { RsvpResponseType } from "@/types/rsvp-response";
 
 type RsvpButtonProps = {
   label: string;
   value: "ACCEPT" | "DECLINE";
   selection: string;
-  onClick: (value: ResponseType["status"]) => void;
+  onClick: (value: RsvpResponseType["status"]) => void;
 };
 
 const RsvpButton = ({ label, value, selection, onClick }: RsvpButtonProps) => {

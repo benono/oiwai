@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { getUserInfo } from "@/lib/api/user";
-import { ResponseType } from "@/types/response";
+import { RsvpResponseType } from "@/types/rsvp-response";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Image from "next/image";
@@ -57,7 +57,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 type GuestInformationFormProps = {
-  selection: ResponseType["status"];
+  selection: RsvpResponseType["status"];
 };
 
 const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
@@ -100,13 +100,14 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
 
       try {
         const response = await getUserInfo();
-        setInitialName(response.user.name);
+        setInitialName(response.name);
         setIsEmailFetched(true);
-        form.setValue("name", response.user.name);
-        form.setValue("email", response.user.email);
-        setFamily(response.user.family);
+        form.setValue("name", response.name);
+        form.setValue("email", response.email);
+        setFamily(response.family);
+
         // Initialize companions list
-        const initialCompanionNames = response.user.family.map(
+        const initialCompanionNames = response.family.map(
           (companion) => companion.name,
         );
         setInitialCompanions(initialCompanionNames);
@@ -143,7 +144,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
       // }
 
       const id = params?.eventId;
-      const postData: ResponseType = {
+      const postData: RsvpResponseType = {
         status: data.status,
         restriction: data.restriction || "",
         guest: {
