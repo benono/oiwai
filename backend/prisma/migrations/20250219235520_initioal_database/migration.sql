@@ -44,11 +44,14 @@ CREATE TABLE "events" (
 
 -- CreateTable
 CREATE TABLE "event_participants" (
+    "id" SERIAL NOT NULL,
     "event_id" INTEGER NOT NULL,
     "user_id" INTEGER NOT NULL,
-    "user_family_id" INTEGER NOT NULL,
+    "user_family_id" INTEGER,
     "is_accepted" BOOLEAN NOT NULL,
-    "is_attended" BOOLEAN NOT NULL
+    "is_attended" BOOLEAN NOT NULL,
+
+    CONSTRAINT "event_participants_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -124,7 +127,7 @@ ALTER TABLE "event_participants" ADD CONSTRAINT "event_participants_event_id_fke
 ALTER TABLE "event_participants" ADD CONSTRAINT "event_participants_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "event_participants" ADD CONSTRAINT "event_participants_user_family_id_fkey" FOREIGN KEY ("user_family_id") REFERENCES "user_families"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "event_participants" ADD CONSTRAINT "event_participants_user_family_id_fkey" FOREIGN KEY ("user_family_id") REFERENCES "user_families"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "participant_restrictions" ADD CONSTRAINT "participant_restrictions_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

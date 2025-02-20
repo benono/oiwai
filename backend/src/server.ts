@@ -8,9 +8,12 @@ dotenv.config();
 
 const app = express();
 
+app.use(express.json());
+
+const CLIENT_PORT = process.env.CLIENT_PORT || 8080
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: [`http://localhost:${CLIENT_PORT}`],
     credentials: true,
   }),
 );
@@ -23,7 +26,7 @@ app.use('/api/users', usersRouter)
 
 
 // Start server
-const PORT = process.env.PORT || 8080
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}...`)
+const SERVER_PORT = process.env.SERVER_PORT || 8080
+app.listen(SERVER_PORT, () => {
+  console.log(`Server is running on port ${SERVER_PORT}...`)
 })

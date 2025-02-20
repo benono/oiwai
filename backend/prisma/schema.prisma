@@ -72,12 +72,13 @@ model Events {
 }
 
 model EventParticipants {
+  id        Int      @id @default(autoincrement())
   event       Events @relation(fields: [eventId], references: [id])
   eventId     Int    @map("event_id")
   user       Users @relation(fields: [userId], references: [id])
   userId  Int    @map("user_id")
-  userFamilies       UserFamilies @relation(fields: [userFamilyId], references: [id])
-  userFamilyId     Int    @map("user_family_id")
+  userFamilies     UserFamilies? @relation(fields: [userFamilyId], references: [id])
+  userFamilyId     Int?    @map("user_family_id")
   isAccepted Boolean    @map("is_accepted")
   isAttended Boolean    @map("is_attended")
   
