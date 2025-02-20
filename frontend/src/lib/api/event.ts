@@ -1,10 +1,11 @@
 import { EventType } from "@/types/event";
+import { useAuthAxios } from "./axios-client";
 
 // Fetch event information
 export const getEventInfo = async (eventId: string): Promise<EventType> => {
   try {
-    // const axiosInstance = await getServerAxiosInstance();
-    // const response = await axiosInstance.fetch(`events/${eventId}`);
+    // const axios = useAuthAxios();
+    // const response = await axios.get(`events/${eventId}`);
 
     return {
       // Dummy Data
@@ -17,6 +18,6 @@ export const getEventInfo = async (eventId: string): Promise<EventType> => {
       },
     };
   } catch (err) {
-    alert(err); // TODO: use toast
+    throw new Error("Event not found");
   }
 };

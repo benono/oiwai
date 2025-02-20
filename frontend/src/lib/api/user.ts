@@ -3,8 +3,8 @@ import { UserType } from "@/types/user";
 // Fetch user information
 export const getUserInfo = async (): Promise<UserType> => {
   try {
-    // const axiosInstance = await getServerAxiosInstance();
-    // const response = await axiosInstance.fetch('/me');
+    // const axios = useAuthAxios();
+    // const response = await axios.get('/me');
 
     return {
       // Dummy data
@@ -28,15 +28,6 @@ export const getUserInfo = async (): Promise<UserType> => {
       },
     };
   } catch (err) {
-    alert(err); // TODO: use toast
-    return {
-      user: {
-        id: "",
-        name: "",
-        profileImageUrl: "",
-        email: "",
-        family: [],
-      },
-    };
+    throw new Error("User not found");
   }
 };

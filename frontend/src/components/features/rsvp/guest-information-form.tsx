@@ -86,15 +86,21 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   );
 
   useEffect(() => {
-    if (isLoaded && !isSignedIn) {
-      return;
-    }
-
     const fetchUserInfo = async () => {
-      const response = await getUserInfo();
-      form.setValue("name", response.user.name);
-      form.setValue("email", response.user.email);
-      setFamily(response.user.family);
+      // const { isLoaded, isSignedIn } = useAuth();
+
+      // if (isLoaded && !isSignedIn) {
+      //   return;
+      // }
+
+      try {
+        const response = await getUserInfo();
+        form.setValue("name", response.user.name);
+        form.setValue("email", response.user.email);
+        setFamily(response.user.family);
+      } catch (err) {
+        alert(err); // TODO: use toast
+      }
     };
 
     fetchUserInfo();
@@ -132,19 +138,15 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
         alert(`Error: ${message}`);
       }
     } catch (err) {
-      alert("Failed to submit form");
+      alert("Failed to submit form"); // TODO: use toast
     }
   };
 
+  // Companion
   const handleCompanionSelectChange = (selectedValue: string) => {
     if (selectedValue && !companions.includes(selectedValue)) {
       setCompanions([...companions, selectedValue]);
     }
-  };
-
-  const handleAgreeClick = () => {
-    setTermsAccepted(!termsAccepted);
-    form.setValue("termsAccepted", !termsAccepted);
   };
 
   const addCompanion = () => {
@@ -153,11 +155,17 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
     setNewCompanionName("");
   };
 
+  // Terms 
+  const handleAgreeClick = () => {
+    setTermsAccepted(!termsAccepted);
+    form.setValue("termsAccepted", !termsAccepted);
+  };
+
   return (
     <div>
       <h2 className="mb-4 mt-12 text-xl font-bold">Your Information</h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mb-6">
           <div className="space-y-6">
             <FormField
               control={form.control}
