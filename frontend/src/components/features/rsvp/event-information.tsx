@@ -1,49 +1,58 @@
 import { getEventInfo } from "@/lib/api/event";
 import { EventType } from "@/types/event";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 
-const EventInformation = async() => {
-  const response = await getEventInfo('1')
+type EventInformationProps = {
+  id: string;
+};
 
-const formatDate = (response:EventType): string => {
-  return new Intl.DateTimeFormat("en-US", {
+const formatDateTime = (
+  date: Date,
+  options: Intl.DateTimeFormatOptions,
+): string => {
+  return new Intl.DateTimeFormat("en-US", options).format(date);
+};
+
+const EventInformation = async ({ id }: EventInformationProps) => {
+  const response = await getEventInfo(id);
+
+  if (!response) {
+    notFound();
+  }
+
+  const event = response as EventType;
+
+  const dateFormatOptions: Intl.DateTimeFormatOptions = {
     weekday: "long",
     month: "long",
     day: "numeric",
-  }).format(response.event.startTime);
-};
+  };
 
-const formatStartTime = (response: EventType): string => {
-  return new Intl.DateTimeFormat("en-US", {
+  const timeFormatOptions: Intl.DateTimeFormatOptions = {
     hour: "numeric",
     minute: "numeric",
     hour12: true,
-  }).format(response.event.startTime);
-};
-
-const formatEndTime = (response: EventType): string => {
-  return new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  }).format(response.event.startTime);
-};
+  };
 
   return (
     <section className="w-full space-y-4">
       <Image
-        src={response.event.thumbnail}
+        src={event.event.thumbnail}
         width={200}
         height={200}
         alt="thumbnail"
         className="w-full"
       />
       <div className="space-y-2 px-4">
-        <h1 className="text-2xl font-bold">{response.event.title}</h1>
+        <h1 className="text-2xl font-bold">{event.event.title}</h1>
         <div>
-          <p className="font-semibold">{formatDate(response)}</p>
+          <p className="font-semibold">
+            {formatDateTime(event.event.startTime, dateFormatOptions)}
+          </p>
           <p className="text-sm font-medium">
-            {formatStartTime(response)} -{formatEndTime(response)}
+            {formatDateTime(event.event.startTime, timeFormatOptions)} - 
+            {formatDateTime(event.event.endTime, timeFormatOptions)}
           </p>
         </div>
       </div>
