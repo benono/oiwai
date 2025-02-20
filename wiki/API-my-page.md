@@ -14,10 +14,21 @@ Retrieves logged-in user's events information.
   "events": [
     {
       "id": "string",
-      "title": "string",
-      "thumbnailUrl": "string",
-      "startTime": "datetime",
-      "endTime": "datetime"
+    "hostId": "string",
+    "title": "string",
+    "thumbnailUrl": "string",
+    "startTime": "datetime",
+    "endTime": "datetime",
+    "country": "string",
+    "postalCode": "string",
+    "province": "string",
+    "city": "string",
+    "address1": "string",
+    "address2": "string",
+    "isAskRestriction": boolean,
+    "theme": "string",
+    "noteForNecessities": "string",
+    "noteForThingsToBuy": "string",
     }
   ]
 }
@@ -39,7 +50,7 @@ Retrieves logged-in user information and family members
     "name": "string",
     "profileImageUrl": "string",
     "email": "string",
-    "family": [
+    "userFamilies": [
       {
         "id": "string",
         "profileImageUrl": "string",
@@ -123,7 +134,7 @@ Content-Type: multipart/form-data
 {
   "success": boolean,
   "message": "string",
-  "family_member": {
+  "familyMember": {
     "id": "string",
     "name": "string",
     "profileImageUrl": "string | null"
@@ -153,7 +164,7 @@ Content-Type: multipart/form-data
 {
   "success": boolean,
   "message": "string",
-  "family_member": {
+  "familyMember": {
     "id": "string",
     "name": "string",
     "profileImageUrl": "string | null"
