@@ -63,6 +63,9 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
   >([]);
   const [companions, setCompanions] = useState<string[]>([]);
   const [newCompanionName, setNewCompanionName] = useState<string>("");
+  const [termsAccepted, setTermsAccepted] = useState(
+    form.getValues("termsAccepted"),
+  );
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -84,6 +87,11 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
     if (selectedValue && !companions.includes(selectedValue)) {
       setCompanions([...companions, selectedValue]);
     }
+  };
+
+  const handleAgreeClick = () => {
+    setTermsAccepted(!termsAccepted);
+    form.setValue("termsAccepted", !termsAccepted);
   };
 
   const addCompanion = () => {
@@ -172,7 +180,7 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              <SelectLabel>Companion</SelectLabel>{" "}
+                              <SelectLabel>Companion</SelectLabel>
                               {family.map((companion, index) => (
                                 <SelectItem key={index} value={companion.name}>
                                   {companion.name}
@@ -235,6 +243,13 @@ const GuestInformationForm = ({ selection }: { selection: string }) => {
           {form.formState.errors.email === undefined &&
             form.getValues("email") && (
               <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={handleAgreeClick}
+                  className={`rounded-full px-4 py-2 font-bold text-white ${form.getValues("termsAccepted") ? "bg-green-500" : "bg-red-500"}`}
+                >
+                  {form.getValues("termsAccepted") ? "Unagree" : "Agree"}
+                </button>
                 <span>I agree with the Terms and Conditions.</span>
               </div>
             )}
