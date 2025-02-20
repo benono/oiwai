@@ -417,6 +417,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                 <FormMessage className="mt-2 text-sm text-red-500" />
               </FormItem>
             )}
+          />
           <Button
             type="submit"
             className="w-full rounded-[40px] py-8 text-lg font-bold"
