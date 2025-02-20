@@ -49,6 +49,7 @@ const EventInformation = async ({ id }: EventInformationProps) => {
         height={200}
         alt="thumbnail"
         className="w-full"
+        priority
       />
       <div className="space-y-2 px-4">
         <h1 className="text-2xl font-bold">{response.title}</h1>
