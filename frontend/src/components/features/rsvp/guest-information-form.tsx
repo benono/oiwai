@@ -87,7 +87,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   );
   const [initialName, setInitialName] = useState<string>("");
   const [isEmailFetched, setIsEmailFetched] = useState(false);
-
+  const [initialCompanions, setInitialCompanions] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -104,6 +104,11 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
         form.setValue("name", response.user.name);
         form.setValue("email", response.user.email);
         setFamily(response.user.family);
+        // Initialize companions list
+        const initialCompanionNames = response.user.family.map(
+          (companion) => companion.name,
+        );
+        setInitialCompanions(initialCompanionNames);
       } catch (err) {
         alert(err); // TODO: use toast
       }
@@ -120,6 +125,15 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
       form.setValue("updateUserInfo", false);
     }
   }, [form.getValues("name"), initialName]);
+
+  // Detect if the companions have been modified
+  useEffect(() => {
+    const isCompanionModified = !companions.every((companion) =>
+      initialCompanions.includes(companion),
+    );
+
+    form.setValue("updateFamilyInfo", isCompanionModified);
+  }, [companions, initialCompanions, form]);
 
   const onSubmit = async (data: FormValues) => {
     try {
