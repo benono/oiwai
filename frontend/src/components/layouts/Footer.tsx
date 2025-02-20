@@ -22,6 +22,7 @@ export default function Footer() {
             <Link
               href="https://www.linkedin.com/in/risa-yamamoto-profile/"
               className="flex items-center gap-1 hover:opacity-70"
+              target="_blank"
             >
               <Image src="/images/LI-In-Bug.png" alt="LinkedIn" width={20} height={20} />
               <p className="text-text text-sm">Risa</p>
@@ -29,6 +30,7 @@ export default function Footer() {
             <Link
               href="https://www.linkedin.com/in/ben-ono-profile/"
               className="flex items-center gap-1 hover:opacity-70"
+              target="_blank"
             >
               <Image src="/images/LI-In-Bug.png" alt="LinkedIn" width={20} height={20} />
               <p className="text-text text-sm">Ben</p>
@@ -36,6 +38,7 @@ export default function Footer() {
             <Link
               href="http://linkedin.com/in/nao-g-55822a2bb"
               className="flex items-center gap-1 hover:opacity-70"
+              target="_blank"
             >
               <Image src="/images/LI-In-Bug.png" alt="LinkedIn" width={20} height={20} />
               <p className="text-text text-sm">Nao</p>
@@ -43,6 +46,7 @@ export default function Footer() {
             <Link
               href="https://www.linkedin.com/in/haruka-kakiuchi-profile/"
               className="flex items-center gap-1 hover:opacity-70"
+              target="_blank"
             >
               <Image src="/images/LI-In-Bug.png" alt="LinkedIn" width={20} height={20} />
               <p className="text-text text-sm">Haruka</p>
