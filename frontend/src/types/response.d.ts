@@ -6,7 +6,7 @@ export type ResponseType = {
       email: string,
     },
     companions: { name: string }[],
-    message: strin,
+    message: string,
     termsAccepted: boolean,
     updateUserInfo: boolean,
     updateFamilyInfo: boolean,
