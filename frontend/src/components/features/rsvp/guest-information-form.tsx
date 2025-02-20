@@ -85,6 +85,9 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const [termsAccepted, setTermsAccepted] = useState(
     form.getValues("termsAccepted"),
   );
+  const [initialName, setInitialName] = useState<string>("");
+  const [isEmailFetched, setIsEmailFetched] = useState(false);
+
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -96,6 +99,8 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
 
       try {
         const response = await getUserInfo();
+        setInitialName(response.user.name);
+        setIsEmailFetched(true);
         form.setValue("name", response.user.name);
         form.setValue("email", response.user.email);
         setFamily(response.user.family);
@@ -106,6 +111,15 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
 
     fetchUserInfo();
   }, [form]);
+
+  // Detect if the name has changed
+  useEffect(() => {
+    if (form.getValues("name") !== initialName) {
+      form.setValue("updateUserInfo", true);
+    } else {
+      form.setValue("updateUserInfo", false);
+    }
+  }, [form.getValues("name"), initialName]);
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -156,7 +170,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
     setNewCompanionName("");
   };
 
-  // Terms 
+  // Terms
   const handleAgreeClick = () => {
     setTermsAccepted(!termsAccepted);
     form.setValue("termsAccepted", !termsAccepted);
@@ -201,6 +215,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                       placeholder="Enter your email address"
                       {...field}
                       className="text-te font-medium"
+                      disabled={isEmailFetched}
                     />
                   </FormControl>
                   <FormMessage />
