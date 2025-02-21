@@ -15,7 +15,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -79,7 +78,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const params = useParams();
   const router = useRouter();
   // const { isLoaded, isSignedIn } = useAuth();
-  const [family, setFamily] = useState<
+  const [familyMembers, setFamilyMembers] = useState<
     { id: string; profileImageUrl: string; name: string }[]
   >([]);
   const [companions, setCompanions] = useState<string[]>([]);
@@ -108,7 +107,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
         setIsEmailFetched(true);
         form.setValue("name", response.name);
         form.setValue("email", response.email);
-        setFamily(response.family);
+        setFamilyMembers(response.family);
 
         // Initialize companions list
         const initialCompanionNames = response.family.map(
@@ -179,6 +178,11 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const handleCompanionSelectChange = (selectedValue: string) => {
     if (selectedValue && !companions.includes(selectedValue)) {
       setCompanions([...companions, selectedValue]);
+
+      setFamilyMembers(
+        familyMembers.filter((member) => member.name !== selectedValue),
+      );
+
       setSelectedFamilyValue("");
     }
   };
@@ -278,7 +282,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                 ))}
               </div>
               {/* If the user is logged in, they can select companions from their family. */}
-              {family.length > 0 && (
+              {familyMembers.length > 0 && (
                 <FormField
                   control={form.control}
                   name="companions"
@@ -295,9 +299,9 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              {family.map((companion, index) => (
-                                <SelectItem key={index} value={companion.name}>
-                                  {companion.name}
+                              {familyMembers.map((member, index) => (
+                                <SelectItem key={index} value={member.name}>
+                                  {member.name}
                                 </SelectItem>
                               ))}
                             </SelectGroup>
