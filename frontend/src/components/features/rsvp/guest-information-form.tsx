@@ -179,6 +179,12 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
     setNewCompanionName("");
   };
 
+  const handleCompanionChange = (index: number, value: string) => {
+    const updatedCompanions = [...companions];
+    updatedCompanions[index] = value;
+    setCompanions(updatedCompanions);
+  };
+
   const handleDeleteFamilyMembers = (companion: string, index: number) => {
     const updatedCompanions = companions.filter(
       (companion) => companion !== companions[index],
@@ -256,10 +262,9 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                   <div key={index} className="mt-2 flex items-center space-x-2">
                     <Input
                       value={companion}
-                      onChange={(e) => {
-                        companions[index] = e.target.value;
-                        setCompanions([...companions]);
-                      }}
+                      onChange={(e) =>
+                        handleCompanionChange(index, e.target.value)
+                      }
                       className="mt-2 bg-white px-4 py-5 font-semibold"
                     />
                     <button
