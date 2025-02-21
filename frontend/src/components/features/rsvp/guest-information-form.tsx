@@ -227,7 +227,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                     <Input
                       placeholder="Enter your name"
                       {...field}
-                      className="font-medium text-text"
+                      className="font-semibold text-text"
                     />
                   </FormControl>
                   <FormMessage />
@@ -247,7 +247,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                       type="email"
                       placeholder="Enter your email address"
                       {...field}
-                      className="text-te font-medium"
+                      className="text-te font-semibold"
                       disabled={isEmailFetched}
                     />
                   </FormControl>
@@ -328,7 +328,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                     value={newCompanionName}
                     onChange={(e) => setNewCompanionName(e.target.value)}
                     placeholder="Enter companion's name"
-                    className="mt-2 bg-white px-4 py-5 font-semibold"
+                    className="mt-2 bg-white px-4 py-5 font-semibold text-textSub placeholder:text-textSub"
                   />
                 </label>
                 <button
@@ -367,7 +367,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                       <Textarea
                         placeholder="Enter your note"
                         {...field}
-                        className="h-28 font-medium text-textSub"
+                        className="h-28 font-semibold text-textSub placeholder:text-textSub"
                       />
                     </FormControl>
                     <FormMessage />
@@ -391,7 +391,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                     <Textarea
                       placeholder="Enter your message"
                       {...field}
-                      className="h-28 font-medium text-textSub"
+                      className="h-28 font-semibold placeholder:text-textSub"
                     />
                   </FormControl>
                   <FormMessage />
