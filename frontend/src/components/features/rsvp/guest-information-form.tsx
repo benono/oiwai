@@ -102,14 +102,16 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
 
       try {
         const response = await getUserInfo();
-        setIsEmailFetched(true);
-        form.setValue("name", response.name);
-        form.setValue("email", response.email);
-        setFamilyMemberOptions(response.userFamilies);
+        const userInformation = response.user;
 
-        // Initialize companions list
-        const registeredFamily = response.userFamilies.map(
-          (companion) => companion.name,
+        form.setValue("name", userInformation.name);
+        form.setValue("email", userInformation.email);
+
+        setFamilyMemberOptions(userInformation.userFamilies);
+        setIsEmailFetched(true);
+
+        const registeredFamily = userInformation.userFamilies.map(
+          (member) => member.name,
         );
 
         setRegisteredFamilyMembers(registeredFamily);

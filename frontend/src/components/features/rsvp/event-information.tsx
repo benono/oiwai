@@ -14,16 +14,17 @@ const formatDateTime = (
 };
 
 const EventInformation = async ({ id }: EventInformationProps) => {
-  let response;
+  let eventData = null;
 
   try {
-    response = await getEventInfo(id);
+    const response = await getEventInfo(id);
+    eventData = response.event;
   } catch (err) {
-    alert(err);
+    console.error(err);
     return null;
   }
 
-  if (!response) {
+  if (!eventData) {
     notFound();
   }
 
@@ -44,7 +45,7 @@ const EventInformation = async ({ id }: EventInformationProps) => {
   return (
     <section className="w-full space-y-4">
       <Image
-        src={response.thumbnailUrl}
+        src={eventData.thumbnailUrl}
         width={200}
         height={200}
         alt="thumbnail"
@@ -52,14 +53,14 @@ const EventInformation = async ({ id }: EventInformationProps) => {
         priority
       />
       <div className="space-y-2 px-4">
-        <h1 className="text-2xl font-bold">{response.title}</h1>
+        <h1 className="text-2xl font-bold">{eventData.title}</h1>
         <div>
           <p className="font-semibold">
-            {formatDateTime(response.startTime, dateFormatOptions)}
+            {formatDateTime(eventData.startTime, dateFormatOptions)}
           </p>
           <p className="text-sm font-medium">
-            {formatDateTime(response.startTime, timeFormatOptions)} -
-            {formatDateTime(response.endTime, timeFormatOptions)}
+            {formatDateTime(eventData.startTime, timeFormatOptions)} -
+            {formatDateTime(eventData.endTime, timeFormatOptions)}
           </p>
         </div>
       </div>
