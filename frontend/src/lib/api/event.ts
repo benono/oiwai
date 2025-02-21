@@ -1,13 +1,13 @@
 import { EventType } from "@/types/event";
-// import { useAuthAxios } from "./axios-client";
+// import { getServerAxiosInstance } from "./axios-server";
 
 // Fetch event information
 export const getEventInfo = async (
   eventId: string,
 ): Promise<{ event: EventType }> => {
   try {
-    // const axios = useAuthAxios();
-    // const response = await axios.get(`events/${eventId}`);
+    // const axiosInstance = await getServerAxiosInstance();
+    // const response = await axiosInstance.get(`events/${eventId}`);
 
     return {
       event: {

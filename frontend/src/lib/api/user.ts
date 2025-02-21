@@ -1,10 +1,11 @@
 import { UserType } from "@/types/user";
+// import { getServerAxiosInstance } from "./axios-server";
 
 // Fetch user information
 export const getUserInfo = async (): Promise<{ user: UserType }> => {
   try {
-    // const axios = useAuthAxios();
-    // const response = await axios.get("/me");
+    // const axiosInstance = await getServerAxiosInstance();
+    // const response = await axiosInstance.get("/me");
 
     return {
       // Dummy data
@@ -28,6 +29,10 @@ export const getUserInfo = async (): Promise<{ user: UserType }> => {
       },
     };
   } catch (err) {
-    throw new Error("User not found");
+    if (err instanceof Error) {
+      throw new Error();
+    } else {
+      throw new Error(String(err));
+    }
   }
 };
