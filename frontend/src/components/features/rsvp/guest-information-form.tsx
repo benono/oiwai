@@ -78,9 +78,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const params = useParams();
   const router = useRouter();
   // const { isLoaded, isSignedIn } = useAuth();
-  const [familyMembers, setFamilyMembers] = useState<
-    { id: string; profileImageUrl: string; name: string }[]
-  >([]);
+  const [familyMembers, setFamilyMembers] = useState<{ name: string }[]>([]);
   const [companions, setCompanions] = useState<string[]>([]);
   const [newCompanionName, setNewCompanionName] = useState<string>("");
   const [termsAccepted, setTermsAccepted] = useState(
@@ -193,6 +191,18 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
     setNewCompanionName("");
   };
 
+  const handleDeleteFamilyMember = (companion: string, index: number) => {
+    const updatedCompanions = companions.filter(
+      (companion) => companion !== companions[index],
+    );
+
+    setCompanions(updatedCompanions);
+
+    if (initialCompanions.includes(companion)) {
+      setFamilyMembers([...familyMembers, { name: companions[index] }]);
+    }
+  };
+
   // Terms
   const handleAgreeClick = () => {
     setTermsAccepted(!termsAccepted);
@@ -262,12 +272,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                     />
                     <button
                       type="button"
-                      onClick={() => {
-                        const updatedCompanions = companions.filter(
-                          (companion) => companion !== companions[index],
-                        );
-                        setCompanions(updatedCompanions);
-                      }}
+                      onClick={() => handleDeleteFamilyMember(companion, index)}
                       className="text-red-500"
                     >
                       <Image
@@ -294,13 +299,17 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                           value={selectedFamilyValue}
                           onValueChange={handleCompanionSelectChange}
                         >
-                          <SelectTrigger className="w-full bg-white px-4 py-5 text-sm font-medium text-textSub">
+                          <SelectTrigger className="w-full bg-white px-4 py-5 text-sm font-semibold text-textSub">
                             <SelectValue placeholder="Select from your family" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
                               {familyMembers.map((member, index) => (
-                                <SelectItem key={index} value={member.name}>
+                                <SelectItem
+                                  key={index}
+                                  value={member.name}
+                                  className="font-semibold"
+                                >
                                   {member.name}
                                 </SelectItem>
                               ))}
