@@ -8,14 +8,14 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 type EventInformationProps = {
-  eventId: string;
+  id: string;
 };
 
-const EventInformation = async ({ eventId }: EventInformationProps) => {
+const EventInformation = async ({ id }: EventInformationProps) => {
   let eventData = null;
 
   try {
-    const response = await getEventInfo(eventId);
+    const response = await getEventInfo(id);
     eventData = response.event;
   } catch (err) {
     console.error(err);
