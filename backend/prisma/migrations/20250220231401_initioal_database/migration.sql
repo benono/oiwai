@@ -21,7 +21,7 @@ CREATE TABLE "user_families" (
 -- CreateTable
 CREATE TABLE "events" (
     "id" SERIAL NOT NULL,
-    "user_id" INTEGER NOT NULL,
+    "host_id" INTEGER NOT NULL,
     "title" TEXT NOT NULL,
     "thumbnail_url" TEXT NOT NULL,
     "start_time" TIMESTAMP(3) NOT NULL,
@@ -33,8 +33,6 @@ CREATE TABLE "events" (
     "address1" TEXT NOT NULL,
     "address2" TEXT NOT NULL,
     "is_ask_restrictions" BOOLEAN NOT NULL,
-    "event_type" TEXT NOT NULL,
-    "design_info" TEXT NOT NULL,
     "theme" TEXT NOT NULL,
     "note_for_things_to_buy" TEXT NOT NULL,
     "note_for_necessities" TEXT NOT NULL,
@@ -66,10 +64,17 @@ CREATE TABLE "participant_restrictions" (
 
 -- CreateTable
 CREATE TABLE "necessities" (
+    "id" SERIAL NOT NULL,
     "event_id" INTEGER NOT NULL,
-    "user_id" INTEGER NOT NULL,
-    "order" INTEGER NOT NULL,
     "item" TEXT NOT NULL,
+
+    CONSTRAINT "necessities_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "participant_necessities" (
+    "necessity_id" INTEGER NOT NULL,
+    "user_id" INTEGER NOT NULL,
     "is_added" BOOLEAN NOT NULL
 );
 
@@ -112,13 +117,13 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 CREATE UNIQUE INDEX "event_participants_event_id_user_id_user_family_id_key" ON "event_participants"("event_id", "user_id", "user_family_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "necessities_event_id_user_id_order_key" ON "necessities"("event_id", "user_id", "order");
+CREATE UNIQUE INDEX "participant_necessities_necessity_id_user_id_key" ON "participant_necessities"("necessity_id", "user_id");
 
 -- AddForeignKey
 ALTER TABLE "user_families" ADD CONSTRAINT "user_families_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "events" ADD CONSTRAINT "events_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "events" ADD CONSTRAINT "events_host_id_fkey" FOREIGN KEY ("host_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "event_participants" ADD CONSTRAINT "event_participants_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -139,7 +144,10 @@ ALTER TABLE "participant_restrictions" ADD CONSTRAINT "participant_restrictions_
 ALTER TABLE "necessities" ADD CONSTRAINT "necessities_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "necessities" ADD CONSTRAINT "necessities_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "participant_necessities" ADD CONSTRAINT "participant_necessities_necessity_id_fkey" FOREIGN KEY ("necessity_id") REFERENCES "necessities"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "participant_necessities" ADD CONSTRAINT "participant_necessities_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "things_to_buy" ADD CONSTRAINT "things_to_buy_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
