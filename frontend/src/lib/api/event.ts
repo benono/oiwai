@@ -11,7 +11,7 @@ export const getEventInfo = async (eventId: string): Promise<EventType> => {
       // Dummy Data
       id: "12345",
       title: "Emily’s Birthday Party🚀",
-      thumbnail: "/images/sample-thumbnail.png",
+      thumbnailUrl: "/images/sample-thumbnail.png",
       startTime: new Date("2025-03-01T14:00:00Z"),
       endTime: new Date("2025-03-01T16:00:00Z"),
     };

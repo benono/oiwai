@@ -44,7 +44,7 @@ const EventInformation = async ({ id }: EventInformationProps) => {
   return (
     <section className="w-full space-y-4">
       <Image
-        src={response.thumbnail}
+        src={response.thumbnailUrl}
         width={200}
         height={200}
         alt="thumbnail"
