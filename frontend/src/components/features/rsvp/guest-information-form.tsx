@@ -133,9 +133,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      if (isLoaded && !isSignedIn) {
-        return;
-      }
+
 
       const eventId = params?.eventId;
 
@@ -277,7 +275,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                       type="email"
                       placeholder="Enter your email address"
                       {...field}
-                      className="text-te font-semibold"
+                      className="font-semibold placeholder:text-textSub"
                       disabled={isEmailFetched}
                     />
                   </FormControl>
