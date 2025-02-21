@@ -90,6 +90,9 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const [initialName, setInitialName] = useState<string>("");
   const [isEmailFetched, setIsEmailFetched] = useState(false);
   const [initialCompanions, setInitialCompanions] = useState<string[]>([]);
+  const [selectedFamilyValue, setSelectedFamilyValue] = useState<
+    string | undefined
+  >("");
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -176,6 +179,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const handleCompanionSelectChange = (selectedValue: string) => {
     if (selectedValue && !companions.includes(selectedValue)) {
       setCompanions([...companions, selectedValue]);
+      setSelectedFamilyValue("");
     }
   };
 
@@ -283,7 +287,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                       <FormControl className="w-full rounded-md bg-white px-4 py-5">
                         <Select
                           {...field}
-                          value={undefined}
+                          value={selectedFamilyValue}
                           onValueChange={handleCompanionSelectChange}
                         >
                           <SelectTrigger className="w-full bg-white px-4 py-5 text-sm font-medium text-textSub">
@@ -291,7 +295,6 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              <SelectLabel>Companion</SelectLabel>
                               {family.map((companion, index) => (
                                 <SelectItem key={index} value={companion.name}>
                                   {companion.name}
