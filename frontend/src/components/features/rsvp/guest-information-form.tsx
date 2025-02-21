@@ -75,7 +75,9 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const router = useRouter();
 
   // const { isLoaded, isSignedIn } = useAuth();
-  const [familyMembers, setFamilyMembers] = useState<{ name: string }[]>([]);
+  const [familyMemberOptions, setFamilyMemberOptions] = useState<
+    { name: string }[]
+  >([]);
   const [companions, setCompanions] = useState<string[]>([]);
   const [newCompanionName, setNewCompanionName] = useState<string>("");
   const [termsAccepted, setTermsAccepted] = useState(
@@ -103,7 +105,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
         setIsEmailFetched(true);
         form.setValue("name", response.name);
         form.setValue("email", response.email);
-        setFamilyMembers(response.family);
+        setFamilyMemberOptions(response.family);
 
         // Initialize companions list
         const registeredFamily = response.family.map(
@@ -161,8 +163,8 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
     if (selectedValue && !companions.includes(selectedValue)) {
       setCompanions([...companions, selectedValue]);
 
-      setFamilyMembers(
-        familyMembers.filter((member) => member.name !== selectedValue),
+      setFamilyMemberOptions(
+        familyMemberOptions.filter((member) => member.name !== selectedValue),
       );
 
       setSelectedFamilyValue("");
@@ -184,7 +186,10 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
 
     // Add the companion back to the family options
     if (registeredFamilyMembers.includes(companion)) {
-      setFamilyMembers([...familyMembers, { name: companions[index] }]);
+      setFamilyMemberOptions([
+        ...familyMemberOptions,
+        { name: companions[index] },
+      ]);
     }
   };
 
@@ -274,7 +279,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                 ))}
               </div>
               {/* If the user is logged in, they can select companions from their family. */}
-              {familyMembers.length > 0 && (
+              {familyMemberOptions.length > 0 && (
                 <FormField
                   control={form.control}
                   name="companions"
@@ -291,7 +296,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              {familyMembers.map((member, index) => (
+                              {familyMemberOptions.map((member, index) => (
                                 <SelectItem
                                   key={index}
                                   value={member.name}
