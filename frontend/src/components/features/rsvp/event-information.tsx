@@ -19,10 +19,6 @@ const EventInformation = async ({ id }: EventInformationProps) => {
     eventData = response.event;
   } catch (err) {
     console.error(err);
-    return null;
-  }
-
-  if (!eventData) {
     notFound();
   }
 

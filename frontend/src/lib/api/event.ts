@@ -19,6 +19,10 @@ export const getEventInfo = async (
       },
     };
   } catch (err) {
-    throw new Error("Event not found");
+    if (err instanceof Error) {
+      throw new Error();
+    } else {
+      throw new Error(String(err));
+    }
   }
 };
