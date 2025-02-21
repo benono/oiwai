@@ -219,7 +219,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                     <Input
                       placeholder="Enter your name"
                       {...field}
-                      className="font-semibold text-text"
+                      className="font-semibold placeholder:text-textSub"
                     />
                   </FormControl>
                   <FormMessage />
@@ -322,7 +322,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                     value={newCompanionName}
                     onChange={(e) => setNewCompanionName(e.target.value)}
                     placeholder="Enter companion's name"
-                    className="mt-2 bg-white px-4 py-5 font-semibold text-textSub placeholder:text-textSub"
+                    className="mt-2 bg-white px-4 py-5 font-semibold placeholder:text-textSub"
                   />
                 </label>
                 <button
@@ -361,7 +361,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                       <Textarea
                         placeholder="Enter your note"
                         {...field}
-                        className="h-28 font-semibold text-textSub placeholder:text-textSub"
+                        className="h-28 font-semibold placeholder:text-textSub"
                       />
                     </FormControl>
                     <FormMessage />
@@ -419,7 +419,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                         alt="icon for add checked"
                       />
                     )}
-                    <span className="text-sm font-medium text-text">
+                    <span className="text-sm font-medium">
                       I agree with the Terms and Conditions.
                     </span>
                   </button>

@@ -43,7 +43,7 @@ const EventInformation = async ({ id }: EventInformationProps) => {
   };
 
   return (
-    <section className="w-full space-y-4">
+    <section className="space-y-4">
       <Image
         src={eventData.thumbnailUrl}
         width={200}
@@ -52,7 +52,7 @@ const EventInformation = async ({ id }: EventInformationProps) => {
         className="w-full"
         priority
       />
-      <div className="space-y-2 px-4">
+      <div className="space-y-2 px-6">
         <h1 className="text-2xl font-bold">{eventData.title}</h1>
         <div>
           <p className="font-semibold">
