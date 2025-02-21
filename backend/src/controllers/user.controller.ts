@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getAuth, EmailAddress } from "@clerk/express";
+import { clerkClient } from "@clerk/clerk-sdk-node";
 import usersModel from "../models/user.model";
 
 const getuserById = async (req: Request, res: Response) => {
@@ -9,8 +10,10 @@ const getuserById = async (req: Request, res: Response) => {
         res.status(401).json({ error: "Unauthorized" });
         return;
       }
-      const id = Number(userId);
-    const user = await usersModel.fetchUSerById(id)
+      const loginUser = await clerkClient.users.getUser(userId);
+      const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
+
+    const user = await usersModel.fetchUSerByEmail(loginEmail)
     if (!user) {
       res.status(404).json({ error: 'User not found' })
       return
