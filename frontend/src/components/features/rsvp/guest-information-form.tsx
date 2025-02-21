@@ -29,6 +29,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 // import { useAuth } from "@clerk/clerk-react";
+import { useToast } from "@/hooks/use-toast";
+import { showErrorToast } from "@/lib/toast/toast-utils";
 
 const formSchema = z.object({
   status: z.enum(["ACCEPT", "DECLINE"]),
@@ -73,6 +75,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
 
   const params = useParams();
   const router = useRouter();
+  const { toast } = useToast();
 
   // const { isLoaded, isSignedIn } = useAuth();
   const [familyMemberOptions, setFamilyMemberOptions] = useState<
@@ -115,8 +118,12 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
         );
 
         setRegisteredFamilyMembers(registeredFamily);
-      } catch (err) {
-        alert(err); // TODO: use toast
+      } catch (err: unknown) {
+        showErrorToast(
+          toast,
+          err,
+          "Failed to fetch user information. Please try again.",
+        );
       }
     };
 
@@ -154,9 +161,12 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
       }
 
       router.push(`/rsvp/${eventId}/submitted`);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to submit form"); // TODO: use toast
+    } catch (err: unknown) {
+      showErrorToast(
+        toast,
+        err,
+        "Failed to submit your RSVP. Please try again.",
+      );
     }
   };
 
