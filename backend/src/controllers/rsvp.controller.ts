@@ -43,7 +43,10 @@ const getEventById = async (req: Request<{ event_id: string }>, res: Response) =
 
   const submitRsvpForm = async (req: Request<{}, {}, RsvpForm>, res: Response) => {
     try {
-        const emai = req.body.guest.email
+        const submittedEmail = req.body.guest.email
+        const submittedCompanions = req.body.companions
+        const submittedRestriction = req.body.restriction
+        
         const { userId } = getAuth(req);
 
         if (!userId) {
@@ -54,12 +57,27 @@ const getEventById = async (req: Request<{ event_id: string }>, res: Response) =
                 return
             }
 
+            //new user
+            //insert to user
+            
+            //insert to event_participants
+
+            if(submittedCompanions.length){
+
+            }
+
+            if(submittedRestriction.length){
+              
+            }
+          
+            
+
         }else{
             //logged in
             const loginUser = await clerkClient.users.getUser(userId);
             const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
 
-            if(emai!==loginEmail){
+            if(submittedEmail!==loginEmail){
                 res.status(400).json({ error: 'Email is different.' })
                 return 
             }

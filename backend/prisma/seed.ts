@@ -50,7 +50,7 @@ async function main() {
 
   const event1 = await prisma.events.create({
     data: {
-      userId: user3.id,
+      hostId: user3.id,
       title: 'Test party',
       thumbnailUrl: '',
       startTime: new Date("2025-04-01T10:00:00.000Z"),
@@ -62,8 +62,6 @@ async function main() {
       address1: '978 Granvill St',
       address2: '',
       isAskRestrictions: false,
-      eventType: 'Home party',
-      designInfo: '',
       theme: '',
       noteForThingsToBuy: '',
       noteForNecessities: '',
@@ -72,7 +70,7 @@ async function main() {
 
   const event2 = await prisma.events.create({
     data: {
-      userId: user3.id,
+      hostId: user3.id,
       title: 'Emma\'s 6th birthday party',
       thumbnailUrl: '',
       startTime: new Date("2025-04-02T12:00:00.000Z"),
@@ -84,23 +82,15 @@ async function main() {
       address1: '978 Granvill St',
       address2: '',
       isAskRestrictions: true,
-      eventType: 'Home party',
-      designInfo: '',
       theme: '',
       noteForThingsToBuy: 'Canadian Tire or Walmart',
       noteForNecessities: 'Don\'t forget to bring',
       necessities: {
         create: [{
-            userId : user3.id,
-            order: 1,
             item: 'food',
-            isAdded: false,
           },
           {
-            userId : user3.id,
-            order: 2,
             item: 'dessert',
-            isAdded: false,
           }
       ],
     }
