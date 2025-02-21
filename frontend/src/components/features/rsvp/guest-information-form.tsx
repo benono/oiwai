@@ -77,6 +77,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
 
   const params = useParams();
   const router = useRouter();
+
   // const { isLoaded, isSignedIn } = useAuth();
   const [familyMembers, setFamilyMembers] = useState<{ name: string }[]>([]);
   const [companions, setCompanions] = useState<string[]>([]);
@@ -86,12 +87,15 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   );
   const [initialName, setInitialName] = useState<string>("");
   const [isEmailFetched, setIsEmailFetched] = useState(false);
-  const [initialCompanions, setInitialCompanions] = useState<string[]>([]);
   const [selectedFamilyValue, setSelectedFamilyValue] = useState<
     string | undefined
   >("");
+  const [registeredFamilyMembers, setRegisteredFamilyMembers] = useState<
+    string[]
+  >([]);
 
   useEffect(() => {
+    // Fetch user information when they are logged in
     const fetchUserInfo = async () => {
       // const { isLoaded, isSignedIn } = useAuth();
 
@@ -103,15 +107,17 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
         const response = await getUserInfo();
         setInitialName(response.name);
         setIsEmailFetched(true);
+        setFamilyMembers(response.family);
         form.setValue("name", response.name);
         form.setValue("email", response.email);
         setFamilyMembers(response.family);
 
         // Initialize companions list
-        const initialCompanionNames = response.family.map(
+        const registeredFamily = response.family.map(
           (companion) => companion.name,
         );
-        setInitialCompanions(initialCompanionNames);
+
+        setRegisteredFamilyMembers(registeredFamily);
       } catch (err) {
         alert(err); // TODO: use toast
       }
@@ -132,19 +138,19 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   // Detect if the companions have been modified
   useEffect(() => {
     const isCompanionModified = !companions.every((companion) =>
-      initialCompanions.includes(companion),
+      registeredFamilyMembers.includes(companion),
     );
 
     form.setValue("updateFamilyInfo", isCompanionModified);
-  }, [companions, initialCompanions, form]);
+  }, [companions, registeredFamilyMembers, form]);
 
   const onSubmit = async (data: FormValues) => {
     try {
       // if (isLoaded && !isSignedIn) {
       //   return
       // }
+      const eventId = params?.eventId;
 
-      const id = params?.eventId;
       const postData: RsvpResponseType = {
         status: data.status,
         restriction: data.restriction || "",
@@ -161,19 +167,24 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
         updateFamilyInfo: data.updateFamilyInfo,
       };
 
-      const response = await axios.post(`/event/${id}/rsvp-form`, postData);
+      const response = await axios.post(
+        `/event/${eventId}/rsvp-form`,
+        postData,
+      );
 
       if (response.status !== 200) {
         throw new Error();
       }
-      router.push(`/rsvp/${id}/submitted`);
+
+      router.push(`/rsvp/${eventId}/submitted`);
     } catch (err) {
+      console.error(err);
       alert("Failed to submit form"); // TODO: use toast
     }
   };
 
   // Companion
-  const handleCompanionSelectChange = (selectedValue: string) => {
+  const handleFamilySelectChange = (selectedValue: string) => {
     if (selectedValue && !companions.includes(selectedValue)) {
       setCompanions([...companions, selectedValue]);
 
@@ -185,26 +196,27 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
     }
   };
 
-  const addCompanion = () => {
+  const handleAddCompanion = () => {
     if (newCompanionName.trim() === "") return;
     setCompanions([...companions, newCompanionName]);
     setNewCompanionName("");
   };
 
-  const handleDeleteFamilyMember = (companion: string, index: number) => {
+  const handleDeleteFamilyMembers = (companion: string, index: number) => {
     const updatedCompanions = companions.filter(
       (companion) => companion !== companions[index],
     );
 
     setCompanions(updatedCompanions);
 
-    if (initialCompanions.includes(companion)) {
+    // Add the companion back to the family options
+    if (registeredFamilyMembers.includes(companion)) {
       setFamilyMembers([...familyMembers, { name: companions[index] }]);
     }
   };
 
-  // Terms
-  const handleAgreeClick = () => {
+  // Toggle terms accepted
+  const handleTermsAgreement = () => {
     setTermsAccepted(!termsAccepted);
     form.setValue("termsAccepted", !termsAccepted);
   };
@@ -272,7 +284,9 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                     />
                     <button
                       type="button"
-                      onClick={() => handleDeleteFamilyMember(companion, index)}
+                      onClick={() =>
+                        handleDeleteFamilyMembers(companion, index)
+                      }
                       className="text-red-500"
                     >
                       <Image
@@ -297,7 +311,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                         <Select
                           {...field}
                           value={selectedFamilyValue}
-                          onValueChange={handleCompanionSelectChange}
+                          onValueChange={handleFamilySelectChange}
                         >
                           <SelectTrigger className="w-full bg-white px-4 py-5 text-sm font-semibold text-textSub">
                             <SelectValue placeholder="Select from your family" />
@@ -333,7 +347,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                 </label>
                 <button
                   type="button"
-                  onClick={addCompanion}
+                  onClick={handleAddCompanion}
                   className="ml-auto flex items-center gap-2 rounded-full border border-primary bg-white px-4 py-2 text-sm font-bold text-primary"
                 >
                   <Image
@@ -407,7 +421,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                 <FormControl className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={handleAgreeClick}
+                    onClick={handleTermsAgreement}
                     className="flex items-center gap-2 rounded-full font-bold text-white"
                   >
                     {form.getValues("termsAccepted") ? (
