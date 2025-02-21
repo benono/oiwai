@@ -19,8 +19,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import { getUserInfo } from "@/lib/api/user";
+import { showErrorToast } from "@/lib/toast/toast-utils";
 import { RsvpResponseType } from "@/types/rsvp-response";
+import { useAuth } from "@clerk/clerk-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Image from "next/image";
@@ -28,9 +31,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-// import { useAuth } from "@clerk/clerk-react";
-import { useToast } from "@/hooks/use-toast";
-import { showErrorToast } from "@/lib/toast/toast-utils";
 
 const formSchema = z.object({
   status: z.enum(["ACCEPT", "DECLINE"]),
@@ -76,8 +76,8 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
+  const { isLoaded, isSignedIn } = useAuth();
 
-  // const { isLoaded, isSignedIn } = useAuth();
   const [familyMemberOptions, setFamilyMemberOptions] = useState<
     { name: string; profileImageUrl: string }[]
   >([]);
@@ -99,11 +99,9 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   useEffect(() => {
     // Fetch user information when they are logged in
     const fetchUserInfo = async () => {
-      // const { isLoaded, isSignedIn } = useAuth();
-
-      // if (isLoaded && !isSignedIn) {
-      //   return;
-      // }
+      if (isLoaded && !isSignedIn) {
+        return;
+      }
 
       try {
         const response = await getUserInfo();
@@ -130,13 +128,14 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
     };
 
     fetchUserInfo();
-  }, [form]);
+  }, [form, toast, isLoaded, isSignedIn]);
 
   const onSubmit = async (data: FormValues) => {
     try {
-      // if (isLoaded && !isSignedIn) {
-      //   return
-      // }
+      if (isLoaded && !isSignedIn) {
+        return;
+      }
+
       const eventId = params?.eventId;
 
       const postData: RsvpResponseType = {
