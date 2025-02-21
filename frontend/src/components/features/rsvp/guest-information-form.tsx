@@ -419,7 +419,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                         alt="icon for add checked"
                       />
                     )}
-                    <span className="text-sm font-medium">
+                    <span className="text-sm font-medium text-text">
                       I agree with the Terms and Conditions.
                     </span>
                   </button>

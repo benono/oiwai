@@ -11,11 +11,11 @@ type EventInformationProps = {
   eventId: string;
 };
 
-const EventInformation = async ({ id }: EventInformationProps) => {
+const EventInformation = async ({ eventId }: EventInformationProps) => {
   let eventData = null;
 
   try {
-    const response = await getEventInfo(id);
+    const response = await getEventInfo(eventId);
     eventData = response.event;
   } catch (err) {
     console.error(err);
