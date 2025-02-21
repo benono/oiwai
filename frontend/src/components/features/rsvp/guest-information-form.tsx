@@ -390,7 +390,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                 <button
                   type="button"
                   onClick={handleAddCompanion}
-                  className="ml-auto flex items-center gap-2 rounded-full border border-primary bg-white px-4 py-2 text-sm font-bold text-primary"
+                  className="ml-auto flex items-center gap-2 rounded-full border border-primary bg-white px-4 py-2 text-sm font-bold text-primary hover:opacity-70"
                 >
                   <Image
                     src="/images/plus.svg"
@@ -464,7 +464,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                   <button
                     type="button"
                     onClick={handleTermsAgreement}
-                    className="flex items-center gap-2 rounded-full font-bold text-white"
+                    className="flex items-center gap-2 rounded-full font-bold text-white hover:opacity-70"
                   >
                     {form.getValues("termsAccepted") ? (
                       <Image
@@ -492,7 +492,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
           />
           <Button
             type="submit"
-            className="w-full rounded-[40px] py-8 text-lg font-bold"
+            className="w-full rounded-[40px] py-8 text-lg font-bold hover:opacity-70"
           >
             Submit
           </Button>
