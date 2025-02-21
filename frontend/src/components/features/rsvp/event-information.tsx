@@ -1,16 +1,14 @@
 import { getEventInfo } from "@/lib/api/event";
+import {
+  dateFormatOptions,
+  formatDateTime,
+  timeFormatOptions,
+} from "@/lib/helpers/format-date";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
 type EventInformationProps = {
-  id: string;
-};
-
-const formatDateTime = (
-  date: Date,
-  options: Intl.DateTimeFormatOptions,
-): string => {
-  return new Intl.DateTimeFormat("en-US", options).format(date);
+  eventId: string;
 };
 
 const EventInformation = async ({ id }: EventInformationProps) => {
@@ -27,20 +25,6 @@ const EventInformation = async ({ id }: EventInformationProps) => {
   if (!eventData) {
     notFound();
   }
-
-  // Format date and time
-  const dateFormatOptions: Intl.DateTimeFormatOptions = {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  };
-
-  // Format time
-  const timeFormatOptions: Intl.DateTimeFormatOptions = {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  };
 
   return (
     <section className="space-y-4">
