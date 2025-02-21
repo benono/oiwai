@@ -49,8 +49,6 @@ const formSchema = z.object({
   termsAccepted: z.boolean().refine((val) => val === true, {
     message: "You must agree to the terms and conditions.",
   }),
-  updateUserInfo: z.boolean(),
-  updateFamilyInfo: z.boolean(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -70,8 +68,6 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
       message: "",
       companions: [],
       termsAccepted: false,
-      updateUserInfo: false,
-      updateFamilyInfo: false,
     },
   });
 
@@ -85,7 +81,6 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const [termsAccepted, setTermsAccepted] = useState(
     form.getValues("termsAccepted"),
   );
-  const [initialName, setInitialName] = useState<string>("");
   const [isEmailFetched, setIsEmailFetched] = useState(false);
   const [selectedFamilyValue, setSelectedFamilyValue] = useState<
     string | undefined
@@ -105,9 +100,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
 
       try {
         const response = await getUserInfo();
-        setInitialName(response.name);
         setIsEmailFetched(true);
-        setFamilyMembers(response.family);
         form.setValue("name", response.name);
         form.setValue("email", response.email);
         setFamilyMembers(response.family);
@@ -125,24 +118,6 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
 
     fetchUserInfo();
   }, [form]);
-
-  // Detect if the name has changed
-  useEffect(() => {
-    if (form.getValues("name") !== initialName) {
-      form.setValue("updateUserInfo", true);
-    } else {
-      form.setValue("updateUserInfo", false);
-    }
-  }, [form.getValues("name"), initialName]);
-
-  // Detect if the companions have been modified
-  useEffect(() => {
-    const isCompanionModified = !companions.every((companion) =>
-      registeredFamilyMembers.includes(companion),
-    );
-
-    form.setValue("updateFamilyInfo", isCompanionModified);
-  }, [companions, registeredFamilyMembers, form]);
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -163,8 +138,6 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
         })),
         message: data.message || "",
         termsAccepted: termsAccepted,
-        updateUserInfo: data.updateUserInfo,
-        updateFamilyInfo: data.updateFamilyInfo,
       };
 
       const response = await axios.post(
