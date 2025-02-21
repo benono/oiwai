@@ -15,7 +15,10 @@ const RSVP = async ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <section className={`max-w-md pb-3 md:mx-auto bg-${eventData.theme}`}>
+    <section
+      className="max-w-md pb-3 md:mx-auto"
+      style={{ backgroundColor: eventData.theme }}
+    >
       <EventInformation event={eventData} />
       <RsvpForm />
     </section>
