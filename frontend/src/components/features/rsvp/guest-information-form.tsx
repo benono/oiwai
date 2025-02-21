@@ -20,12 +20,12 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { useAuthAxios } from "@/lib/api/axios-client";
 import { getUserInfo } from "@/lib/api/user";
 import { showErrorToast } from "@/lib/toast/toast-utils";
 import { RsvpResponseType } from "@/types/rsvp-response";
 import { useAuth } from "@clerk/clerk-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -73,6 +73,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
     },
   });
 
+  const axios = useAuthAxios();
   const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
