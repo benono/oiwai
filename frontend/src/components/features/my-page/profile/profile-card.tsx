@@ -3,28 +3,29 @@ import { PencilLineIcon, UserRoundXIcon } from "lucide-react";
 import Image from "next/image";
 import Modal from "../../modal";
 
-type FamilyCardProps = {
-  id: string;
+type ProfileCardProps = {
   name: string;
+  email: string;
   profileImageUrl: string;
 };
 
-export default function FamilyCard({
-  id,
+export default function ProfileCard({
   name,
+  email,
   profileImageUrl,
-}: FamilyCardProps) {
+}: ProfileCardProps) {
   return (
-    <li key={id} className="flex justify-between">
-      <div className="flex items-center gap-4">
-        <Image
-          src={profileImageUrl}
-          alt={name}
-          width={40}
-          height={40}
-          className="rounded-full object-cover"
-        />
-        <p className="text-sm font-semibold">{name}</p>
+    <div className="grid justify-items-center gap-2">
+      <Image
+        src={profileImageUrl}
+        alt={name}
+        width={64}
+        height={64}
+        className="rounded-full object-cover"
+      />
+      <div className="grid gap-1 text-center">
+        <h1 className="text-base font-bold text-text">{name}</h1>
+        <p className="text-xs text-textSub">{email}</p>
       </div>
       <div className="flex gap-2">
         <Modal
@@ -33,11 +34,11 @@ export default function FamilyCard({
               <UserRoundXIcon size={16} />
             </Button>
           }
-          title="Remove family member"
-          description="Are you sure you want to remove this member? This action cannot be undone."
+          title="Delete account"
+          description="Are you sure you want to delete the account? This action cannot be undone."
           button={
             <Button className="w-full bg-error font-bold shadow-none hover:bg-error hover:opacity-70">
-              Remove
+              Delete
             </Button>
           }
         />
@@ -55,6 +56,6 @@ export default function FamilyCard({
           <p>Hello</p>{" "}
         </Modal>
       </div>
-    </li>
+    </div>
   );
 }
