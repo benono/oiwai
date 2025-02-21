@@ -10,18 +10,18 @@ export const getUserInfo = async (): Promise<{ user: UserType }> => {
       // Dummy data
       user: {
         id: "12345",
-        name: "John Doe",
-        profileImageUrl: "https://example.com/profile.jpg",
-        email: "johndoe@example.com",
+        name: "Tracy",
+        profileImageUrl: "/images/sample-family-1.png",
+        email: "tracy@example.com",
         userFamilies: [
           {
             id: "67890",
-            profileImageUrl: "https://example.com/family_member.jpg",
+            profileImageUrl: "/images/sample-family-1.png",
             name: "Jane Doe",
           },
           {
             id: "11223",
-            profileImageUrl: "https://example.com/family_member_2.jpg",
+            profileImageUrl: "/images/sample-family-2.png",
             name: "Sam Doe",
           },
         ],

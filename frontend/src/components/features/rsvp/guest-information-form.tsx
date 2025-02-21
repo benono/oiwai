@@ -79,9 +79,11 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
 
   // const { isLoaded, isSignedIn } = useAuth();
   const [familyMemberOptions, setFamilyMemberOptions] = useState<
-    { name: string }[]
+    { name: string; profileImageUrl: string }[]
   >([]);
-  const [companions, setCompanions] = useState<string[]>([]);
+  const [companions, setCompanions] = useState<
+    { name: string; profileImageUrl?: string }[]
+  >([]);
   const [newCompanionName, setNewCompanionName] = useState<string>("");
   const [termsAccepted, setTermsAccepted] = useState(
     form.getValues("termsAccepted"),
@@ -91,7 +93,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
     string | undefined
   >("");
   const [registeredFamilyMembers, setRegisteredFamilyMembers] = useState<
-    string[]
+    { name: string; profileImageUrl: string }[]
   >([]);
 
   useEffect(() => {
@@ -113,9 +115,9 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
         setFamilyMemberOptions(userInformation.userFamilies);
         setIsEmailFetched(true);
 
-        const registeredFamily = userInformation.userFamilies.map(
-          (member) => member.name,
-        );
+        const registeredFamily = userInformation.userFamilies.map((member) => {
+          return { name: member.name, profileImageUrl: member.profileImageUrl };
+        });
 
         setRegisteredFamilyMembers(registeredFamily);
       } catch (err: unknown) {
@@ -144,8 +146,8 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
           name: data.name,
           email: data.email,
         },
-        companions: companions.map((companionName) => ({
-          name: companionName,
+        companions: companions.map((companion) => ({
+          name: companion.name,
         })),
         message: data.message || "",
         termsAccepted: termsAccepted,
@@ -171,12 +173,21 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   };
 
   // Companion
-  const handleFamilySelectChange = (selectedValue: string) => {
-    if (selectedValue && !companions.includes(selectedValue)) {
-      setCompanions([...companions, selectedValue]);
+  const handleFamilySelectChange = (selectedMember: string) => {
+    if (
+      selectedMember &&
+      !companions.some((companion) => companion.name === selectedMember)
+    ) {
+      const selectedFamilyMember = familyMemberOptions.find(
+        (member) => member.name === selectedMember,
+      );
+
+      if (selectedFamilyMember) {
+        setCompanions([...companions, selectedFamilyMember]);
+      }
 
       setFamilyMemberOptions(
-        familyMemberOptions.filter((member) => member.name !== selectedValue),
+        familyMemberOptions.filter((member) => member.name !== selectedMember),
       );
 
       setSelectedFamilyValue("");
@@ -185,28 +196,39 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
 
   const handleAddCompanion = () => {
     if (newCompanionName.trim() === "") return;
-    setCompanions([...companions, newCompanionName]);
+    setCompanions([...companions, { name: newCompanionName }]);
     setNewCompanionName("");
   };
 
   const handleCompanionChange = (index: number, value: string) => {
     const updatedCompanions = [...companions];
-    updatedCompanions[index] = value;
+    updatedCompanions[index] = {
+      name: value,
+      profileImageUrl: companions[index].profileImageUrl,
+    };
     setCompanions(updatedCompanions);
   };
 
-  const handleDeleteFamilyMembers = (companion: string, index: number) => {
+  const handleDeleteFamilyMembers = (companion: {
+    name: string;
+    profileImageUrl?: string;
+  }) => {
     const updatedCompanions = companions.filter(
-      (companion) => companion !== companions[index],
+      (existingCompanion) => existingCompanion.name !== companion.name,
     );
 
     setCompanions(updatedCompanions);
 
     // Add the companion back to the family options
-    if (registeredFamilyMembers.includes(companion)) {
+    if (
+      registeredFamilyMembers.some((member) => member.name === companion.name)
+    ) {
       setFamilyMemberOptions([
         ...familyMemberOptions,
-        { name: companions[index] },
+        {
+          name: companion.name,
+          profileImageUrl: companion.profileImageUrl || "",
+        },
       ]);
     }
   };
@@ -268,32 +290,49 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
             <div className="space-y-4">
               <h3 className="text-lg font-bold">Companion</h3>
               <div className="mt-4">
-                {companions.map((companion, index) => (
-                  <div key={index} className="mt-2 flex items-center space-x-2">
-                    <Input
-                      value={companion}
-                      onChange={(e) =>
-                        handleCompanionChange(index, e.target.value)
-                      }
-                      className="mt-2 bg-white px-4 py-5 font-semibold"
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleDeleteFamilyMembers(companion, index)
-                      }
-                      className="text-red-500"
+                {companions.map(
+                  (
+                    companion: { name: string; profileImageUrl?: string },
+                    index: number,
+                  ) => (
+                    <div
+                      key={index}
+                      className="mt-2 flex items-center space-x-2"
                     >
-                      <Image
-                        src="/images/delete.svg"
-                        width={200}
-                        height={200}
-                        alt="delete icon"
-                        className="w-full"
-                      />
-                    </button>
-                  </div>
-                ))}
+                      <div className="relative flex w-full items-center">
+                        {companion.profileImageUrl && (
+                          <Image
+                            src={companion.profileImageUrl}
+                            width={32}
+                            height={32}
+                            alt="profile image"
+                            className="absolute left-2 top-[13px] h-8 w-8 rounded-full object-cover"
+                          />
+                        )}
+                        <Input
+                          value={companion.name}
+                          onChange={(e) =>
+                            handleCompanionChange(index, e.target.value)
+                          }
+                          className={`mt-2 w-full bg-white p-4 py-5 font-semibold ${companion.profileImageUrl ? "pl-12" : "pl-4"}`}
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteFamilyMembers(companion)}
+                        className="text-red-500"
+                      >
+                        <Image
+                          src="/images/delete.svg"
+                          width={100}
+                          height={100}
+                          alt="delete icon"
+                          className="w-full"
+                        />
+                      </button>
+                    </div>
+                  ),
+                )}
               </div>
               {/* If the user is logged in, they can select companions from their family. */}
               {familyMemberOptions.length > 0 && (
@@ -319,7 +358,16 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                                   value={member.name}
                                   className="font-semibold"
                                 >
-                                  {member.name}
+                                  <div className="flex items-center gap-4 font-semibold">
+                                    <Image
+                                      src={member.profileImageUrl}
+                                      width={100}
+                                      height={100}
+                                      alt="profile image"
+                                      className="h-8 w-8 rounded-full object-cover"
+                                    />
+                                    <p>{member.name}</p>
+                                  </div>
                                 </SelectItem>
                               ))}
                             </SelectGroup>
