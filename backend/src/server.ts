@@ -24,7 +24,7 @@ app.use(
 app.use(clerkMiddleware());
 
 // Routes
-app.use('/api/users', usersRouter)
+app.use('/api/v1/me', usersRouter)
 app.unsubscribe('/api/events')
 app.use('/api/v1/event', rsvpRouter)
 

@@ -6,7 +6,6 @@ const eventRouter = Router()
 
 // Routes
 eventRouter.get('/:event_id', 
-    requireAuthMiddleware,
     eventController.getEventById)
 
 export default eventRouter

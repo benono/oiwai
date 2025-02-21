@@ -5,8 +5,7 @@ import usersController from "../controllers/user.controller";
 const usersRouter = Router()
 
 // Routes
-usersRouter.get('/health', usersController.getAllUsers)
-usersRouter.get('/me', requireAuthMiddleware, usersController.getuserById)
+usersRouter.get('/', requireAuthMiddleware, usersController.getuserById)
 
 
 export default usersRouter

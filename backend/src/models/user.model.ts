@@ -2,11 +2,6 @@ import { PrismaClient, Prisma} from "@prisma/client";
 
 const prisma = new PrismaClient()
 
-// Fetch all courses
-const fetchAllUsers = async () => {
-  return await prisma.users.findMany()
-}
-
 const fetchUSerById = async (id: number) => {
   const user = await prisma.users.findUnique({
     where: { id },
@@ -45,7 +40,6 @@ const addNewUser = async (tx: Prisma.TransactionClient, newEmail: string, newNam
 }
 
 export default {
-  fetchAllUsers,
   fetchUSerById,
   fetchUSerByEmail,
   addNewUser,

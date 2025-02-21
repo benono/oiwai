@@ -32,6 +32,7 @@ const RSVP_DECLINE = "DECLINE"
         //check login status
         const { userId } = getAuth(req);
         if (!userId) {
+          //check duplication by email
             const userByEmail = await userModel.fetchUSerByEmail(rsvpForm.guest.email)
             if(userByEmail){
                 res.status(400).json({ error: 'this email is already used. Please login.' })
@@ -55,6 +56,9 @@ const RSVP_DECLINE = "DECLINE"
             if(userByEmail){
               //existing user's RSVP
               const newUserRsvp = await rsvpModel.submitExistingUserRsvp(eventId, userByEmail.id, rsvpForm, isAccepted)
+            }else{
+              res.status(404).json({ error: 'User not found.' })
+              return
             }
         }
     } catch (err) {
