@@ -105,10 +105,10 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
         setIsEmailFetched(true);
         form.setValue("name", response.name);
         form.setValue("email", response.email);
-        setFamilyMemberOptions(response.family);
+        setFamilyMemberOptions(response.userFamilies);
 
         // Initialize companions list
-        const registeredFamily = response.family.map(
+        const registeredFamily = response.userFamilies.map(
           (companion) => companion.name,
         );
 
