@@ -1,63 +1,47 @@
 import { PrismaClient} from "@prisma/client";
+import User from "./user.model"
+import EventParticipants from "./eventParticipants.model"
+import ParticipantRestrictions from "./participantRestrictions.model"
+import UserFamilies from "./userFamilies.model"
+import RsvpForm from "../types/rsvpform";
 
 const prisma = new PrismaClient()
 
-// Fetch event infomation by id
-const fetchEventById = async (id: number) => {
-    const event = await prisma.events.findUnique({
-      where: { id },
-    })
-    return event
-  }
+const submitNewUserRsvp = async (eventId: number, rsvpForm: RsvpForm, isAccepted: boolean) => {
+  return await prisma.$transaction(async (tx) => {
+    const newUser = await User.addNewUser(tx, rsvpForm.guest.email, rsvpForm.guest.name);
+    const newParticipant = await EventParticipants.addNewEventParticipant(tx, eventId, newUser.id, isAccepted);
 
-  const fetchUSerById = async (id: number) => {
-    const user = await prisma.users.findUnique({
-      where: { id },
-      include: {
-        userFamilies: {
-          select: {
-            id: true,
-            profileImageUrl: true,
-            name: true 
-          },
-        },
-      },
-    })
-    return user
-  }
+    if(rsvpForm.restriction.length){
+      const newRestriction = await ParticipantRestrictions.addNewParticipantRestriction(tx, eventId, newUser.id, rsvpForm.restriction)
+    }
 
-  const fetchUSerByEmail = async (email: string) => {
-    const user = await prisma.users.findUnique({
-      where: {
-        email: "example@example.com",
-      },
-    });
-  }
+    if(rsvpForm.companions.length){
+      for(let i = 0; i > rsvpForm.companions.length; i++){
+        await UserFamilies.addNewUserFamily(tx, newUser.id,rsvpForm.companions[i].name)
+      }
+    }
+  
+  });
+};
 
-  //insert to user
-  const addNewUser = async (newEmail: string, newName: string, newProfileImageUrl: string) => {
-    const addedUser = await prisma.users.create({
-      data: {
-        name: newEmail,
-        email: newName,
-        profileImageUrl: newProfileImageUrl
-      },
-    });
-    return addedUser
-    //console.log(`Created user: ${user1.name}`);
-  }
+const submitExistingUserRsvp = async (eventId: number, userId:number, rsvpForm: RsvpForm, isAccepted: boolean) => {
+  return await prisma.$transaction(async (tx) => {
+    const newParticipant = await EventParticipants.addNewEventParticipant(tx, eventId, userId, isAccepted);
 
-  //insert to event_participants
+    if(rsvpForm.restriction.length){
+      const newRestriction = await ParticipantRestrictions.addNewParticipantRestriction(tx, eventId, userId, rsvpForm.restriction)
+    }
 
-  //insert to user_families
-
-  //insert to participant_restrictions
-
-  //
+    if(rsvpForm.companions.length){
+      for(let i = 0; i > rsvpForm.companions.length; i++){
+        await UserFamilies.addNewUserFamily(tx, userId, rsvpForm.companions[i].name)
+      }
+    }
+  });
+};
 
 export default {
-    fetchEventById,
-    fetchUSerById,
-    fetchUSerByEmail,
-    addNewUser
+  submitNewUserRsvp,
+  submitExistingUserRsvp,
   }

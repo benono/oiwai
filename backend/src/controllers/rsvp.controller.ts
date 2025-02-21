@@ -1,90 +1,62 @@
 import { getAuth, EmailAddress } from "@clerk/express";
 import { clerkClient } from "@clerk/clerk-sdk-node";
 import { Request, Response } from "express";
+import userModel from "../models/user.model";
 import rsvpModel from "../models/rsvp.model";
 import RsvpForm from "../types/rsvpform";
 
+//RSVP's attendance
+const RSVP_ACCEPT = "ACCEPT"
+const RSVP_DECLINE = "DECLINE"
 
-// Get all users
-const getEventById = async (req: Request<{ event_id: string }>, res: Response) => {
+  const submitRsvpForm = async (req: Request<{ event_id: string }, {}, RsvpForm>, res: Response) => {
     try {
-      const id = Number(req.params.event_id)
-      const event = await rsvpModel.fetchEventById(id)
-      if (!event) {
-        res.status(404).json({ error: 'Event not found' })
-        return
-      }
-      res.status(200).json({event})
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ error: 'Unable to get event by id' })
-    }
-  }
+        const eventId = Number(req.params.event_id)
+        const submittedTermsAccepted = req.body.status
+        const rsvpForm = req.body
 
-  const getuserById = async (req: Request, res: Response) => {
-    try {
-        const { userId } = getAuth(req);
-        if (!userId) {
-          res.status(401).json({ error: "Unauthorized" });
-          return;
+        //check terms was accepted
+        if (!submittedTermsAccepted){
+          res.status(400).json({ error: 'prease check the term.' })
+          return
         }
-        const id = Number(userId);
-      const user = await rsvpModel.fetchUSerById(id)
-      if (!user) {
-        res.status(404).json({ error: 'Event not found' })
-        return
-      }
-      res.status(200).json({user})
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ error: 'Unable to get user by id' })
-    }
-  }
-
-  const submitRsvpForm = async (req: Request<{}, {}, RsvpForm>, res: Response) => {
-    try {
-        const submittedEmail = req.body.guest.email
-        const submittedCompanions = req.body.companions
-        const submittedRestriction = req.body.restriction
+        //check Attendance
+        let isAccepted = false
+        if(rsvpForm.status !== RSVP_ACCEPT && rsvpForm.status !== RSVP_DECLINE){
+          res.status(400).json({ error: 'this attendance is invalid.' })
+          return
+        }else if(rsvpForm.status === RSVP_ACCEPT){
+          isAccepted = true
+        }
         
+        //check login status
         const { userId } = getAuth(req);
-
         if (!userId) {
-            //not logged in
-            const userByEmail = await rsvpModel.fetchUSerByEmail
-            if(userByEmail.length){
-                res.status(400).json({ error: 'this email is already used.' })
+            const userByEmail = await userModel.fetchUSerByEmail(rsvpForm.guest.email)
+            if(userByEmail){
+                res.status(400).json({ error: 'this email is already used. Please login.' })
                 return
             }
-
-            //new user
-            //insert to user
-            
-            //insert to event_participants
-
-            if(submittedCompanions.length){
-
-            }
-
-            if(submittedRestriction.length){
-              
-            }
-          
-            
+              //new user's RSVP
+              const newUserRsvp = await rsvpModel.submitNewUserRsvp(eventId, rsvpForm, isAccepted)
 
         }else{
-            //logged in
+            //compare email on form and login email
             const loginUser = await clerkClient.users.getUser(userId);
             const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
 
-            if(submittedEmail!==loginEmail){
+            if(rsvpForm.guest.email!==loginEmail){
                 res.status(400).json({ error: 'Email is different.' })
                 return 
             }
 
-
+            //check user by email
+            const userByEmail = await userModel.fetchUSerByEmail(rsvpForm.guest.email)
+            if(userByEmail){
+              //existing user's RSVP
+              const newUserRsvp = await rsvpModel.submitExistingUserRsvp(eventId, userByEmail.id, rsvpForm, isAccepted)
+            }
         }
-
     } catch (err) {
       console.error(err)
       res.status(500).json({ error: 'Unable to get event by id' })
@@ -92,7 +64,5 @@ const getEventById = async (req: Request<{ event_id: string }>, res: Response) =
   }
 
 export default {
-    getEventById,
-    getuserById,
     submitRsvpForm
   }

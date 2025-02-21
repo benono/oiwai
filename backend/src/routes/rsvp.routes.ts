@@ -5,13 +5,7 @@ import rsvpController from "../controllers/rsvp.controller";
 const rsvpRouter = Router()
 
 // Routes
-rsvpRouter.get('/events/:event_id', 
-    requireAuthMiddleware,
-    rsvpController.getEventById)
-
-rsvpRouter.get('/me', 
-    requireAuthMiddleware,
-    rsvpController.getuserById)
+rsvpRouter.post('/:event_id/rsvp-form', requireAuthMiddleware,rsvpController.submitRsvpForm)
 
 
 export default rsvpRouter
