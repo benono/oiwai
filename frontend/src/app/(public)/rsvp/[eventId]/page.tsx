@@ -3,11 +3,12 @@ import RsvpForm from "@/components/features/rsvp/rsvp-form";
 import { getEventInfo } from "@/lib/api/event";
 import { notFound } from "next/navigation";
 
-const RSVP = async ({ params }: { params: { id: string } }) => {
+const RSVP = async ({ params }: { params: Promise<{ eventId: string }> }) => {
   let eventData = null;
+  const { eventId } = await params;
 
   try {
-    const response = await getEventInfo(params.id);
+    const response = await getEventInfo(eventId);
     eventData = response.event;
   } catch (err) {
     console.error(err);
