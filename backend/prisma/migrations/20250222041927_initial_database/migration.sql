@@ -46,6 +46,7 @@ CREATE TABLE "event_participants" (
     "event_id" INTEGER NOT NULL,
     "user_id" INTEGER NOT NULL,
     "user_family_id" INTEGER,
+    "message_to_host" TEXT NOT NULL,
     "is_accepted" BOOLEAN NOT NULL,
     "is_attended" BOOLEAN NOT NULL,
 

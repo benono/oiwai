@@ -1,6 +1,6 @@
-import { PrismaClient, Prisma} from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 const fetchUSerById = async (id: number) => {
   const user = await prisma.users.findUnique({
@@ -10,13 +10,13 @@ const fetchUSerById = async (id: number) => {
         select: {
           id: true,
           profileImageUrl: true,
-          name: true 
+          name: true,
         },
       },
     },
-  })
-  return user
-}
+  });
+  return user;
+};
 
 const fetchUSerByEmail = async (email: string) => {
   const user = await prisma.users.findUnique({
@@ -24,23 +24,28 @@ const fetchUSerByEmail = async (email: string) => {
       email: email,
     },
   });
-  return user
-}
+  return user;
+};
 
 //insert to user
-const addNewUser = async (tx: Prisma.TransactionClient, newEmail: string, newName: string, newProfileImageUrl?: string) => {
+const addNewUser = async (
+  tx: Prisma.TransactionClient,
+  newEmail: string,
+  newName: string,
+  newProfileImageUrl?: string,
+) => {
   const addedUser = await prisma.users.create({
     data: {
-      name: newEmail,
-      email: newName,
-      profileImageUrl: newProfileImageUrl? newProfileImageUrl: ''
+      name: newName,
+      email: newEmail,
+      profileImageUrl: newProfileImageUrl ? newProfileImageUrl : "",
     },
   });
-  return addedUser
-}
+  return addedUser;
+};
 
 export default {
   fetchUSerById,
   fetchUSerByEmail,
   addNewUser,
-  }
+};
