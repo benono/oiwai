@@ -101,7 +101,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   useEffect(() => {
     // Fetch user information when they are logged in
     const fetchUserInfo = async () => {
-      if (isLoaded && !isSignedIn) {
+      if (!isLoaded || !isSignedIn) {
         return;
       }
 
@@ -130,7 +130,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
     };
 
     fetchUserInfo();
-  }, [form, toast, isLoaded, isSignedIn, axios]);
+  }, [isLoaded, isSignedIn, form, toast, axios]);
 
   const onSubmit = async (data: FormValues) => {
     try {
