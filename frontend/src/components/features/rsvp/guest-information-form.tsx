@@ -63,7 +63,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      status: "ACCEPT",
+      status: selection,
       restriction: "",
       name: "",
       email: "",
@@ -96,6 +96,10 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const [registeredFamilyMembers, setRegisteredFamilyMembers] = useState<
     { name: string; profileImageUrl: string }[]
   >([]);
+
+  useEffect(() => {
+    form.setValue("status", selection);
+  }, [selection, form]);
 
   useEffect(() => {
     // Fetch user information when they are logged in
