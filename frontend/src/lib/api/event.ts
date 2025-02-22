@@ -8,7 +8,7 @@ export const getEventInfo = async (
   try {
     const axiosInstance = await getServerAxiosInstance();
     const response = await axiosInstance.get(`events/${eventId}`);
-    return response.data.event;
+    return response.data;
 
     // ********** Uncomment the data below to use dummy data **********
     // return {

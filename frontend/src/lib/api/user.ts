@@ -6,7 +6,7 @@ export const getUserInfo = async (): Promise<{ user: UserType }> => {
   try {
     const axiosInstance = await getServerAxiosInstance();
     const response = await axiosInstance.get("/me");
-    return response.data.user;
+    return response.data;
 
     // ********** Uncomment the data below to use dummy data **********
     // return {
@@ -32,6 +32,7 @@ export const getUserInfo = async (): Promise<{ user: UserType }> => {
     // };
   } catch (err) {
     if (err instanceof Error) {
+      console.log(err, "errです");
       throw new Error();
     } else {
       throw new Error(String(err));

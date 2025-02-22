@@ -24,6 +24,7 @@ import { useAuthAxios } from "@/lib/api/axios-client";
 import { getUserInfo } from "@/lib/api/user";
 import { showErrorToast } from "@/lib/toast/toast-utils";
 import { RsvpResponseType } from "@/types/rsvp-response";
+import { UserType } from "@/types/user";
 import { useAuth } from "@clerk/clerk-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
@@ -105,8 +106,8 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
       }
 
       try {
-        const response = await getUserInfo();
-        const userInformation = response.user;
+        const response = await axios.get<{ user: UserType }>(`/me`);
+        const userInformation = response.data.user;
 
         form.setValue("name", userInformation.name);
         form.setValue("email", userInformation.email);
@@ -129,12 +130,10 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
     };
 
     fetchUserInfo();
-  }, [form, toast, isLoaded, isSignedIn]);
+  }, [form, toast, isLoaded, isSignedIn, axios]);
 
   const onSubmit = async (data: FormValues) => {
     try {
-
-
       const eventId = params?.eventId;
 
       const postData: RsvpResponseType = {

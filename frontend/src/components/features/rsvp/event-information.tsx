@@ -21,11 +21,11 @@ const EventInformation = async ({ event }: { event: EventType }) => {
         <h1 className="text-2xl font-bold">{event.title}</h1>
         <div>
           <p className="font-semibold">
-            {formatDateTime(event.startTime, dateFormatOptions)}
+            {formatDateTime(new Date(event.startTime), dateFormatOptions)}
           </p>
           <p className="text-sm font-medium">
-            {formatDateTime(event.startTime, timeFormatOptions)} -
-            {formatDateTime(event.endTime, timeFormatOptions)}
+            {formatDateTime(new Date(event.startTime), timeFormatOptions)} -
+            {formatDateTime(new Date(event.endTime), timeFormatOptions)}
           </p>
         </div>
       </div>
