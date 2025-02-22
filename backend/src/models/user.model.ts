@@ -23,6 +23,15 @@ const fetchUSerByEmail = async (email: string) => {
     where: {
       email: email,
     },
+    include: {
+      userFamilies: {
+        select: {
+          id: true,
+          profileImageUrl: true,
+          name: true,
+        },
+      },
+    },
   });
   return user;
 };

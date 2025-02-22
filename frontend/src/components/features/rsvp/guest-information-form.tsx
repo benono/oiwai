@@ -21,7 +21,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthAxios } from "@/lib/api/axios-client";
-import { getUserInfo } from "@/lib/api/user";
 import { showErrorToast } from "@/lib/toast/toast-utils";
 import { RsvpResponseType } from "@/types/rsvp-response";
 import { UserType } from "@/types/user";
