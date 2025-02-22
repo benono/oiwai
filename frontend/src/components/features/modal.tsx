@@ -16,7 +16,7 @@ type ModalProps = {
   title: string;
   description?: string;
   children?: ReactNode;
-  button: ReactNode;
+  button?: ReactNode;
 };
 
 export default function Modal({
@@ -24,7 +24,6 @@ export default function Modal({
   title,
   description,
   button,
-  children,
 }: ModalProps) {
   return (
     <Dialog>
@@ -34,14 +33,15 @@ export default function Modal({
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-        {children}
-        <DialogFooter className="flex justify-between">
+        <DialogFooter className="flex flex-row justify-between gap-4">
           <DialogClose asChild>
             <Button type="button" variant="outline" className="w-full bg-white">
               Cancel
             </Button>
           </DialogClose>
-          {button}
+          <Button type="submit" className="w-full font-bold shadow-none bg-error">
+            {button}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

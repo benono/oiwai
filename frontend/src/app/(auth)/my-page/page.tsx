@@ -51,12 +51,12 @@ export default async function MyPage() {
             </Modal>
           </div>
           <ul className="grid gap-4">
-            {userResponse.userFamilies.map(({ id, name, profileImageUrl }) => (
+            {userResponse.userFamilies.map(({ id, name, profileImageUrl,  }) => (
               <FamilyCard
                 key={id}
-                id={id}
                 name={name}
                 profileImageUrl={profileImageUrl}
+                familyId={id}
               />
             ))}
           </ul>
