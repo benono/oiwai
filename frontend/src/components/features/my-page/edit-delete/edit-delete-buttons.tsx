@@ -37,6 +37,7 @@ export default function EditDeleteButtons({
         button={button}
       />
       <PersonModal
+        mode="edit"
         title={title}
         defaultName={defaultName}
         defaultImage={defaultImage}

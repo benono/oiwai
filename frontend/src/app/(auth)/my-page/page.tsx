@@ -1,7 +1,7 @@
-import Modal from "@/components/features/modal";
 import EventCardContainer from "@/components/features/my-page/events/event-card-container";
 import FamilyCard from "@/components/features/my-page/family/family-card";
 import ProfileCard from "@/components/features/my-page/profile/profile-card";
+import PersonModal from "@/components/features/person-modal";
 import { Button } from "@/components/ui/button";
 import { getUserInfo } from "@/lib/api/user";
 import { PlusIcon } from "lucide-react";
@@ -33,7 +33,9 @@ export default async function MyPage() {
         <div className="grid gap-4">
           <div className="flex items-center justify-between text-text">
             <h2 className="text-base font-bold">Your family</h2>
-            <Modal
+            <PersonModal
+              mode="new"
+              type="family"
               trigger={
                 <Button className="h-auto rounded-full py-1 font-bold shadow-none">
                   <PlusIcon />
@@ -41,17 +43,10 @@ export default async function MyPage() {
                 </Button>
               }
               title="Add family member"
-              button={
-                <Button className="w-full font-bold shadow-none">
-                  Add
-                </Button>
-              }
-            >
-              <p>Hello</p>{" "}
-            </Modal>
+            />
           </div>
           <ul className="grid gap-4">
-            {userResponse.userFamilies.map(({ id, name, profileImageUrl,  }) => (
+            {userResponse.userFamilies.map(({ id, name, profileImageUrl }) => (
               <FamilyCard
                 key={id}
                 name={name}

@@ -1,8 +1,9 @@
 "use client";
 
 import { updateFamilyInfo, updateUserInfo } from "@/lib/api/user";
+import { PencilLineIcon } from "lucide-react";
 import { notFound } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, ReactNode, useState } from "react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -15,21 +16,24 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { PencilLineIcon } from "lucide-react";
 
 type PersonModalProps = {
+  trigger?: ReactNode;
   title: string;
-  defaultName: string;
-  defaultImage: string;
+  defaultName?: string;
+  defaultImage?: string;
   type: "user" | "family";
+  mode: "new" | "edit";
   familyId?: string;
 };
 
 export default function PersonModal({
+  trigger,
   title,
   defaultName,
   defaultImage,
   type,
+  mode,
   familyId,
 }: PersonModalProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -72,9 +76,13 @@ export default function PersonModal({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="h-8 w-8 rounded-full bg-textSub/20 text-textSub shadow-none hover:bg-textSub/20 hover:opacity-70">
-          <PencilLineIcon />
-        </Button>
+        {trigger ? (
+          trigger
+        ) : (
+          <Button className="h-8 w-8 rounded-full bg-textSub/20 text-textSub shadow-none hover:bg-textSub/20 hover:opacity-70">
+            <PencilLineIcon />
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="bg-white">
         <DialogHeader>
@@ -102,7 +110,13 @@ export default function PersonModal({
             </Button>
           </DialogClose>
           <Button type="submit" className="w-full font-bold shadow-none">
-            {isLoading ? "Updating..." : "Update"}
+            {isLoading
+              ? "Updating..."
+              : mode === "new"
+                ? "Add"
+                : mode === "edit"
+                  ? "Update"
+                  : "Submit"}
           </Button>
         </DialogFooter>
       </DialogContent>
