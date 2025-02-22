@@ -79,23 +79,23 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const { toast } = useToast();
   const { isLoaded, isSignedIn } = useAuth();
 
+  const [termsAccepted, setTermsAccepted] = useState(
+    form.getValues("termsAccepted"),
+  );
+  const [isEmailFetched, setIsEmailFetched] = useState(false);
+  const [newCompanionName, setNewCompanionName] = useState<string>("");
+  const [registeredFamilyMembers, setRegisteredFamilyMembers] = useState<
+    { name: string; profileImageUrl: string }[]
+  >([]);
   const [familyMemberOptions, setFamilyMemberOptions] = useState<
     { name: string; profileImageUrl: string }[]
   >([]);
   const [companions, setCompanions] = useState<
     { name: string; profileImageUrl?: string }[]
   >([]);
-  const [newCompanionName, setNewCompanionName] = useState<string>("");
-  const [termsAccepted, setTermsAccepted] = useState(
-    form.getValues("termsAccepted"),
-  );
-  const [isEmailFetched, setIsEmailFetched] = useState(false);
   const [selectedFamilyValue, setSelectedFamilyValue] = useState<
     string | undefined
   >("");
-  const [registeredFamilyMembers, setRegisteredFamilyMembers] = useState<
-    { name: string; profileImageUrl: string }[]
-  >([]);
 
   useEffect(() => {
     form.setValue("status", selection);
@@ -109,20 +109,21 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
       }
 
       try {
-        const response = await axios.get<{ user: UserType }>(`/me`);
+        const response = await axios.get<{ user: UserType }>("/me");
         const userInformation = response.data.user;
 
         form.setValue("name", userInformation.name);
         form.setValue("email", userInformation.email);
 
-        setFamilyMemberOptions(userInformation.userFamilies);
         setIsEmailFetched(true);
 
-        const registeredFamily = userInformation.userFamilies.map((member) => {
-          return { name: member.name, profileImageUrl: member.profileImageUrl };
-        });
+        const familyMembers = userInformation.userFamilies.map((member) => ({
+          name: member.name,
+          profileImageUrl: member.profileImageUrl,
+        }));
 
-        setRegisteredFamilyMembers(registeredFamily);
+        setFamilyMemberOptions(familyMembers);
+        setRegisteredFamilyMembers(familyMembers);
       } catch (err: unknown) {
         showErrorToast(
           toast,
