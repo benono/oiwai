@@ -37,15 +37,25 @@ export default function PersonModal({
   familyId,
 }: PersonModalProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [image, setImage] = useState<File | null>(null);
+  const [name, setName] = useState<string>(defaultName || "");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const formData = new FormData(e.target as HTMLFormElement);
-    const name = formData.get("name") as string;
-    const imageFile = formData.get("image") as File;
-    const imageUrl = imageFile ? URL.createObjectURL(imageFile) : defaultImage;
+    const imageUrl = image ? URL.createObjectURL(image) : defaultImage;
 
     try {
       let response;
@@ -62,6 +72,13 @@ export default function PersonModal({
       if (!response) {
         notFound();
       }
+
+      if (response?.success) {
+        setIsOpen(false);
+        // TODO: implement toast
+      } else {
+        notFound();
+      }
     } catch (err) {
       if (err instanceof Error) {
         throw new Error();
@@ -74,7 +91,7 @@ export default function PersonModal({
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger ? (
           trigger
@@ -88,37 +105,47 @@ export default function PersonModal({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="grid gap-6">
           <div className="grid gap-4">
-            <input type="file" id="image" name="image" />
+            <input
+              type="file"
+              id="image"
+              name="image"
+              onChange={handleImageChange}
+            />
             <div className="grid gap-2">
               <Label htmlFor="name">Name</Label>
               <Input
                 id="name"
-                defaultValue={defaultName}
                 name="name"
                 required
+                onChange={handleNameChange}
+                value={name}
               />
             </div>
           </div>
-        </form>
 
-        <DialogFooter className="flex flex-row justify-between gap-4">
-          <DialogClose asChild>
-            <Button type="button" variant="outline" className="w-full bg-white">
-              Cancel
+          <DialogFooter className="flex flex-row justify-between gap-4">
+            <DialogClose asChild>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full bg-white"
+              >
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type="submit" className="w-full font-bold shadow-none">
+              {isLoading
+                ? "Updating..."
+                : mode === "new"
+                  ? "Add"
+                  : mode === "edit"
+                    ? "Update"
+                    : "Submit"}
             </Button>
-          </DialogClose>
-          <Button type="submit" className="w-full font-bold shadow-none">
-            {isLoading
-              ? "Updating..."
-              : mode === "new"
-                ? "Add"
-                : mode === "edit"
-                  ? "Update"
-                  : "Submit"}
-          </Button>
-        </DialogFooter>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
