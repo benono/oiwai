@@ -33,6 +33,7 @@ export default function FamilyCard({
         defaultImage={profileImageUrl}
         familyId={familyId}
         type="family"
+        errorMessage="Failed to update family information. Please try again."
       />
     </li>
   );

@@ -1,6 +1,12 @@
 "use client";
 
-import { updateFamilyInfo, updateUserInfo } from "@/lib/api/user";
+import { useToast } from "@/hooks/use-toast";
+import {
+  addFamilyMember,
+  updateFamilyInfo,
+  updateUserInfo,
+} from "@/lib/api/user";
+import { showErrorToast } from "@/lib/toast/toast-utils";
 import { PencilLineIcon, X } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -33,6 +39,7 @@ type PersonModalProps = {
   type: "user" | "family";
   mode: "new" | "edit";
   familyId?: string;
+  errorMessage: string;
 };
 
 export default function PersonModal({
@@ -43,14 +50,15 @@ export default function PersonModal({
   type,
   mode,
   familyId,
+  errorMessage,
 }: PersonModalProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const [image, setImage] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string>(defaultImage);
   const [name, setName] = useState<string>(defaultName || "");
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const inputImageRef = useRef<HTMLInputElement>(null!);
+  const { toast } = useToast();
 
   // image functions
   const handleImageClick = (e: React.MouseEvent) => {
@@ -68,16 +76,14 @@ export default function PersonModal({
   const handleImageDelete = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // setImage(null);
     revokeObjectURL();
-    // setImageUrl(defaultImage);
     setImageUrl("/images/profile_default.png");
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    revokeObjectURL();
+    // revokeObjectURL();
     setImageUrl(URL.createObjectURL(file));
   };
 
@@ -105,6 +111,11 @@ export default function PersonModal({
           name,
           profileImageUrl: imageUrl,
         });
+      } else if (mode === "new") {
+        response = await addFamilyMember({
+          name,
+          profileImageUrl: imageUrl,
+        });
       }
 
       if (!response?.success) {
@@ -113,12 +124,11 @@ export default function PersonModal({
 
       setIsOpen(false);
       resetForm();
-      // TODO: implement toast
-    } catch (err) {
+    } catch (err: unknown) {
       if (err instanceof Error) {
-        throw new Error();
+        showErrorToast(toast, err.message, errorMessage);
       } else {
-        throw new Error(String(err));
+        showErrorToast(toast, "Unknown error occurred", errorMessage);
       }
     } finally {
       setIsLoading(false);
@@ -129,7 +139,7 @@ export default function PersonModal({
     return () => {
       revokeObjectURL();
     };
-  }, [revokeObjectURL]);
+  }, [revokeObjectURL, imageUrl]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -142,7 +152,10 @@ export default function PersonModal({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="bg-white gap-6" onClick={(e) => e.stopPropagation()}>
+      <DialogContent
+        className="gap-6 bg-white"
+        onClick={(e) => e.stopPropagation()}
+      >
         <DialogHeader>
           <DialogTitle className="text-left">{title}</DialogTitle>
         </DialogHeader>

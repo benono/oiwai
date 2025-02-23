@@ -43,6 +43,7 @@ export default async function MyPage() {
                 </Button>
               }
               title="Add family member"
+              errorMessage="Failed to add new family member. Please try again."
             />
           </div>
           <ul className="grid gap-4">

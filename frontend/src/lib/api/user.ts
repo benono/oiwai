@@ -50,7 +50,7 @@ export const updateUserInfo = async (updatedData: {
       user: {
         id: "12345",
         name: updatedData.name ?? "Tracy",
-        profileImageUrl: updatedData.profileImageUrl ?? "/images/sample_profile.png"
+        profileImageUrl: updatedData.profileImageUrl ?? "/images/profile_default.png"
       }
     })
 
@@ -81,7 +81,7 @@ export const updateFamilyInfo = async (updatedData: {
       familyMember: {
         id: updatedData.familyId,
         name: updatedData.name ?? "Tracy",
-        profileImageUrl: updatedData.profileImageUrl ?? "/images/sample_profile.png"
+        profileImageUrl: updatedData.profileImageUrl ?? "/images/profile_default.png"
       }
     })
 
@@ -94,3 +94,29 @@ export const updateFamilyInfo = async (updatedData: {
   }
 };
 
+// Add family member
+export const addFamilyMember = async (familyData: {
+  name: string;
+  profileImageUrl?: string | null;
+}) => {
+  try {
+    // const axiosInstance = await getServerAxiosInstance()
+    // const response = await axiosInstance.patch(`/me/family`, familyData);
+    // return response.data;
+
+    return Promise.resolve({
+      success: true,
+      message: "Family member added successfully",
+      familyMember: {
+        name: familyData.name,
+        profileImageUrl: familyData.profileImageUrl ?? "/images/profile_default.png"
+      }
+    })
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(err.message || "Unknown error occurred");
+    } else {
+      throw new Error(String(err));
+    }
+  }
+}

@@ -34,6 +34,7 @@ export default function ProfileCard({
         defaultName={name}
         defaultImage={profileImageUrl}
         type="user"
+        errorMessage="Failed to update information. Please try again."
         userDeleteAction={deleteUserInfo}
       />
     </div>

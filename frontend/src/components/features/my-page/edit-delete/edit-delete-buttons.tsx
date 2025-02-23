@@ -19,6 +19,7 @@ type EditDeleteButtonsProps = {
   defaultImage: string;
   type: "user" | "family";
   familyId?: string;
+  errorMessage: string;
   userDeleteAction?: DeleteAction;
 };
 
@@ -31,6 +32,7 @@ export default function EditDeleteButtons({
   defaultImage,
   type,
   familyId,
+  errorMessage,
   userDeleteAction,
 }: EditDeleteButtonsProps) {
   const deleteAction = type === "user" && userDeleteAction;
@@ -61,6 +63,7 @@ export default function EditDeleteButtons({
         defaultImage={defaultImage}
         familyId={familyId}
         type={type}
+        errorMessage={errorMessage}
       ></PersonModal>
     </div>
   );
