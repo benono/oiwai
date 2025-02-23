@@ -43,7 +43,7 @@ const addNewUser = async (
   newName: string,
   newProfileImageUrl?: string,
 ) => {
-  const addedUser = await prisma.users.create({
+  const addedUser = await tx.users.create({
     data: {
       name: newName,
       email: newEmail,

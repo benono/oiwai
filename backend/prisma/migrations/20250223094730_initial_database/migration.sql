@@ -47,6 +47,7 @@ CREATE TABLE "event_participants" (
     "user_id" INTEGER NOT NULL,
     "user_family_id" INTEGER,
     "message_to_host" TEXT NOT NULL,
+    "restriction_note" TEXT NOT NULL,
     "is_accepted" BOOLEAN NOT NULL,
     "is_attended" BOOLEAN NOT NULL,
 
@@ -54,13 +55,13 @@ CREATE TABLE "event_participants" (
 );
 
 -- CreateTable
-CREATE TABLE "participant_restrictions" (
+CREATE TABLE "event_temp_participants" (
     "id" SERIAL NOT NULL,
     "event_id" INTEGER NOT NULL,
-    "user_id" INTEGER NOT NULL,
-    "note" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "is_attended" BOOLEAN NOT NULL,
 
-    CONSTRAINT "participant_restrictions_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "event_temp_participants_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -136,10 +137,7 @@ ALTER TABLE "event_participants" ADD CONSTRAINT "event_participants_user_id_fkey
 ALTER TABLE "event_participants" ADD CONSTRAINT "event_participants_user_family_id_fkey" FOREIGN KEY ("user_family_id") REFERENCES "user_families"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "participant_restrictions" ADD CONSTRAINT "participant_restrictions_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "participant_restrictions" ADD CONSTRAINT "participant_restrictions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "event_temp_participants" ADD CONSTRAINT "event_temp_participants_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "necessities" ADD CONSTRAINT "necessities_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
