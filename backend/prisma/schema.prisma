@@ -22,8 +22,7 @@ model Users {
   userFamilies UserFamilies[]
   events Events[]
   eventParticipants EventParticipants[]
-  participantRestrictions ParticipantRestrictions[]
-  necessities Necessities[]
+  participantNecessities ParticipantNecessities[]
 
   @@map("users")
 }
@@ -42,8 +41,8 @@ model UserFamilies {
 
 model Events {
   id        Int      @id @default(autoincrement())
-  user       Users @relation(fields: [userId], references: [id])
-  userId  Int    @map("user_id")
+  host       Users @relation(fields: [hostId], references: [id])
+  hostId  Int    @map("host_id")
   title String
   thumbnailUrl String  @map("thumbnail_url")
   startTime DateTime  @map("start_time")
@@ -55,14 +54,12 @@ model Events {
   address1 String
   address2 String
   isAskRestrictions Boolean  @map("is_ask_restrictions")
-  eventType String  @map("event_type")
-  designInfo String  @map("design_info")
   theme String
   noteForThingsToBuy String  @map("note_for_things_to_buy")
   noteForNecessities String  @map("note_for_necessities")
 
   eventParticipants EventParticipants[]
-  participantRestrictions ParticipantRestrictions[]
+  eventTempParticipant EventTempParticipant[]
   necessities Necessities[]
   thingsToBuy ThingsToBuy[]
   timelines Timelines[]
@@ -79,37 +76,47 @@ model EventParticipants {
   userId  Int    @map("user_id")
   userFamilies     UserFamilies? @relation(fields: [userFamilyId], references: [id])
   userFamilyId     Int?    @map("user_family_id")
+  messageToHost    String @map("message_to_host")
+  restrictionNote String @map("restriction_note")
   isAccepted Boolean    @map("is_accepted")
   isAttended Boolean    @map("is_attended")
-  
+
   @@unique(fields: [eventId, userId, userFamilyId], name: "event_participants_Id")
 
   @@map("event_participants")
 }
 
-model ParticipantRestrictions {
+model EventTempParticipant {
   id        Int      @id @default(autoincrement())
   event       Events @relation(fields: [eventId], references: [id])
-  eventId     Int  @map("event_id")
-  user       Users @relation(fields: [userId], references: [id])
-  userId  Int    @map("user_id")
-  note String
+  eventId     Int    @map("event_id")
+  name String
+  isAttended Boolean    @map("is_attended")
 
-  @@map("participant_restrictions")
+  @@map("event_temp_participants")
 }
 
 model Necessities {
+  id        Int      @id @default(autoincrement())
   event       Events @relation(fields: [eventId], references: [id])
   eventId     Int  @map("event_id")
-  user       Users @relation(fields: [userId], references: [id])
-  userId  Int    @map("user_id")
-  order Int
   item String
-  isAdded Boolean    @map("is_added")
-  
-  @@unique(fields: [eventId, userId, order], name: "necessity_id")
+
+  participantNecessities ParticipantNecessities[]
 
   @@map("necessities")
+}
+
+model ParticipantNecessities {
+  necessities       Necessities @relation(fields: [necessityId], references: [id])
+  necessityId  Int    @map("necessity_id")
+  user       Users @relation(fields: [userId], references: [id])
+  userId  Int    @map("user_id")
+  isAdded Boolean    @map("is_added")
+
+  @@unique(fields: [necessityId, userId], name: "necessity_id")
+
+  @@map("participant_necessities")
 }
 
 model ThingsToBuy {
