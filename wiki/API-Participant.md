@@ -20,8 +20,9 @@ Retrieves all participants for selected event.
 
 ```json
 {
+  "data": {
     "acceptedParticipants": [
-        {
+      {
         "id": "string",
         "name": "string",
         "profileImageUrl": "string",
@@ -43,6 +44,7 @@ Retrieves all participants for selected event.
         "isAttended": boolean
         }
     ]
+  }
 }
 ```
 
