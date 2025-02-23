@@ -6,8 +6,8 @@ export const deleteUserInfo = async (): Promise<{
   message: string;
 }> => {
   try {
-    // const axios = useAuthAxios();
-    // const response = await axios.delete("/me");
+    // const axiosInstance = await getServerAxiosInstance();
+    // const response = await axiosInstance.delete("/me");
     // return response.data
 
     return Promise.resolve({
@@ -27,9 +27,9 @@ export const deleteFamilyInfo = async (
   familyId: string,
 ): Promise<{ success: boolean; message: string }> => {
   try {
-    // NOTE: remove after import RSVP PR
-    // const axios = useAuthAxios();
-    // const response = await axios.delete(`/me/family/${familyId}`);
+    // NOTE: uncomment after import RSVP PR
+    // const axiosInstance = await getServerAxiosInstance();
+    // const response = await axiosInstance.delete(`/me/family/${familyId}`);
     // return response.data
 
     return Promise.resolve({

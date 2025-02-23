@@ -19,7 +19,7 @@ export type EventType = {
 
 export type MyPageEventType = {
   events: Array<
-    EventType & {
+    Pick<EventType, "id" | "title" | "thumbnailUrl" | "startTime" | "endTime"> & {
       isHost: boolean;
     }
   >;

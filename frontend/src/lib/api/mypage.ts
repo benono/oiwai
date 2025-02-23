@@ -4,8 +4,10 @@ import { MyPageEventType } from "@/types/event";
 // Fetch event information
 export const getMyPageEventInfo = async (): Promise<MyPageEventType> => {
   try {
-    // const axios = useAuthAxios();
-    // const response = await axios.get(`/me/events`);
+    // TODO: Uncomment when integrating with backend
+    // const axiosInstance = await getServerAxiosInstance();
+    // const response = await axiosInstance.get(`/me/events`);
+    // return response.data;
 
     return {
       // Dummy Data
@@ -30,8 +32,9 @@ export const getMyPageEventInfo = async (): Promise<MyPageEventType> => {
     };
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err.message);
+      throw new Error(err.message || "Event not found");
+    } else {
+      throw new Error(String(err));
     }
-    throw new Error("Event not found");
   }
 };
