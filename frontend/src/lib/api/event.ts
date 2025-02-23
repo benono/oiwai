@@ -1,21 +1,19 @@
 import { EventType } from "@/types/event";
-// import { useAuthAxios } from "./axios-client";
+import { getServerAxiosInstance } from "./axios-server";
 
-// Fetch event information
-export const getEventInfo = async (eventId: string): Promise<EventType> => {
+// Fetch event information for RSVP
+export const getEventForRsvp = async (
+  eventId: string,
+): Promise<{ event: EventType }> => {
   try {
-    // const axios = useAuthAxios();
-    // const response = await axios.get(`events/${eventId}`);
-
-    return {
-      // Dummy Data
-      id: "12345",
-      title: "Emily’s Birthday Party🚀",
-      thumbnail: "/images/sample-thumbnail.png",
-      startTime: new Date("2025-03-01T14:00:00Z"),
-      endTime: new Date("2025-03-01T16:00:00Z"),
-    };
+    const axiosInstance = await getServerAxiosInstance();
+    const response = await axiosInstance.get(`events/${eventId}`);
+    return response.data;
   } catch (err) {
-    throw new Error("Event not found");
+    if (err instanceof Error) {
+      throw new Error();
+    } else {
+      throw new Error(String(err));
+    }
   }
 };
