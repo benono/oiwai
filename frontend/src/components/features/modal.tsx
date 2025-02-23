@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Dialog,
   DialogClose,
@@ -8,15 +10,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ReactNode } from "react";
+import { FormEvent, ReactNode, useState } from "react";
 import { Button } from "../ui/button";
 
 type ModalProps = {
   trigger: ReactNode;
   title: string;
   description?: string;
-  children?: ReactNode;
   button?: ReactNode;
+  deleteAction: (id?: string) => Promise<{ success: boolean; message: string }>;
+  id?: string;
 };
 
 export default function Modal({
@@ -24,9 +27,40 @@ export default function Modal({
   title,
   description,
   button,
+  deleteAction,
+  id,
 }: ModalProps) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleDelete = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    let response;
+    try {
+      if (id) {
+        response = await deleteAction(id);
+      } else {
+        response = await deleteAction();
+      }
+      if (response.success) {
+        setIsOpen(false);
+        // TODO: implement toast
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new Error();
+      } else {
+        throw new Error(String(err));
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="bg-white">
         <DialogHeader>
@@ -39,8 +73,12 @@ export default function Modal({
               Cancel
             </Button>
           </DialogClose>
-          <Button type="submit" className="w-full font-bold shadow-none bg-error">
-            {button}
+          <Button
+            type="submit"
+            className="w-full bg-error font-bold shadow-none"
+            onClick={handleDelete}
+          >
+            {isLoading ? "Loading..." : button}
           </Button>
         </DialogFooter>
       </DialogContent>

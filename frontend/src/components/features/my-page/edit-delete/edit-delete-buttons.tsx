@@ -1,29 +1,46 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
+import { deleteFamilyInfo } from "@/lib/actions/my-page/my-page";
 import { UserRoundXIcon } from "lucide-react";
 import Modal from "../../modal";
 import PersonModal from "../../person-modal";
 
+type DeleteAction = (
+  id?: string,
+) => Promise<{ success: boolean; message: string }>;
+
 type EditDeleteButtonsProps = {
   title: string;
-  errorTitle: string;
-  errorDescription: string;
+  deleteTitle: string;
+  deleteDescription: string;
   button: string;
   defaultName: string;
   defaultImage: string;
   type: "user" | "family";
   familyId?: string;
+  userDeleteAction?: DeleteAction;
 };
 
 export default function EditDeleteButtons({
   title,
-  errorTitle,
-  errorDescription,
+  deleteTitle,
+  deleteDescription,
   button,
   defaultName,
   defaultImage,
   type,
   familyId,
+  userDeleteAction,
 }: EditDeleteButtonsProps) {
+  const deleteAction = type === "user" && userDeleteAction;
+  const handleDelete = async () => {
+    if (type === "family" && familyId) {
+      return await deleteFamilyInfo(familyId);
+    }
+    return { success: false, message: "No action performed" };
+  };
+
   return (
     <div className="flex gap-2">
       <Modal
@@ -32,9 +49,10 @@ export default function EditDeleteButtons({
             <UserRoundXIcon size={16} />
           </Button>
         }
-        title={errorTitle}
-        description={errorDescription}
+        title={deleteTitle}
+        description={deleteDescription}
         button={button}
+        deleteAction={deleteAction || handleDelete}
       />
       <PersonModal
         mode="edit"

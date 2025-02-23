@@ -1,3 +1,4 @@
+import { deleteUserInfo } from "@/lib/actions/my-page/my-page";
 import Image from "next/image";
 import EditDeleteButtons from "../edit-delete/edit-delete-buttons";
 
@@ -27,12 +28,13 @@ export default function ProfileCard({
       </div>
       <EditDeleteButtons
         title="Edit account"
-        errorTitle="Delete account"
-        errorDescription="Are you sure you want to delete the account? This action cannot be undone."
+        deleteTitle="Delete account"
+        deleteDescription="Are you sure you want to delete the account? This action cannot be undone."
         button="Delete"
         defaultName={name}
         defaultImage={profileImageUrl}
         type="user"
+        userDeleteAction={deleteUserInfo}
       />
     </div>
   );

@@ -26,8 +26,8 @@ export default function FamilyCard({
       </div>
       <EditDeleteButtons
         title="Edit family member"
-        errorTitle="Remove family member"
-        errorDescription="Are you sure you want to remove this member? This action cannot be undone."
+        deleteTitle="Remove family member"
+        deleteDescription="Are you sure you want to remove this member? This action cannot be undone."
         button="Remove"
         defaultName={name}
         defaultImage={profileImageUrl}
