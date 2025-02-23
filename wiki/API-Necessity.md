@@ -14,13 +14,15 @@ Retrieves event's necessities. (only host can access)
 
 ```json
 {
-  "necessities": [
-    {
-      "id": "string",
-      "item": "string"
-    }
-  ],
-  "noteForNecessities": "string"
+  "data": {
+    "necessities": [
+      {
+        "id": "string",
+        "item": "string"
+      }
+    ],
+    "noteForNecessities": "string"
+  }
 }
 ```
 
@@ -53,13 +55,15 @@ Create necessities for event. (only host can access)
 {
   "success": boolean,
   "message": "string",
-  "necessities": [
-    {
-      "id": "string",
-      "item": "string",
-    }
-  ],
-  "noteForNecessities": "string"
+  "data": {
+    "necessities": [
+      {
+        "id": "string",
+        "item": "string",
+      }
+    ],
+    "noteForNecessities": "string"
+  }
 }
 ```
 
@@ -92,13 +96,15 @@ Updates necessities for event. (only host can access)
 {
   "success": boolean,
   "message": "string",
-  "necessities": [
+  "data": {
+    "necessities": [
     {
       "id": "string",
       "item": "string",
-    }
-  ],
-  "noteForNecessities": "string"
+      }
+    ],
+    "noteForNecessities": "string"
+  }
 }
 ```
 
@@ -144,13 +150,15 @@ Retrieves logged-in user's necessities for event. (only guests can access)
 {
   "success": boolean,
   "message": "string",
-  "necessities": [
-    {
-      "id": "string",
-      "item": "string",
-    }
-  ],
-  "noteForNecessities": "string"
+  "data": {
+    "necessities": [
+      {
+        "id": "string",
+        "item": "string",
+      }
+    ],
+    "noteForNecessities": "string"
+  }
 }
 ```
 
@@ -178,10 +186,12 @@ Updates logged-in user's necessity for event.
 {
   "success": boolean,
   "message": "string",
-  "necessity": {
-    "id": "string",
-    "item": "string",
-    "isAdded": boolean
+  "data": {
+    "necessity": {
+      "id": "string",
+      "item": "string",
+      "isAdded": boolean
+    }
   }
 }
 ```
