@@ -1,9 +1,17 @@
 "use client";
 
 import { updateFamilyInfo, updateUserInfo } from "@/lib/api/user";
-import { PencilLineIcon } from "lucide-react";
+import { PencilLineIcon, X } from "lucide-react";
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { FormEvent, ReactNode, useState } from "react";
+import React, {
+  FormEvent,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -31,31 +39,61 @@ export default function PersonModal({
   trigger,
   title,
   defaultName,
-  defaultImage,
+  defaultImage = "/images/profile_default.png",
   type,
   mode,
   familyId,
 }: PersonModalProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [image, setImage] = useState<File | null>(null);
+  // const [image, setImage] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>(defaultImage);
   const [name, setName] = useState<string>(defaultName || "");
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
+  const inputImageRef = useRef<HTMLInputElement>(null!);
+
+  // image functions
+  const handleImageClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    inputImageRef.current.click();
+  };
+
+  const revokeObjectURL = useCallback(() => {
+    if (imageUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(imageUrl);
     }
+  }, [imageUrl]);
+
+  const handleImageDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // setImage(null);
+    revokeObjectURL();
+    // setImageUrl(defaultImage);
+    setImageUrl("/images/profile_default.png");
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    revokeObjectURL();
+    setImageUrl(URL.createObjectURL(file));
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
+  const resetForm = () => {
+    setName(defaultName || "");
+    revokeObjectURL();
+    setImageUrl(defaultImage);
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
-    const imageUrl = image ? URL.createObjectURL(image) : defaultImage;
 
     try {
       let response;
@@ -69,16 +107,13 @@ export default function PersonModal({
         });
       }
 
-      if (!response) {
+      if (!response?.success) {
         notFound();
       }
 
-      if (response?.success) {
-        setIsOpen(false);
-        // TODO: implement toast
-      } else {
-        notFound();
-      }
+      setIsOpen(false);
+      resetForm();
+      // TODO: implement toast
     } catch (err) {
       if (err instanceof Error) {
         throw new Error();
@@ -89,6 +124,12 @@ export default function PersonModal({
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      revokeObjectURL();
+    };
+  }, [revokeObjectURL]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -101,19 +142,39 @@ export default function PersonModal({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="bg-white">
+      <DialogContent className="bg-white gap-6" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="text-left">{title}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid gap-6">
-          <div className="grid gap-4">
+          <div className="grid justify-items-center gap-4">
+            <div className="relative">
+              <button
+                type="button"
+                className="absolute -right-8"
+                onClick={handleImageDelete}
+              >
+                <X size={14} />
+              </button>
+              <button type="button" onClick={handleImageClick}>
+                <Image
+                  src={imageUrl}
+                  alt={name}
+                  className="h-16 w-16 rounded-full object-cover"
+                  width={64}
+                  height={64}
+                />
+              </button>
+            </div>
             <input
               type="file"
               id="image"
               name="image"
               onChange={handleImageChange}
+              hidden
+              ref={inputImageRef}
             />
-            <div className="grid gap-2">
+            <div className="grid w-full gap-2">
               <Label htmlFor="name">Name</Label>
               <Input
                 id="name"
