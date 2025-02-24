@@ -47,7 +47,16 @@ const updateUserFamily = async (
   return userFamily;
 };
 
+const deleteUserFamily = async (user_family_id: number) => {
+  await prisma.userFamilies.update({
+    where: { id: user_family_id },
+    data: { isDeleted: true },
+  });
+};
+
 export default {
   addNewUserFamily,
   fetchUserFamilyByUserId,
+  updateUserFamily,
+  deleteUserFamily,
 };
