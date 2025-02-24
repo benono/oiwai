@@ -21,7 +21,7 @@ Retrieves event's things to buy. (only host can access)
         "name": "string",
         "price": number,
         "quantity": number,
-        "isAdded": boolean
+        "isPusrchased": boolean
       }
     ]
   },
@@ -65,7 +65,7 @@ Creates a thing to buy for an event when it's empty. (only host can access)
         "name": "string",
         "price": number,
         "quantity": number,
-        "isAdded": boolean
+        "isPurchased": boolean
       }
     ],
     "budget": number // TODO: check if need totalAmount and remnant
@@ -109,7 +109,7 @@ Adds an item to things to buy. (only host can access)
         "name": "string",
         "price": number,
         "quantity": number,
-        "isAdded": boolean
+        "isPurchased": boolean
       }
     ]
   }
