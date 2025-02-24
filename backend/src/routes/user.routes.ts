@@ -1,11 +1,22 @@
 import { Router } from "express";
-import requireAuthMiddleware from '../middleware/auth';
 import usersController from "../controllers/user.controller";
+import requireAuthMiddleware from "../middleware/auth";
 
-const usersRouter = Router()
+const usersRouter = Router();
 
 // Routes
-usersRouter.get('/', requireAuthMiddleware, usersController.getuserById)
+usersRouter.get("/", requireAuthMiddleware, usersController.getuserById);
+usersRouter.get(
+  "/events",
+  requireAuthMiddleware,
+  usersController.getEventInfoByEmail,
+);
+usersRouter.patch("/", requireAuthMiddleware, usersController.updateUser);
+usersRouter.delete("/", requireAuthMiddleware, usersController.deleteUser);
+usersRouter.post(
+  "/family",
+  requireAuthMiddleware,
+  usersController.addNewUserFamily,
+);
 
-
-export default usersRouter
+export default usersRouter;

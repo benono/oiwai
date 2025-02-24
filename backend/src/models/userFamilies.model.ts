@@ -24,9 +24,27 @@ const addNewUserFamily = async (
       userId: newUserId,
       name: newName,
       profileImageUrl: newProfileImageUrl ? newProfileImageUrl : "",
+      isDeleted: false,
     },
   });
   return addedEventParticipant;
+};
+
+const updateUserFamily = async (
+  tx: Prisma.TransactionClient,
+  userFamilyId: number,
+  updates: { name?: string; profileImageUrl?: string },
+) => {
+  if (Object.keys(updates).length === 0) {
+    throw new Error("no update needed");
+  }
+
+  const userFamily = await tx.userFamilies.update({
+    where: { id: userFamilyId },
+    data: { ...updates },
+  });
+
+  return userFamily;
 };
 
 export default {

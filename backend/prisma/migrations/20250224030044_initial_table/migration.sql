@@ -4,6 +4,7 @@ CREATE TABLE "users" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "profile_image_url" TEXT NOT NULL,
+    "is_deleted" BOOLEAN NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -14,6 +15,7 @@ CREATE TABLE "user_families" (
     "user_id" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
     "profile_image_url" TEXT NOT NULL,
+    "is_deleted" BOOLEAN NOT NULL,
 
     CONSTRAINT "user_families_pkey" PRIMARY KEY ("id")
 );
