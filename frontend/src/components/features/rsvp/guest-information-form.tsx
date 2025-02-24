@@ -26,6 +26,7 @@ import { RsvpResponseType } from "@/types/rsvp-response";
 import { UserType } from "@/types/user";
 import { useAuth } from "@clerk/clerk-react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -403,17 +404,11 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                         className="mt-2 bg-white px-4 py-5 font-semibold placeholder:text-textSub"
                       />
                       <button
-                        className="mt-2 h-full px-4 py-2"
                         onClick={() => {
                           handleAddCompanion();
                         }}
                       >
-                        <Image
-                          src="/images/plus.svg"
-                          width={24}
-                          height={24}
-                          alt="icon for add person"
-                        />
+                        <Plus size={16} className="text-primary" />
                       </button>
                     </div>
                   </label>
@@ -426,12 +421,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                     }}
                     className="ml-auto flex items-center gap-2 rounded-full border border-primary bg-white px-4 py-2 text-sm font-bold text-primary hover:opacity-70"
                   >
-                    <Image
-                      src="/images/plus.svg"
-                      width={16}
-                      height={16}
-                      alt="icon for add person"
-                    />
+                    <Plus size={16} />
                     <span>Add person</span>
                   </button>
                 )}
