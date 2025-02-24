@@ -96,6 +96,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const [selectedFamilyValue, setSelectedFamilyValue] = useState<
     string | undefined
   >("");
+  const [isAddingPerson, setIsAddingPerson] = useState<boolean>(false);
 
   useEffect(() => {
     form.setValue("status", selection);
@@ -139,6 +140,11 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const onSubmit = async (data: FormValues) => {
     try {
       const eventId = params?.eventId;
+      let updatedCompanions = [...companions];
+
+      if (newCompanionName.trim() !== "") {
+        updatedCompanions = [...updatedCompanions, { name: newCompanionName }];
+      }
 
       const postData: RsvpResponseType = {
         status: data.status,
@@ -147,7 +153,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
           name: data.name,
           email: data.email,
         },
-        companions: companions.map((companion) => ({
+        companions: updatedCompanions.map((companion) => ({
           name: companion.name,
         })),
         message: data.message || "",
@@ -196,9 +202,9 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   };
 
   const handleAddCompanion = () => {
-    if (newCompanionName.trim() === "") return;
     setCompanions([...companions, { name: newCompanionName }]);
     setNewCompanionName("");
+    setIsAddingPerson(false);
   };
 
   const handleCompanionChange = (index: number, value: string) => {
@@ -380,28 +386,55 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                 />
               )}
               <div className="mt-4 space-y-2">
-                <label className="pt-4 text-sm font-bold">
-                  Companion name
-                  <Input
-                    value={newCompanionName}
-                    onChange={(e) => setNewCompanionName(e.target.value)}
-                    placeholder="Enter companion's name"
-                    className="mt-2 bg-white px-4 py-5 font-semibold placeholder:text-textSub"
-                  />
-                </label>
-                <button
-                  type="button"
-                  onClick={handleAddCompanion}
-                  className="ml-auto flex items-center gap-2 rounded-full border border-primary bg-white px-4 py-2 text-sm font-bold text-primary hover:opacity-70"
-                >
-                  <Image
-                    src="/images/plus.svg"
-                    width={16}
-                    height={16}
-                    alt="icon for add person"
-                  />
-                  <span>Add person</span>
-                </button>
+                {isAddingPerson && (
+                  <label className="pt-4 text-sm font-bold">
+                    Companion name
+                    <div className="flex items-center gap-2">
+                      <Input
+                        value={newCompanionName}
+                        onChange={(e) => setNewCompanionName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            if (newCompanionName.trim() === "") return;
+                            handleAddCompanion();
+                          }
+                        }}
+                        placeholder="Enter companion's name"
+                        className="mt-2 bg-white px-4 py-5 font-semibold placeholder:text-textSub"
+                      />
+                      <button
+                        className="mt-2 h-full px-4 py-2"
+                        onClick={() => {
+                          handleAddCompanion();
+                        }}
+                      >
+                        <Image
+                          src="/images/plus.svg"
+                          width={24}
+                          height={24}
+                          alt="icon for add person"
+                        />
+                      </button>
+                    </div>
+                  </label>
+                )}
+                {!isAddingPerson && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAddingPerson(true);
+                    }}
+                    className="ml-auto flex items-center gap-2 rounded-full border border-primary bg-white px-4 py-2 text-sm font-bold text-primary hover:opacity-70"
+                  >
+                    <Image
+                      src="/images/plus.svg"
+                      width={16}
+                      height={16}
+                      alt="icon for add person"
+                    />
+                    <span>Add person</span>
+                  </button>
+                )}
               </div>
             </div>
           )}
