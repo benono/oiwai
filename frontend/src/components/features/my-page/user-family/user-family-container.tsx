@@ -70,6 +70,7 @@ export default function UserFamilyContainer() {
             }
             title="Add family member"
             errorMessage="Failed to add new family member. Please try again."
+            onSuccess={refreshData}
           />
         </div>
         <ul className="grid gap-4">
