@@ -133,7 +133,7 @@ model Timelines {
   id        Int      @id @default(autoincrement())
   event       Events @relation(fields: [eventId], references: [id])
   eventId     Int  @map("event_id")
-  scheduleItem String    @map("schedule_item")
+  title String    @map("schedule_item")
   description String
   startTime DateTime  @map("start_time")
   endTime DateTime  @map("end_time")
