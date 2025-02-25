@@ -1,11 +1,10 @@
 import { Router } from "express";
-import requireAuthMiddleware from '../middleware/auth';
 import eventController from "../controllers/event.controller";
-
-const eventRouter = Router()
+import timelineController from "../controllers/timeline.controller";
+const eventRouter = Router();
 
 // Routes
-eventRouter.get('/:event_id', 
-    eventController.getEventById)
-
-export default eventRouter
+eventRouter.get("/:event_id", eventController.getEventById);
+eventRouter.get("/:event_id/timelines", timelineController.getEventTimelines);
+eventRouter.post("/:event_id/timelines", timelineController.createTimeline);
+export default eventRouter;
