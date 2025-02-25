@@ -7,6 +7,7 @@ const fetchUserFamilyByUserId = async (userId: number) => {
   const users = await prisma.userFamilies.findMany({
     where: {
       userId: userId,
+      isDeleted: false,
     },
   });
   return users;

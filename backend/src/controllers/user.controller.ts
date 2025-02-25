@@ -59,7 +59,7 @@ const updateUser = async (req: Request, res: Response) => {
     prisma.$transaction(async (tx) => {
       const newName = req.body.name;
       const is_remove_image = req.body.remove_image;
-      const file = req.body.profile_image as MulterFile;
+      const file = req.file as MulterFile;
 
       const { userId } = getAuth(req);
       if (!userId) {
@@ -143,7 +143,7 @@ const addNewUserFamily = async (req: Request, res: Response) => {
   try {
     prisma.$transaction(async (tx) => {
       const newName = req.body.name;
-      const file = req.body.profile_image as MulterFile;
+      const file = req.file as MulterFile;
 
       const { userId } = getAuth(req);
       if (!userId) {
@@ -196,13 +196,12 @@ const updateUserFamily = async (
       const familyId = Number(req.params.family_id);
       const newName = req.body.name;
       const is_remove_image = req.body.remove_image;
-      const file = req.body.profile_image as MulterFile;
+      const file = req.file as MulterFile;
 
       if (!file && !newName && !is_remove_image) {
         return res.status(400).json({ error: "request has no info" });
       }
 
-      console.log(file);
       let newProfileImageUrl = "";
       if (file) {
         newProfileImageUrl = await uploadImage.uploadImage(

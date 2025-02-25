@@ -15,7 +15,7 @@ usersRouter.get(
 usersRouter.patch(
   "/",
   requireAuthMiddleware,
-  upload.single("image"),
+  upload.single("profileImage"),
   usersController.updateUser,
 );
 usersRouter.delete("/", requireAuthMiddleware, usersController.deleteUser);
@@ -27,19 +27,21 @@ usersRouter.post(
 usersRouter.post(
   "/family/",
   requireAuthMiddleware,
-  upload.single("image"),
+  upload.single("profileImage"),
   usersController.addNewUserFamily,
 );
+
 usersRouter.patch(
   "/family/:family_id",
   requireAuthMiddleware,
-  upload.single("image"),
+  upload.single("profileImage"),
   usersController.updateUserFamily,
 );
+
 usersRouter.delete(
   "/family/:family_id",
   requireAuthMiddleware,
-  usersController.updateUserFamily,
+  usersController.deleteUserFamily,
 );
 
 export default usersRouter;
