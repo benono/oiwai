@@ -20,6 +20,7 @@ export default async function MyPage() {
   // }
 
   return (
+    // TODO: delete className after merge eventHome PR
     <section className="grid max-w-md gap-10 bg-white px-4 pb-20 pt-10 text-text md:mx-auto">
       <UserFamilyContainer />
       <section className="grid gap-4">

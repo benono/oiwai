@@ -56,6 +56,7 @@ export default function PersonModal({
 }: PersonModalProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string>(defaultImage);
+  const [imageUrlData, setImageUrlData] = useState<File | null>(null)
   const [name, setName] = useState<string>(defaultName || "");
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -91,37 +92,11 @@ export default function PersonModal({
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) {
-      setImageUrl(defaultImage);
-      return;
-    }
-
-    const cloudinaryUploadUrl =
-      "https://api.cloudinary.com/v1_1/dacawja7x/image/upload";
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "ml_default");
-
-    try {
-      const response = await fetch(cloudinaryUploadUrl, {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (data.secure_url) {
-        setImageUrl(data.secure_url);
-      } else {
-        console.error("Cloudinary upload failed:", data);
-      }
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        showErrorToast(toast, err.message, errorMessage);
-      } else {
-        showErrorToast(toast, "Failed to upload image", errorMessage);
-      }
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setImageUrlData(file)
+      setImageUrl(imageUrl);
+      revokeObjectURL()
     }
   };
 
@@ -141,30 +116,23 @@ export default function PersonModal({
 
     try {
       let response;
-      const currentImageUrl = imageUrl;
 
       if (type === "user") {
-        response = await updateUserInfo({ name, profileImageUrl: currentImageUrl });
+        response = await updateUserInfo({ name, profileImageUrl: imageUrlData });
       } else if (familyId && type === "family") {
         response = await updateFamilyInfo({
           familyId,
           name,
-          profileImageUrl: currentImageUrl,
+          profileImageUrl: imageUrlData,
         });
       }
 
       if (mode === "new") {
-        const requestBody = {
-          name,
-          profileImageUrl: currentImageUrl,
-        };
-
-        console.log("requestBody", requestBody)
         response = await addFamilyMember({
           name,
-          profileImageUrl: currentImageUrl,
+          profileImageUrl: imageUrlData,
         });
-        console.log("response", response)
+        console.log("add family", response)
       }
 
       if (!response?.success) {
