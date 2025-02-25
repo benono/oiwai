@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { seedBen } from "./seed-ben";
 
 const prisma = new PrismaClient();
 
@@ -156,6 +157,9 @@ async function main() {
       },
     },
   });
+
+  // ben's party
+  await seedBen();
 }
 
 main()
