@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id        Int      @id @default(autoincrement())
+  name String
+  email     String   @unique
+  profileImageUrl String @map("profile_image_url")
+
+  userFamilies UserFamilies[]
+  events Events[]
+  eventParticipants EventParticipants[]
+  participantNecessities ParticipantNecessities[]
+
+  @@map("users")
+}
+
+model UserFamilies {
+  id        Int      @id @default(autoincrement())
+  user       Users @relation(fields: [userId], references: [id])
+  userId  Int    @map("user_id")
+  name String
+  profileImageUrl String @map("profile_image_url")
+
+  eventParticipants EventParticipants[]
+
+  @@map("user_families")
+}
+
+model Events {
+  id        Int      @id @default(autoincrement())
+  host       Users @relation(fields: [hostId], references: [id])
+  hostId  Int    @map("host_id")
+  title String
+  thumbnailUrl String  @map("thumbnail_url")
+  startTime DateTime  @map("start_time")
+  endTime DateTime  @map("end_time")
+  country String
+  postalCode String  @map("postal_code")
+  province String
+  city String
+  address1 String
+  address2 String
+  isAskRestrictions Boolean  @map("is_ask_restrictions")
+  theme String
+  noteForThingsToBuy String  @map("note_for_things_to_buy")
+  noteForNecessities String  @map("note_for_necessities")
+  budget Int  @default(0)
+  eventParticipants EventParticipants[]
+  eventTempParticipant EventTempParticipant[]
+  necessities Necessities[]
+  thingsToBuy ThingsToBuy[]
+  timelines Timelines[]
+  medias Medias[]
+
+  @@map("events")
+}
+
+model EventParticipants {
+  id        Int      @id @default(autoincrement())
+  event       Events @relation(fields: [eventId], references: [id])
+  eventId     Int    @map("event_id")
+  user       Users @relation(fields: [userId], references: [id])
+  userId  Int    @map("user_id")
+  userFamilies     UserFamilies? @relation(fields: [userFamilyId], references: [id])
+  userFamilyId     Int?    @map("user_family_id")
+  messageToHost    String @map("message_to_host")
+  restrictionNote String @map("restriction_note")
+  isAccepted Boolean    @map("is_accepted")
+  isAttended Boolean    @map("is_attended")
+
+  @@unique(fields: [eventId, userId, userFamilyId], name: "event_participants_Id")
+
+  @@map("event_participants")
+}
+
+model EventTempParticipant {
+  id        Int      @id @default(autoincrement())
+  event       Events @relation(fields: [eventId], references: [id])
+  eventId     Int    @map("event_id")
+  name String
+  isAttended Boolean    @map("is_attended")
+
+  @@map("event_temp_participants")
+}
+
+model Necessities {
+  id        Int      @id @default(autoincrement())
+  event       Events @relation(fields: [eventId], references: [id])
+  eventId     Int  @map("event_id")
+  item String
+
+  participantNecessities ParticipantNecessities[]
+
+  @@map("necessities")
+}
+
+model ParticipantNecessities {
+  necessities       Necessities @relation(fields: [necessityId], references: [id])
+  necessityId  Int    @map("necessity_id")
+  user       Users @relation(fields: [userId], references: [id])
+  userId  Int    @map("user_id")
+  isAdded Boolean    @map("is_added")
+
+  @@unique(fields: [necessityId, userId], name: "necessity_id")
+
+  @@map("participant_necessities")
+}
+
+model ThingsToBuy {
+  id        Int      @id @default(autoincrement())
+  event       Events @relation(fields: [eventId], references: [id])
+  eventId     Int  @map("event_id")
+  item String
+  price Int
+  quantity Int
+  isPurchase Boolean    @map("is_purchase")
+
+    @@map("things_to_buy")
+}
+
+model Timelines {
+  id        Int      @id @default(autoincrement())
+  event       Events @relation(fields: [eventId], references: [id])
+  eventId     Int  @map("event_id")
+  title String
+  description String
+  startTime DateTime  @map("start_time")
+  endTime DateTime  @map("end_time")
+
+  @@map("timelines")
+}
+
+model Medias {
+  id        Int      @id @default(autoincrement())
+  event       Events @relation(fields: [eventId], references: [id])
+  eventId     Int  @map("event_id")
+  imageTitle String    @map("image_title")
+  imageUrl String    @map("image_url")
+
+  @@map("medias")
+}
