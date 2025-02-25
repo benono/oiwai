@@ -17,10 +17,13 @@ export type EventType = {
   noteForThingsToBuy: string;
 };
 
-export type MyPageEventType = {
-  events: Array<
-    Pick<EventType, "id" | "title" | "thumbnailUrl" | "startTime" | "endTime"> & {
-      isHost: boolean;
-    }
-  >;
+export type MyPageEventType = Pick<
+  EventType,
+  "id" | "title" | "thumbnailUrl" | "startTime" | "endTime"
+> & {
+  isHost: boolean;
+};
+
+export type MyPageEventReturnType = {
+  events: MyPageEventType[];
 };
