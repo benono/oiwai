@@ -2,7 +2,7 @@ import { EventType } from "@/types/event";
 import { getServerAxiosInstance } from "./axios-server";
 
 // Fetch event information for RSVP
-export const getEventForRsvp = async (
+export const getEventInformation = async (
   eventId: string,
 ): Promise<{ event: EventType }> => {
   try {

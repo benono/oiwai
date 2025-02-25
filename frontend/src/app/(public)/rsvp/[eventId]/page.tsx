@@ -1,6 +1,6 @@
 import EventInformation from "@/components/features/rsvp/event-information";
 import RsvpForm from "@/components/features/rsvp/rsvp-form";
-import { getEventForRsvp } from "@/lib/api/event";
+import { getEventInformation } from "@/lib/api/event";
 import { notFound } from "next/navigation";
 
 const RSVP = async ({ params }: { params: Promise<{ eventId: string }> }) => {
@@ -8,7 +8,7 @@ const RSVP = async ({ params }: { params: Promise<{ eventId: string }> }) => {
   const { eventId } = await params;
 
   try {
-    const response = await getEventForRsvp(eventId);
+    const response = await getEventInformation(eventId);
     eventData = response.event;
   } catch (err) {
     console.error(err);

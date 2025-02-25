@@ -16,3 +16,12 @@ export type EventType = {
   noteForNecessities: string;
   noteForThingsToBuy: string;
 };
+
+export type IconType =
+  | "Necessity"
+  | "Timeline"
+  | "Album"
+  | "Talk"
+  | "Buy"
+  | "Guest list"
+  | "RSVP";

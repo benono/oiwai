@@ -8,6 +8,16 @@ export default {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  safelist: [
+    "bg-primary/20",
+    "bg-accentGreen/20",
+    "bg-accentBlue/20",
+    "bg-accentPurple/20",
+    "text-primary",
+    "text-accentGreen",
+    "text-accentBlue",
+    "text-accentPurple",
+  ],
   theme: {
   	extend: {
   		colors: {
