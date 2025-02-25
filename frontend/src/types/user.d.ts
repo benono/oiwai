@@ -2,6 +2,7 @@ export type FamilyMemberType = {
   id: string;
   profileImageUrl: string;
   name: string;
+  isDeleted: boolean;
 };
 
 export type UserType = {

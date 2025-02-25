@@ -24,6 +24,7 @@ type ModalProps = {
   deleteAction: (id?: string) => Promise<{ success: boolean; message: string }>;
   id?: string;
   deleteErrorMessage: string;
+  onSuccess?: () => void;
 };
 
 export default function Modal({
@@ -33,7 +34,8 @@ export default function Modal({
   button,
   deleteAction,
   id,
-  deleteErrorMessage
+  deleteErrorMessage,
+  onSuccess
 }: ModalProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -45,19 +47,27 @@ export default function Modal({
     e.preventDefault();
     setIsLoading(true);
 
-    let response;
     try {
       if (id) {
-        response = await deleteAction(id);
-      } else {
-        response = await deleteAction();
-        if(response.success) {
+        const response = await deleteAction(id);
+        if (response.success) {
+          setIsOpen(false);
+          if (onSuccess) {
+            onSuccess();
+          }
+        }
+        return;
+      }
+
+      if (!id && deleteAction) {
+        const response = await deleteAction();
+        if (response.success) {
           signOut({ redirectUrl: '/' });
+          return;
         }
       }
-      if (response.success) {
-        setIsOpen(false);
-      }
+
+      throw new Error("Invalid ID and no delete action available.");
     } catch (error) {
       if (error instanceof Error) {
         showErrorToast(toast, error.message, deleteErrorMessage);

@@ -132,7 +132,6 @@ export default function PersonModal({
           name,
           profileImageUrl: imageUrlData,
         });
-        console.log("add family", response)
       }
 
       if (!response?.success) {

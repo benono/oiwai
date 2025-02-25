@@ -70,6 +70,8 @@ export default function EditDeleteButtons({
         button={button}
         deleteAction={deleteAction || handleDelete}
         deleteErrorMessage={deleteErrorMessage}
+        id={familyId}
+        onSuccess={handleUpdate}
       />
       <PersonModal
         mode="edit"
