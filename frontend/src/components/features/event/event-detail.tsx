@@ -1,0 +1,53 @@
+import {
+  dateFormatOptions,
+  formatDateTime,
+  timeFormatOptions,
+} from "@/lib/helpers/format-date";
+import { EventType } from "@/types/event";
+import { Calendar, MapPin } from "lucide-react";
+import Image from "next/image";
+
+type eventDataProps = {
+  eventData: EventType;
+};
+
+export default function EventDetail({ eventData }: eventDataProps) {
+  return (
+    <section className="space-y-6">
+      <Image
+        src={eventData.thumbnailUrl}
+        width={200}
+        height={200}
+        alt="thumbnail"
+        className="aspect-[2/1] w-full rounded-xl object-cover"
+        priority
+      />
+      <div className="space-y-3">
+        <h1 className="text-xl font-bold">{eventData.title}</h1>
+        <div className="flex items-center gap-3 pl-3">
+          <Calendar size={24} />
+          <div>
+            <p className="font-semibold">
+              {formatDateTime(new Date(eventData.startTime), dateFormatOptions)}
+            </p>
+            <p className="text-sm font-medium">
+              {formatDateTime(new Date(eventData.startTime), timeFormatOptions)}
+              -{formatDateTime(new Date(eventData.endTime), timeFormatOptions)}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 pl-3">
+          <MapPin size={24} />
+          <p className="text-sm font-semibold">
+            {eventData.address1}
+            {eventData.address2}
+            {eventData.city}
+            {eventData.province}
+            {eventData.postalCode}
+            {eventData.country}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
