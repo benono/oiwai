@@ -73,7 +73,21 @@ const updateTimeline = async (
 };
 
 // Delete timeline
-const deleteTimeline = async (id: number): Promise<void> => {
+const deleteTimeline = async (eventId: number, id: number): Promise<void> => {
+  // Check if timeline exists and belongs to the event
+  const timeline = await prisma.timelines.findFirst({
+    where: {
+      id,
+      eventId
+    },
+  });
+
+  if (!timeline) {
+    throw new ValidationError(
+      "Timeline not found or does not belong to this event"
+    );
+  }
+
   await prisma.timelines.delete({
     where: { id },
   });
