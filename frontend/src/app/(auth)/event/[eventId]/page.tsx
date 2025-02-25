@@ -23,11 +23,30 @@ export default async function EventHome({
   return (
     <section className="space-y-8">
       {eventData ? <EventDetail eventData={eventData} /> : <p>Loading...</p>}
-      <div className="grid grid-cols-4 grid-rows-2 gap-4">
+
+      {/* TODO: Change the displayed icon based on whether the user is a host or a
+      guest */}
+      {/* TODO: Display the review icon after the event has ended. */}
+      <section className="grid grid-cols-4 grid-rows-2 gap-4">
         {MENU_LIST.map((menu) => (
           <MenuIcon key={menu.path} iconDetail={menu} eventId={eventId} />
         ))}
-      </div>
+      </section>
+
+      {/* TODO: Display only on the guest's screen */}
+      <section>
+        <div className="flex justify-between border-b pb-2">
+          <h2 className="font-semibold">Who is coming</h2>
+          <p className="text-sm font-semibold text-textSub">7 Going</p>
+        </div>
+      </section>
+
+      {/* TODO: Allow the host to upload photos */}
+      <section>
+        <p className="text-center text-sm font-medium">
+          Share a photo that makes this event even more special!
+        </p>
+      </section>
     </section>
   );
 }
