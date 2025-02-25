@@ -62,22 +62,43 @@ const createTimeline = async (
   }
 };
 
-// Update timeline
+/**
+ * Update a timeline for a specific event
+ * @param req Express request object with timeline_id parameter
+ * @param res Express response object
+ * @returns List of timelines for the event
+ */
 const updateTimeline = async (
-  req: Request<{ timeline_id: string }>,
+  req: Request<{ event_id: string; timeline_id: string }>,
   res: Response,
 ) => {
   try {
+    const eventId = Number(req.params.event_id);
     const timelineId = Number(req.params.timeline_id);
-    const { timeline } = req.body;
+    const { title, description, startTime, endTime } = req.body;
+    validateTimeline({ title, description, startTime, endTime });
     const updatedTimeline = await timelineModel.updateTimeline(
+      eventId,
       timelineId,
-      timeline,
+      {
+        title,
+        description,
+        startTime: new Date(startTime),
+        endTime: new Date(endTime),
+      },
     );
-    res.status(200).json({ updatedTimeline });
+    res
+      .status(200)
+      .json({ success: true, data: { timeline: updatedTimeline } });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Unable to update timeline" });
+    if (err instanceof ValidationError) {
+      res.status(400).json({ success: false, error: err.message });
+    } else {
+      console.error(err);
+      res
+        .status(500)
+        .json({ success: false, error: "Unable to update timeline" });
+    }
   }
 };
 

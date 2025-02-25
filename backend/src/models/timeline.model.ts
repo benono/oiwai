@@ -1,6 +1,6 @@
 import { PrismaClient, Timelines } from "@prisma/client";
-import Timeline from "../types/timeline";
 import { ValidationError } from "../errors/validation.error";
+import Timeline from "../types/timeline";
 
 const prisma = new PrismaClient();
 
@@ -28,7 +28,7 @@ const createTimeline = async (
   timelineInput: Omit<Timeline, "id" | "eventId">,
 ): Promise<Timelines> => {
   // overlap check
-  const hasOverlap = await checkTimelineOverlap(eventId, [timelineInput]);
+  const hasOverlap = await checkTimelineOverlap(eventId, timelineInput);
 
   if (hasOverlap) {
     throw new ValidationError("Timeline overlaps with existing timelines");
@@ -47,9 +47,24 @@ const createTimeline = async (
 
 // Update timeline
 const updateTimeline = async (
+  eventId: number,
   id: number,
-  data: Omit<Timeline, "id">,
+  data: Omit<Timeline, "id" | "eventId">,
 ): Promise<Timelines> => {
+  // check if timeline exists
+  const timeline = await prisma.timelines.findUnique({
+    where: { id },
+  });
+  if (!timeline) {
+    throw new ValidationError("Timeline not found");
+  }
+
+  const hasOverlap = await checkTimelineOverlap(eventId, { id, ...data });
+
+  if (hasOverlap) {
+    throw new ValidationError("Timeline overlaps with existing timelines");
+  }
+
   const updatedTimeline = await prisma.timelines.update({
     where: { id },
     data,
@@ -64,25 +79,26 @@ const deleteTimeline = async (id: number): Promise<void> => {
   });
 };
 
-// Validate timeline time range
-const validateTimeRange = (startTime: Date, endTime: Date): boolean => {
-  return startTime < endTime;
-};
 
 const checkTimelineOverlap = async (
   eventId: number,
-  newTimelines: { startTime: Date; endTime: Date }[],
+  newTimeline: { id?: number; startTime: Date; endTime: Date },
 ): Promise<boolean> => {
   // Fetch existing timelines
   const existingTimelines = await prisma.timelines.findMany({
-    where: { eventId },
+    where: {
+      eventId,
+      ...(newTimeline.id !== undefined ? {
+          id: { notIn: [newTimeline.id] }
+        } : {}),
+    },
     select: { startTime: true, endTime: true },
   });
 
   // Combine new and existing timelines
   const allTimelines = [
     ...existingTimelines,
-    ...newTimelines,
+    newTimeline,
   ].sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 
   console.log(allTimelines);
@@ -104,5 +120,4 @@ export default {
   deleteTimeline,
   fetchTimelinesByEventId,
   updateTimeline,
-  validateTimeRange,
 };
