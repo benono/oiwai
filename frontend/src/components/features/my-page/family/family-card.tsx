@@ -20,7 +20,7 @@ export default function FamilyCard({
           alt={name}
           width={40}
           height={40}
-          className="rounded-full object-cover"
+          className="h-10 w-10 rounded-full object-cover"
         />
         <p className="text-sm font-semibold">{name}</p>
       </div>

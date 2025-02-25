@@ -26,9 +26,9 @@ export default async function MyPage() {
     <section className="grid max-w-md gap-10 bg-white px-4 pb-20 pt-10 text-text md:mx-auto">
       <section className="grid gap-10">
         <ProfileCard
-          name={userResponse.name}
-          email={userResponse.email}
-          profileImageUrl={userResponse.profileImageUrl}
+          name={userResponse.user.name}
+          email={userResponse.user.email}
+          profileImageUrl={userResponse.user.profileImageUrl}
         />
         <div className="grid gap-4">
           <div className="flex items-center justify-between text-text">
@@ -47,7 +47,7 @@ export default async function MyPage() {
             />
           </div>
           <ul className="grid gap-4">
-            {userResponse.userFamilies.map(({ id, name, profileImageUrl }) => (
+            {userResponse.user.userFamilies.map(({ id, name, profileImageUrl }) => (
               <FamilyCard
                 key={id}
                 name={name}

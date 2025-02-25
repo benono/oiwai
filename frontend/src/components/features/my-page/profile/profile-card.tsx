@@ -20,7 +20,7 @@ export default function ProfileCard({
         alt={name}
         width={64}
         height={64}
-        className="rounded-full object-cover"
+        className="h-16 w-16 rounded-full object-cover"
       />
       <div className="grid gap-1 text-center">
         <h1 className="text-base font-bold text-text">{name}</h1>
