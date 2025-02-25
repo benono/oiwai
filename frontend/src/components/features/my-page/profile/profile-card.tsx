@@ -6,12 +6,14 @@ type ProfileCardProps = {
   name: string;
   email: string;
   profileImageUrl: string;
+  refreshData: () => void; // refreshData type
 };
 
 export default function ProfileCard({
   name,
   email,
   profileImageUrl,
+  refreshData,
 }: ProfileCardProps) {
   return (
     <div className="grid justify-items-center gap-2">
@@ -36,6 +38,7 @@ export default function ProfileCard({
         type="user"
         errorMessage="Failed to update information. Please try again."
         userDeleteAction={deleteUserInfo}
+        refreshData={refreshData} // Pass refreshData function
       />
     </div>
   );

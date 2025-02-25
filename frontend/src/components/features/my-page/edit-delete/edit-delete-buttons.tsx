@@ -21,6 +21,7 @@ type EditDeleteButtonsProps = {
   familyId?: string;
   errorMessage: string;
   userDeleteAction?: DeleteAction;
+  refreshData?: () => void; // refreshData type
 };
 
 export default function EditDeleteButtons({
@@ -34,13 +35,24 @@ export default function EditDeleteButtons({
   familyId,
   errorMessage,
   userDeleteAction,
+  refreshData,
 }: EditDeleteButtonsProps) {
   const deleteAction = type === "user" && userDeleteAction;
   const handleDelete = async () => {
     if (type === "family" && familyId) {
-      return await deleteFamilyInfo(familyId);
+      const response = await deleteFamilyInfo(familyId);
+      if (response.success && refreshData) {
+        refreshData(); // If delete is successful, trigger refreshData
+      }
+      return response;
     }
     return { success: false, message: "No action performed" };
+  };
+
+  const handleUpdate = async () => {
+    if (refreshData) {
+      refreshData(); // If update is successful, trigger refreshData
+    }
   };
 
   return (
@@ -64,6 +76,7 @@ export default function EditDeleteButtons({
         familyId={familyId}
         type={type}
         errorMessage={errorMessage}
+        onSuccess={handleUpdate} // Pass handleUpdate function
       ></PersonModal>
     </div>
   );

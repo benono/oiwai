@@ -7,7 +7,7 @@ import { showErrorToast } from "@/lib/toast/toast-utils";
 import { UserType } from "@/types/user";
 import { useAuth } from "@clerk/nextjs";
 import { PlusIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PersonModal from "../../person-modal";
 import FamilyCard from "../family/family-card";
 import ProfileCard from "../profile/profile-card";
@@ -19,30 +19,30 @@ export default function UserFamilyContainer() {
 
   const [userInfoData, setUserInfoData] = useState<UserType>();
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      if (!isLoaded || !isSignedIn) {
-        return;
+  const refreshData = useCallback(async () => {
+    if (!isLoaded || !isSignedIn) {
+      return;
+    }
+
+    try {
+      const response = await axios.get<{ user: UserType }>("/me");
+      const userInformation = response.data.user;
+
+      if (JSON.stringify(userInfoData) !== JSON.stringify(userInformation)) {
+        setUserInfoData(userInformation);
       }
-
-      try {
-        const response = await axios.get<{ user: UserType }>("/me");
-        const userInformation = response.data.user;
-
-        if (JSON.stringify(userInfoData) !== JSON.stringify(userInformation)) {
-          setUserInfoData(userInformation);
-        }
-      } catch (err: unknown) {
-        showErrorToast(
-          toast,
-          err,
-          "Failed to fetch user information. Please try again.",
-        );
-      }
-    };
-
-    fetchUserInfo();
+    } catch (err: unknown) {
+      showErrorToast(
+        toast,
+        err,
+        "Failed to fetch user information. Please try again.",
+      );
+    }
   }, [isLoaded, isSignedIn, axios, toast, userInfoData]);
+
+  useEffect(() => {
+    refreshData(); // Run once the component is ready
+  }, [isLoaded, isSignedIn, refreshData]);
 
   if (!userInfoData) {
     return <p>Loading...</p>;
@@ -54,6 +54,7 @@ export default function UserFamilyContainer() {
         name={userInfoData.name}
         email={userInfoData.email}
         profileImageUrl={userInfoData.profileImageUrl}
+        refreshData={refreshData} // Pass refreshData function
       />
       <div className="grid gap-4">
         <div className="flex items-center justify-between text-text">

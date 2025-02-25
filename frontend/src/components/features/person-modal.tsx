@@ -1,10 +1,8 @@
 "use client";
 
 import { useToast } from "@/hooks/use-toast";
-import {
-  addFamilyMember,
-  updateFamilyInfo,
-} from "@/lib/api/user";
+import { updateUserInfo } from "@/lib/actions/my-page/my-page";
+import { addFamilyMember, updateFamilyInfo } from "@/lib/api/user";
 import { showErrorToast } from "@/lib/toast/toast-utils";
 import { PencilLineIcon, X } from "lucide-react";
 import Image from "next/image";
@@ -29,7 +27,6 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { updateUserInfo } from "@/lib/actions/my-page/my-page";
 
 type PersonModalProps = {
   trigger?: ReactNode;
@@ -40,6 +37,7 @@ type PersonModalProps = {
   mode: "new" | "edit";
   familyId?: string;
   errorMessage: string;
+  onSuccess?: () => void; // Callback type
 };
 
 export default function PersonModal({
@@ -51,6 +49,7 @@ export default function PersonModal({
   mode,
   familyId,
   errorMessage,
+  onSuccess,
 }: PersonModalProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string>(defaultImage);
@@ -59,6 +58,13 @@ export default function PersonModal({
 
   const inputImageRef = useRef<HTMLInputElement>(null!);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (isOpen) {
+      setName(defaultName || ""); // Update name when modal is opened
+      setImageUrl(defaultImage); // Update image when modal is opened
+    }
+  }, [isOpen, defaultName, defaultImage]);
 
   // image functions
   const handleImageClick = (e: React.MouseEvent) => {
@@ -124,6 +130,10 @@ export default function PersonModal({
 
       setIsOpen(false);
       resetForm();
+
+      if (onSuccess) {
+        onSuccess(); // Trigger callback 'handleUpdate' after submitting
+      }
     } catch (err: unknown) {
       if (err instanceof Error) {
         showErrorToast(toast, err.message, errorMessage);
