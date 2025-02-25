@@ -4,7 +4,6 @@ import { useToast } from "@/hooks/use-toast";
 import {
   addFamilyMember,
   updateFamilyInfo,
-  updateUserInfo,
 } from "@/lib/api/user";
 import { showErrorToast } from "@/lib/toast/toast-utils";
 import { PencilLineIcon, X } from "lucide-react";
@@ -30,6 +29,7 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { updateUserInfo } from "@/lib/actions/my-page/my-page";
 
 type PersonModalProps = {
   trigger?: ReactNode;

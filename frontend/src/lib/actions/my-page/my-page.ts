@@ -1,5 +1,32 @@
 "use server";
 
+import { getServerAxiosInstance } from "@/lib/api/axios-server";
+import { UserType } from "@/types/user";
+
+
+// Update user information
+export const updateUserInfo = async (updatedData: {
+  name?: string;
+  profileImageUrl?: string | null;
+}): Promise<{
+  success: boolean;
+  message: string;
+  user: Omit<UserType, "email" | "userFamilies">;
+}> => {
+  try {
+    const axiosInstance = await getServerAxiosInstance()
+    const response = await axiosInstance.patch("/me", updatedData);
+    return response.data;
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error();
+    } else {
+      throw new Error(String(err));
+    }
+  }
+};
+
+
 // Delete user information
 export const deleteUserInfo = async (): Promise<{
   success: boolean;

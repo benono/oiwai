@@ -1,31 +1,12 @@
 import { UserType } from "@/types/user";
-// import { axiosInstance } from "./axios-client";
+import { getServerAxiosInstance } from "./axios-server";
 
 // Fetch user information
 export const getUserInfo = async (): Promise<UserType> => {
   try {
-    // const axios = useAuthAxios();
-    // const response = await axios.get("/me");
-
-    return {
-      // Dummy data
-      id: "12345",
-      name: "John Doe",
-      profileImageUrl: "/images/sample_profile.png",
-      email: "johndoe@example.com",
-      userFamilies: [
-        {
-          id: "67890",
-          profileImageUrl: "/images/sample_profile.png",
-          name: "Jane Doe",
-        },
-        {
-          id: "11223",
-          profileImageUrl: "/images/sample_profile.png",
-          name: "Sam Doe",
-        },
-      ],
-    };
+    const axiosInstance = await getServerAxiosInstance();
+    const response = await axiosInstance.get(`/me`);
+    return response.data.user;
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.message);
@@ -38,22 +19,26 @@ export const getUserInfo = async (): Promise<UserType> => {
 export const updateUserInfo = async (updatedData: {
   name?: string;
   profileImageUrl?: string | null;
-}): Promise<{ success: boolean; message: string; user: Omit<UserType, "email" | "userFamilies"> }> => {
+}): Promise<{
+  success: boolean;
+  message: string;
+  user: Omit<UserType, "email" | "userFamilies">;
+}> => {
   try {
-    // const axiosInstance = await getServerAxiosInstance()
-    // const response = await axiosInstance.patch("/me", updatedData);
-    // return response.data;
+    const axiosInstance = await getServerAxiosInstance()
+    const response = await axiosInstance.patch("/me", updatedData);
+    return response.data;
 
-    return Promise.resolve({
-      success: true,
-      message: "User updated successfully",
-      user: {
-        id: "12345",
-        name: updatedData.name ?? "Tracy",
-        profileImageUrl: updatedData.profileImageUrl ?? "/images/profile_default.png"
-      }
-    })
-
+    // return Promise.resolve({
+    //   success: true,
+    //   message: "User updated successfully",
+    //   user: {
+    //     id: "12345",
+    //     name: updatedData.name ?? "Tracy",
+    //     profileImageUrl:
+    //       updatedData.profileImageUrl ?? "/images/profile_default.png",
+    //   },
+    // });
   } catch (err) {
     if (err instanceof Error) {
       throw new Error();
@@ -68,12 +53,15 @@ export const updateFamilyInfo = async (updatedData: {
   familyId: string;
   name?: string;
   profileImageUrl?: string | null;
-}): Promise<{ success: boolean; message: string; familyMember: { id: string; name: string; profileImageUrl: string | null } }> => {
+}): Promise<{
+  success: boolean;
+  message: string;
+  familyMember: { id: string; name: string; profileImageUrl: string | null };
+}> => {
   try {
     // const axiosInstance = await getServerAxiosInstance()
     // const response = await axiosInstance.patch(`/me/family/${updatedData.familyId}`, updatedData);
     // return response.data;
-
 
     return Promise.resolve({
       success: true,
@@ -81,10 +69,10 @@ export const updateFamilyInfo = async (updatedData: {
       familyMember: {
         id: updatedData.familyId,
         name: updatedData.name ?? "Tracy",
-        profileImageUrl: updatedData.profileImageUrl ?? "/images/profile_default.png"
-      }
-    })
-
+        profileImageUrl:
+          updatedData.profileImageUrl ?? "/images/profile_default.png",
+      },
+    });
   } catch (err) {
     if (err instanceof Error) {
       throw new Error();
@@ -109,9 +97,10 @@ export const addFamilyMember = async (familyData: {
       message: "Family member added successfully",
       familyMember: {
         name: familyData.name,
-        profileImageUrl: familyData.profileImageUrl ?? "/images/profile_default.png"
-      }
-    })
+        profileImageUrl:
+          familyData.profileImageUrl ?? "/images/profile_default.png",
+      },
+    });
   } catch (err) {
     if (err instanceof Error) {
       throw new Error(err.message || "Unknown error occurred");
@@ -119,4 +108,4 @@ export const addFamilyMember = async (familyData: {
       throw new Error(String(err));
     }
   }
-}
+};

@@ -1,34 +1,31 @@
 import EventCardContainer from "@/components/features/my-page/events/event-card-container";
-import FamilyCard from "@/components/features/my-page/family/family-card";
-import ProfileCard from "@/components/features/my-page/profile/profile-card";
-import PersonModal from "@/components/features/person-modal";
+import UserFamilyContainer from "@/components/features/my-page/user-family/user-family-container";
 import { Button } from "@/components/ui/button";
-import { getUserInfo } from "@/lib/api/user";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
 export default async function MyPage() {
-  let userResponse;
+  // let userResponse;
 
-  try {
-    userResponse = await getUserInfo();
-  } catch (err) {
-    alert(err);
-    return null;
-  }
+  // try {
+  //   userResponse = await getUserInfo();
+  // } catch (err) {
+  //   alert(err);
+  //   return null;
+  // }
 
-  if (!userResponse) {
-    notFound();
-  }
+  // if (!userResponse) {
+  //   notFound();
+  // }
 
   return (
     <section className="grid max-w-md gap-10 bg-white px-4 pb-20 pt-10 text-text md:mx-auto">
-      <section className="grid gap-10">
+      <UserFamilyContainer />
+      {/* <section className="grid gap-10">
         <ProfileCard
-          name={userResponse.user.name}
-          email={userResponse.user.email}
-          profileImageUrl={userResponse.user.profileImageUrl}
+          name={userResponse.name}
+          email={userResponse.email}
+          profileImageUrl={userResponse.profileImageUrl}
         />
         <div className="grid gap-4">
           <div className="flex items-center justify-between text-text">
@@ -47,7 +44,7 @@ export default async function MyPage() {
             />
           </div>
           <ul className="grid gap-4">
-            {userResponse.user.userFamilies.map(({ id, name, profileImageUrl }) => (
+            {userResponse.userFamilies.map(({ id, name, profileImageUrl }) => (
               <FamilyCard
                 key={id}
                 name={name}
@@ -57,7 +54,7 @@ export default async function MyPage() {
             ))}
           </ul>
         </div>
-      </section>
+      </section> */}
       <section className="grid gap-4">
         <div className="flex items-center justify-between text-text">
           <h2 className="text-base font-bold">Your events</h2>

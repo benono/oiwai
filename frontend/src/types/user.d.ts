@@ -5,11 +5,9 @@ export type FamilyMemberType = {
 };
 
 export type UserType = {
-  user: {
-    id: string;
-    name: string;
-    profileImageUrl: string;
-    email: string;
-    userFamilies: FamilyMemberType[];
-  };
+  id: string;
+  name: string;
+  profileImageUrl: string;
+  email: string;
+  userFamilies: FamilyMemberType[];
 };
