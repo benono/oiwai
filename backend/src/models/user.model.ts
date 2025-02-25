@@ -38,10 +38,10 @@ const fetchUSerByEmail = async (email: string) => {
 
 const getEventInfoByEmail = async (email: string) => {
   const eventInfo = await prisma.$queryRaw`
-      SELECT distinct e.id, false As isHost, e.title,
-            e.thumbnail_url As thumbnailUrl,
-            e.start_time As startTime,
-            e.end_time As endTime
+      SELECT distinct e.id, false As "isHost", e.title,
+            e.thumbnail_url As "thumbnailUrl",
+            e.start_time As "startTime",
+            e.end_time As "endTime"
       FROM events e
       LEFT JOIN event_participants p
       ON p.event_id = e.id
@@ -49,10 +49,10 @@ const getEventInfoByEmail = async (email: string) => {
       ON participant_u.id = p.user_id
       WHERE participant_u.email = ${email}
       UNION
-      SELECT e.id,  true as isHost, e.title,
-            e.thumbnail_url As thumbnailUrl,
-            e.start_time As startTime,
-            e.end_time AS endTime
+      SELECT e.id,  true as "isHost", e.title,
+            e.thumbnail_url As "thumbnailUrl",
+            e.start_time As "startTime",
+            e.end_time AS "endTime"
       FROM events e
       LEFT JOIN users host_u
       ON host_u.id = e.host_id
