@@ -1,8 +1,11 @@
 "use client";
 
 import { useToast } from "@/hooks/use-toast";
-import { updateUserInfo } from "@/lib/actions/my-page/my-page";
-import { addFamilyMember, updateFamilyInfo } from "@/lib/api/user";
+import {
+  addFamilyMember,
+  updateFamilyInfo,
+  updateUserInfo,
+} from "@/lib/actions/my-page/my-page";
 import { showErrorToast } from "@/lib/toast/toast-utils";
 import { PencilLineIcon, X } from "lucide-react";
 import Image from "next/image";
@@ -86,11 +89,40 @@ export default function PersonModal({
     setImageUrl("/images/profile_default.png");
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-    // revokeObjectURL();
-    setImageUrl(URL.createObjectURL(file));
+    if (!file) {
+      setImageUrl(defaultImage);
+      return;
+    }
+
+    const cloudinaryUploadUrl =
+      "https://api.cloudinary.com/v1_1/dacawja7x/image/upload";
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "ml_default");
+
+    try {
+      const response = await fetch(cloudinaryUploadUrl, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.secure_url) {
+        setImageUrl(data.secure_url);
+      } else {
+        console.error("Cloudinary upload failed:", data);
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        showErrorToast(toast, err.message, errorMessage);
+      } else {
+        showErrorToast(toast, "Failed to upload image", errorMessage);
+      }
+    }
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,19 +141,30 @@ export default function PersonModal({
 
     try {
       let response;
+      const currentImageUrl = imageUrl;
+
       if (type === "user") {
-        response = await updateUserInfo({ name, profileImageUrl: imageUrl });
+        response = await updateUserInfo({ name, profileImageUrl: currentImageUrl });
       } else if (familyId && type === "family") {
         response = await updateFamilyInfo({
           familyId,
           name,
-          profileImageUrl: imageUrl,
+          profileImageUrl: currentImageUrl,
         });
-      } else if (mode === "new") {
+      }
+
+      if (mode === "new") {
+        const requestBody = {
+          name,
+          profileImageUrl: currentImageUrl,
+        };
+
+        console.log("requestBody", requestBody)
         response = await addFamilyMember({
           name,
-          profileImageUrl: imageUrl,
+          profileImageUrl: currentImageUrl,
         });
+        console.log("response", response)
       }
 
       if (!response?.success) {
