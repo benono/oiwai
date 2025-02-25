@@ -1,9 +1,15 @@
+import console from "console";
 import { Request, Response } from "express";
-import { z } from "zod";
+import { ValidationError } from "../errors/validation.error";
 import timelineModel from "../models/timeline.model";
-import { validateCreateTimelines } from "../validators/timeline.validator";
+import { validateTimeline } from "../validators/timeline.validator";
+/**
+ * Get all timelines for a specific event
+ * @param req Express request object with event_id parameter
+ * @param res Express response object
+ * @returns List of timelines for the event
+ */
 
-// Get event timelines
 const getEventTimelines = async (
   req: Request<{ event_id: string }>,
   res: Response,
@@ -18,45 +24,12 @@ const getEventTimelines = async (
   }
 };
 
-// Create new timeline(s)
-const createTimelines = async (
-  req: Request<{ event_id: string }>,
-  res: Response,
-) => {
-  try {
-    const eventId = Number(req.params.event_id);
-    const validatedData = validateCreateTimelines(req.body);
-
-    try {
-      const createdTimelines = await timelineModel.createTimelines(
-        eventId,
-        validatedData.timelines.map((timeline) => ({
-          ...timeline,
-          startTime: new Date(timeline.startTime),
-          endTime: new Date(timeline.endTime),
-        })),
-      );
-      res.status(200).json({ data: { timelines: createdTimelines } });
-    } catch (error) {
-      if (error instanceof Error && error.message === "Timeline overlaps with existing timelines") {
-        return res.status(400).json({
-          error: "Validation failed",
-          details: [{ message: "New timelines overlap with existing timelines" }],
-        });
-      }
-      throw error;
-    }
-  } catch (err) {
-    if (err instanceof z.ZodError) {
-      return res.status(400).json({
-        error: "Validation failed",
-        details: err.errors,
-      });
-    }
-    console.error(err);
-    res.status(500).json({ error: "Unable to create timeline" });
-  }
-};
+/**
+ * Create a new timeline for a specific event
+ * @param req Express request object with event_id parameter
+ * @param res Express response object
+ * @returns List of timelines for the event
+ */
 
 const createTimeline = async (
   req: Request<{ event_id: string }>,
@@ -64,16 +37,28 @@ const createTimeline = async (
 ) => {
   try {
     const eventId = Number(req.params.event_id);
-    //const validatedData = validateCreateTimelines(req.body);
-    const {timeline} = req.body;
-    const createdTimeline = await timelineModel.createTimelines(
+    const { title, description, startTime, endTime } = req.body;
+    validateTimeline({ title, description, startTime, endTime });
+    const createdTimeline = await timelineModel.createTimeline(
       eventId,
-      [timeline],
+      {
+        title,
+        description,
+        startTime: new Date(startTime),
+        endTime: new Date(endTime),
+      },
     );
-    res.status(200).json({ data: { timeline: createdTimeline } });
+
+    res.status(200).json({ success: true, data: { timeline: createdTimeline } });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Unable to create timeline" });
+    if (err instanceof ValidationError) {
+      res.status(400).json({ success: false, error: err.message });
+    } else {
+      console.error(err);
+      res
+        .status(500)
+        .json({ success: false, error: "Unable to create timeline" });
+    }
   }
 };
 
@@ -113,7 +98,6 @@ const deleteTimeline = async (
 
 export default {
   getEventTimelines,
-  createTimelines,
   createTimeline,
   updateTimeline,
   deleteTimeline,

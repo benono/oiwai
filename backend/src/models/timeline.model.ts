@@ -1,5 +1,6 @@
 import { PrismaClient, Timelines } from "@prisma/client";
 import Timeline from "../types/timeline";
+import { ValidationError } from "../errors/validation.error";
 
 const prisma = new PrismaClient();
 
@@ -22,47 +23,26 @@ const fetchTimelinesByEventId = async (
 };
 
 // Create new timeline(s)
-const createTimelines = async (
+const createTimeline = async (
   eventId: number,
-  timelineInputs: Omit<Timeline, "id" | "eventId">[],
-): Promise<Timelines[]> => {
-  console.log(`timelineInputs: ${JSON.stringify(timelineInputs)}`);
-  console.log(`startTime: ${timelineInputs[0].startTime}`);
-  console.log(`endTime: ${timelineInputs[0].endTime}`);
-  console.log(`startTime: ${new Date(timelineInputs[0].startTime)}`);
-  console.log(`endTime: ${new Date(timelineInputs[0].endTime)}`);
-  // duplicate check
-  const hasOverlap = await checkTimelineOverlap(
-    eventId,
-    timelineInputs.map(t => ({
-      startTime: new Date(t.startTime),
-      endTime: new Date(t.endTime),
-    }))
-  );
+  timelineInput: Omit<Timeline, "id" | "eventId">,
+): Promise<Timelines> => {
+  // overlap check
+  const hasOverlap = await checkTimelineOverlap(eventId, [timelineInput]);
 
   if (hasOverlap) {
-    throw new Error("Timeline overlaps with existing timelines");
+    throw new ValidationError("Timeline overlaps with existing timelines");
   }
 
   // If no overlap, create timelines
-  // const createdTimelines = await prisma.$transaction(
-  //   timelineInputs.map((input) =>
-  //     prisma.timelines.create({
-  //       data: {
-  //         ...input,
-  //         eventId,
-  //       },
-  //     }),
-  //   ),
-  // );
+  const createdTimelines = await prisma.timelines.create({
+    data: {
+      ...timelineInput,
+      eventId,
+    },
+  });
 
-  const dummyTimelines = timelineInputs.map((input) => ({
-    ...input,
-    id: 1,
-    eventId: 1,
-  }));
-  return Promise.resolve(dummyTimelines);
-  //return createdTimelines;
+  return createdTimelines;
 };
 
 // Update timeline
@@ -120,7 +100,7 @@ const checkTimelineOverlap = async (
 };
 
 export default {
-  createTimelines,
+  createTimeline,
   deleteTimeline,
   fetchTimelinesByEventId,
   updateTimeline,
