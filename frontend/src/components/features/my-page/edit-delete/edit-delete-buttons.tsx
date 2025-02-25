@@ -20,6 +20,7 @@ type EditDeleteButtonsProps = {
   type: "user" | "family";
   familyId?: string;
   errorMessage: string;
+  deleteErrorMessage: string;
   userDeleteAction?: DeleteAction;
   refreshData?: () => void; // refreshData type
 };
@@ -34,6 +35,7 @@ export default function EditDeleteButtons({
   type,
   familyId,
   errorMessage,
+  deleteErrorMessage,
   userDeleteAction,
   refreshData,
 }: EditDeleteButtonsProps) {
@@ -67,6 +69,7 @@ export default function EditDeleteButtons({
         description={deleteDescription}
         button={button}
         deleteAction={deleteAction || handleDelete}
+        deleteErrorMessage={deleteErrorMessage}
       />
       <PersonModal
         mode="edit"

@@ -79,6 +79,7 @@ export default function UserFamilyContainer() {
               name={name}
               profileImageUrl={profileImageUrl}
               familyId={id}
+              refreshData={refreshData}
             />
           ))}
         </ul>

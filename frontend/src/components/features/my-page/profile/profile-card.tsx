@@ -37,6 +37,7 @@ export default function ProfileCard({
         defaultImage={profileImageUrl}
         type="user"
         errorMessage="Failed to update information. Please try again."
+        deleteErrorMessage="Failed to delete user. Please try again."
         userDeleteAction={deleteUserInfo}
         refreshData={refreshData} // Pass refreshData function
       />

@@ -12,6 +12,9 @@ import {
 } from "@/components/ui/dialog";
 import { FormEvent, ReactNode, useState } from "react";
 import { Button } from "../ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { showErrorToast } from "@/lib/toast/toast-utils";
+import { useClerk } from "@clerk/nextjs";
 
 type ModalProps = {
   trigger: ReactNode;
@@ -20,6 +23,7 @@ type ModalProps = {
   button?: ReactNode;
   deleteAction: (id?: string) => Promise<{ success: boolean; message: string }>;
   id?: string;
+  deleteErrorMessage: string;
 };
 
 export default function Modal({
@@ -29,9 +33,13 @@ export default function Modal({
   button,
   deleteAction,
   id,
+  deleteErrorMessage
 }: ModalProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const {toast} = useToast()
+  const { signOut } = useClerk()
 
   const handleDelete = async (e: FormEvent) => {
     e.preventDefault();
@@ -43,16 +51,18 @@ export default function Modal({
         response = await deleteAction(id);
       } else {
         response = await deleteAction();
+        if(response.success) {
+          signOut({ redirectUrl: '/' });
+        }
       }
       if (response.success) {
         setIsOpen(false);
-        // TODO: implement toast
       }
-    } catch (err) {
-      if (err instanceof Error) {
-        throw new Error();
+    } catch (error) {
+      if (error instanceof Error) {
+        showErrorToast(toast, error.message, deleteErrorMessage);
       } else {
-        throw new Error(String(err));
+        showErrorToast(toast, "Failed to delete user", deleteErrorMessage);
       }
     } finally {
       setIsLoading(false);

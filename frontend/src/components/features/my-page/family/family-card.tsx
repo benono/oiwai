@@ -5,12 +5,14 @@ type FamilyCardProps = {
   name: string;
   profileImageUrl: string;
   familyId: string;
+  refreshData: () => void;
 };
 
 export default function FamilyCard({
   name,
   profileImageUrl,
   familyId,
+  refreshData
 }: FamilyCardProps) {
   return (
     <li key={familyId} className="flex justify-between">
@@ -34,6 +36,8 @@ export default function FamilyCard({
         familyId={familyId}
         type="family"
         errorMessage="Failed to update family information. Please try again."
+        deleteErrorMessage="Failed to delete family information. Please try again."
+        refreshData={refreshData}
       />
     </li>
   );
