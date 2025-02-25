@@ -24,7 +24,7 @@ export default function EventDetail({ eventData }: eventDataProps) {
       />
       <div className="space-y-3">
         <h1 className="text-xl font-bold">{eventData.title}</h1>
-        <div className="flex items-center gap-3 pl-3">
+        <div className="flex items-center gap-4 pl-3">
           <Calendar size={24} />
           <div>
             <p className="font-semibold">
@@ -39,12 +39,8 @@ export default function EventDetail({ eventData }: eventDataProps) {
         <div className="flex items-center gap-3 pl-3">
           <MapPin size={24} />
           <p className="text-sm font-semibold">
-            {eventData.address1}
-            {eventData.address2}
-            {eventData.city}
-            {eventData.province}
-            {eventData.postalCode}
-            {eventData.country}
+            {eventData.address1},{eventData.address2}{eventData.city},
+            {eventData.province},{eventData.postalCode},{eventData.country}
           </p>
         </div>
       </div>
