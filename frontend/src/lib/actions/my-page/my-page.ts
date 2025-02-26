@@ -15,7 +15,19 @@ export const updateUserInfo = async (updatedData: {
 }> => {
   try {
     const axiosInstance = await getServerAxiosInstance()
-    const response = await axiosInstance.patch("/me", updatedData, {
+    const formData = new FormData();
+
+    if(updatedData.name) {
+      formData.append("name", updatedData.name);
+    }
+    if (updatedData.profileImageUrl) {
+      formData.append("profileImage", updatedData.profileImageUrl);
+      formData.append("remove_image", "false");
+    } else {
+      formData.append("removeImage", "true");
+    }
+
+    const response = await axiosInstance.patch("/me", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       }
@@ -68,15 +80,15 @@ export const updateFamilyInfo = async (updatedData: {
     }
     if (updatedData.profileImageUrl) {
       formData.append("profileImage", updatedData.profileImageUrl);
+      formData.append("remove_image", "false");
+    } else {
+      formData.append("remove_image", "true");
     }
-    console.log("formData", formData)
-    console.log("image url", updatedData.profileImageUrl)
     const response = await axiosInstance.patch(`/me/family/${updatedData.familyId}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       }
     });
-    console.log("Update family", response.data)
     return response.data;
   } catch (err) {
     if (err instanceof Error) {
@@ -99,8 +111,10 @@ export const addFamilyMember = async (familyData: {
     formData.append("name", familyData.name);
     if (familyData.profileImageUrl) {
       formData.append("profileImage", familyData.profileImageUrl);
+      formData.append("remove_image", "false");
+    } else {
+      formData.append("remove_image", "true");
     }
-    console.log("formData", formData)
     const response = await axiosInstance.post(`/me/family`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",

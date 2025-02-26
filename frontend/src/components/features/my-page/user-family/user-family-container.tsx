@@ -74,7 +74,7 @@ export default function UserFamilyContainer() {
           />
         </div>
         <ul className="grid gap-4">
-          {userInfoData.userFamilies.filter((userFamily) => userFamily.isDeleted === false).map(({ id, name, profileImageUrl }) => (
+          {userInfoData.userFamilies.filter((userFamily) => userFamily.isDeleted !== true).map(({ id, name, profileImageUrl }) => (
             <FamilyCard
               key={id}
               name={name}
