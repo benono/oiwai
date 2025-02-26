@@ -12,6 +12,8 @@ import uploadImage from "../utils/cloudinary.util";
 
 const prisma = new PrismaClient();
 
+const defaultProfileImage = process.env.DEFAULT_PROFILE_IMAGE || "";
+
 const getuserById = async (req: Request, res: Response) => {
   try {
     const { userId } = getAuth(req);
@@ -26,6 +28,15 @@ const getuserById = async (req: Request, res: Response) => {
     if (!user) {
       res.status(404).json({ error: "User not found" });
       return;
+    }
+
+    if (user.profileImageUrl === "") {
+      user.profileImageUrl = defaultProfileImage;
+    }
+    for (let i = 0; i < user.userFamilies.length; i++) {
+      if (user.userFamilies[i].profileImageUrl === "") {
+        user.userFamilies[i].profileImageUrl = defaultProfileImage;
+      }
     }
     res.status(200).json({ user });
   } catch (err) {
@@ -92,7 +103,6 @@ const updateUser = async (req: Request, res: Response) => {
       if (is_remove_image || file) updates.profileImageUrl = newProfileImageUrl;
 
       const updatedUser = await usersModel.updateUser(tx, user.id, updates);
-      console.log(updatedUser);
 
       res.status(200).json({
         success: true,
@@ -213,7 +223,6 @@ const updateUserFamily = async (
         familyId,
         updates,
       );
-      console.log(updatedUser);
 
       res.status(200).json({
         success: true,
