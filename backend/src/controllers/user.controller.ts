@@ -158,8 +158,6 @@ const addNewUserFamily = async (req: Request, res: Response) => {
         res.status(404).json({ error: "User not found" });
         return;
       }
-
-      console.log(file);
       let newProfileImageUrl = "";
       if (file) {
         newProfileImageUrl = await uploadImage.uploadImage(

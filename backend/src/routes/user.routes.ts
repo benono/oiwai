@@ -19,11 +19,7 @@ usersRouter.patch(
   usersController.updateUser,
 );
 usersRouter.delete("/", requireAuthMiddleware, usersController.deleteUser);
-usersRouter.post(
-  "/family",
-  requireAuthMiddleware,
-  usersController.addNewUserFamily,
-);
+
 usersRouter.post(
   "/family/",
   requireAuthMiddleware,
