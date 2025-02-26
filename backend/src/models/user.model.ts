@@ -2,12 +2,14 @@ import { Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+const maskEmail = process.env.MASK_EMAIL || "**********";
+
 const fetchUSerById = async (id: number) => {
   const user = await prisma.users.findUnique({
-    where: { id :id, isDeleted: false },
+    where: { id: id, isDeleted: false },
     include: {
       userFamilies: {
-        where:{isDeleted:false},
+        where: { isDeleted: false },
         select: {
           id: true,
           profileImageUrl: true,
@@ -21,10 +23,10 @@ const fetchUSerById = async (id: number) => {
 
 const fetchUSerByEmail = async (email: string) => {
   const user = await prisma.users.findUnique({
-    where: { email :email, isDeleted: false },
+    where: { email: email, isDeleted: false },
     include: {
       userFamilies: {
-        where:{isDeleted:false},
+        where: { isDeleted: false },
         select: {
           id: true,
           profileImageUrl: true,
@@ -95,11 +97,12 @@ const updateUser = async (
   return user;
 };
 
-const deleteUser = async (userId: number) => {
+const deleteUser = async (userId: number, email: string) => {
   await prisma.$transaction(async (tx) => {
+    const maskedEmail = maskEmail + email;
     await tx.users.update({
       where: { id: userId },
-      data: { isDeleted: true },
+      data: { email: maskedEmail, isDeleted: true },
     });
 
     await tx.userFamilies.updateMany({

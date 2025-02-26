@@ -2,7 +2,6 @@ import { clerkClient } from "@clerk/clerk-sdk-node";
 import { getAuth } from "@clerk/express";
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import multer from "multer";
 import usersModel from "../models/user.model";
 import {
   default as UserFamilies,
@@ -79,10 +78,6 @@ const updateUser = async (req: Request, res: Response) => {
         return res.status(400).json({ error: "request has no info" });
       }
 
-      const storage = multer.memoryStorage();
-      const upload = multer({ storage });
-
-      console.log(file);
       let newProfileImageUrl = "";
       if (file) {
         newProfileImageUrl = await uploadImage.uploadImage(
@@ -127,7 +122,7 @@ const deleteUser = async (req: Request, res: Response) => {
       return;
     }
 
-    await usersModel.deleteUser(user.id);
+    await usersModel.deleteUser(user.id, user.email);
 
     res.status(200).json({
       success: true,
