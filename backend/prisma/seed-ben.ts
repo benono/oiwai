@@ -12,6 +12,22 @@ export async function seedBen() {
       email: "bentoki.1213@gmail.com",
       profileImageUrl:
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+      userFamilies: {
+        create: [
+          {
+            id: 10,
+            name: "Amane",
+            profileImageUrl:
+              "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+          },
+          {
+            id: 11,
+            name: "Chika",
+            profileImageUrl:
+              "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+          },
+        ],
+      },
     },
   });
   // User 5 (Naoya)
@@ -21,6 +37,29 @@ export async function seedBen() {
     create: {
       name: "Naoya",
       email: "naoya@test.com",
+      profileImageUrl:
+        "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+    },
+  });
+
+  // User 6 (Taro)
+  const user6 = await prisma.users.upsert({
+    where: { email: "taro@test.com" },
+    update: {},
+    create: {
+      name: "Taro",
+      email: "taro@test.com",
+      profileImageUrl:
+        "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+    },
+  });
+
+  const user7 = await prisma.users.upsert({
+    where: { email: "yuki@test.com" },
+    update: {},
+    create: {
+      name: "Yuki",
+      email: "yuki@test.com",
       profileImageUrl:
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
     },
@@ -49,6 +88,26 @@ export async function seedBen() {
       theme: "#7fffd4",
       noteForThingsToBuy: "",
       noteForNecessities: "",
+      eventParticipants: {
+        create: [
+          {
+            userId: user4.id,
+            userFamilyId: 10,
+            messageToHost: "",
+            restrictionNote: "",
+            isAccepted: true,
+            isAttended: false,
+          },
+          {
+            userId: user4.id,
+            userFamilyId: 11,
+            messageToHost: "",
+            restrictionNote: "",
+            isAccepted: true,
+            isAttended: true,
+          },
+        ],
+      },
     },
   });
 
@@ -71,16 +130,85 @@ export async function seedBen() {
   // Participant for Event 3
   await prisma.eventParticipants.upsert({
     where: {
-      id: 2,
+      id: user5.id,
     },
     update: {},
     create: {
       eventId: event3.id,
       userId: user5.id,
-      messageToHost: "",
-      restrictionNote: "",
+      messageToHost: "Hi, I'm Naoya",
+      restrictionNote: "I'm allergic to peanuts",
       isAccepted: true,
       isAttended: false,
+    },
+  });
+
+  // Participant for Event 3
+  await prisma.eventParticipants.upsert({
+    where: {
+      id: user6.id,
+    },
+    update: {},
+    create: {
+      eventId: event3.id,
+      userId: user6.id,
+      messageToHost: "Hi, I'm Taro, I'm sorry I can't make it",
+      restrictionNote: "",
+      isAccepted: false,
+      isAttended: false,
+    },
+  });
+
+  // Participant for Event 3
+  await prisma.eventParticipants.upsert({
+    where: {
+      id: user7.id,
+    },
+    update: {},
+    create: {
+      eventId: event3.id,
+      userId: user7.id,
+      messageToHost: "Hi, I'm Yuki, I'm sorry I can't make it",
+      restrictionNote: "",
+      isAccepted: true,
+      isAttended: true,
+    },
+  });
+
+  // Temp Participant for Event 3
+  await prisma.eventTempParticipant.upsert({
+    where: {
+      id: 1,
+    },
+    update: {},
+    create: {
+      eventId: event3.id,
+      name: "Amane",
+      isAttended: false,
+    },
+  });
+
+  await prisma.eventTempParticipant.upsert({
+    where: {
+      id: 2,
+    },
+    update: {},
+    create: {
+      eventId: event3.id,
+      name: "Hibito",
+      isAttended: false,
+    },
+  });
+
+  await prisma.eventTempParticipant.upsert({
+    where: {
+      id: 3,
+    },
+    update: {},
+    create: {
+      eventId: event3.id,
+      name: "Mutta",
+      isAttended: true,
     },
   });
 

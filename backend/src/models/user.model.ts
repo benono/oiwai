@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
+import { NotFoundError } from "../errors/notfound.error";
 
 const prisma = new PrismaClient();
 
@@ -53,8 +54,33 @@ const addNewUser = async (
   return addedUser;
 };
 
+const checkIsEventHost = async (
+  email: string,
+  eventId: number,
+): Promise<boolean> => {
+  const user = await prisma.users.findUnique({
+    where: {
+      email: email,
+    },
+  });
+  if (!user) {
+    throw new NotFoundError("User");
+  }
+  const isHost = await prisma.events.findFirst({
+    where: {
+      id: eventId,
+      hostId: user.id,
+    },
+  });
+  if (!isHost) {
+    return false;
+  }
+  return true;
+};
+
 export default {
   fetchUSerById,
   fetchUSerByEmail,
   addNewUser,
+  checkIsEventHost,
 };

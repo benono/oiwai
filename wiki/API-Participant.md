@@ -10,13 +10,7 @@ GET /api/v1/events/{event_id}/participants
 
 Retrieves all participants for selected event.
 
-### Path Parameters
-
-| Parameter | Type   | Required | Description |
-| --------- | ------ | -------- | ----------- |
-| event_id  | string | Yes      | Event ID    |
-
-### Response
+### Response (Host)
 
 ```json
 {
@@ -43,6 +37,22 @@ Retrieves all participants for selected event.
         "name": "string",
         "isAttended": boolean
         }
+    ]
+  }
+}
+```
+
+### Response (Guest)
+
+```json
+{
+  "data": {
+    "whoIsComing": [
+      {
+        "id": "string",
+        "name": "string",
+        "profileImageUrl": "string"
+      }
     ]
   }
 }
