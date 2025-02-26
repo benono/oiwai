@@ -86,16 +86,13 @@ export const isEventParticipant = async (
       },
     });
 
-    // TODO check if host is automatically added as a participant.
-    // const isHost = await prisma.events.findFirst({
-    //   where: {
-    //     id: eventId,
-    //     hostId: user.id,
-    //   },
-    // });
-    // if (!participant && !isHost) {
-
-    if (!participant) {
+    const isHost = await prisma.events.findFirst({
+      where: {
+        id: eventId,
+        hostId: user.id,
+      },
+    });
+    if (!participant && !isHost) {
       res
         .status(401)
         .json({ error: "You are not authorized to perform this action" });
