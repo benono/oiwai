@@ -27,3 +27,12 @@ export type MyPageEventType = Pick<
 export type MyPageEventReturnType = {
   events: MyPageEventType[];
 };
+
+export type IconType =
+  | "Necessity"
+  | "Timeline"
+  | "Album"
+  | "Talk"
+  | "Buy"
+  | "Guest list"
+  | "RSVP";

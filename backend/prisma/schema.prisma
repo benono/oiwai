@@ -59,7 +59,7 @@ model Events {
   theme String
   noteForThingsToBuy String  @map("note_for_things_to_buy")
   noteForNecessities String  @map("note_for_necessities")
-
+  budget Int  @default(0)
   eventParticipants EventParticipants[]
   eventTempParticipant EventTempParticipant[]
   necessities Necessities[]
@@ -126,6 +126,8 @@ model ThingsToBuy {
   event       Events @relation(fields: [eventId], references: [id])
   eventId     Int  @map("event_id")
   item String
+  price Int
+  quantity Int
   isPurchase Boolean    @map("is_purchase")
 
     @@map("things_to_buy")
@@ -135,7 +137,7 @@ model Timelines {
   id        Int      @id @default(autoincrement())
   event       Events @relation(fields: [eventId], references: [id])
   eventId     Int  @map("event_id")
-  scheduleItem String    @map("schedule_item")
+  title String
   description String
   startTime DateTime  @map("start_time")
   endTime DateTime  @map("end_time")
