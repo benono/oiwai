@@ -13,16 +13,19 @@ async function main() {
       email: "alice@example.com",
       profileImageUrl:
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+      isDeleted: false,
       userFamilies: {
         create: [
           {
             name: "Ken",
             profileImageUrl: "",
+            isDeleted: false,
           },
           {
             name: "Laura",
             profileImageUrl:
               "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+            isDeleted: false,
           },
         ],
       },
@@ -40,6 +43,7 @@ async function main() {
       email: "taro@example.com",
       profileImageUrl:
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+      isDeleted: false,
     },
   });
 
@@ -54,11 +58,13 @@ async function main() {
       email: "jane@example.com",
       profileImageUrl:
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+      isDeleted: false,
       userFamilies: {
         create: {
           name: "Emma",
           profileImageUrl:
             "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+          isDeleted: false,
         },
       },
     },
