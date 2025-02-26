@@ -17,6 +17,17 @@ export type EventType = {
   noteForThingsToBuy: string;
 };
 
+export type MyPageEventType = Pick<
+  EventType,
+  "id" | "title" | "thumbnailUrl" | "startTime" | "endTime"
+> & {
+  isHost: boolean;
+};
+
+export type MyPageEventReturnType = {
+  events: MyPageEventType[];
+};
+
 export type IconType =
   | "Necessity"
   | "Timeline"
