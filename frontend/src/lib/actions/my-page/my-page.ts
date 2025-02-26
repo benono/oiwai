@@ -3,21 +3,20 @@
 import { getServerAxiosInstance } from "@/lib/api/axios-server";
 import { UserType } from "@/types/user";
 
-
 // Update user information
 export const updateUserInfo = async (updatedData: {
   name?: string;
-  profileImageUrl?: File |string | null;
+  profileImageUrl?: File | string | null;
 }): Promise<{
   success: boolean;
   message: string;
   user: Omit<UserType, "email" | "userFamilies">;
 }> => {
   try {
-    const axiosInstance = await getServerAxiosInstance()
+    const axiosInstance = await getServerAxiosInstance();
     const formData = new FormData();
 
-    if(updatedData.name) {
+    if (updatedData.name) {
       formData.append("name", updatedData.name);
     }
     if (updatedData.profileImageUrl) {
@@ -30,7 +29,7 @@ export const updateUserInfo = async (updatedData: {
     const response = await axiosInstance.patch("/me", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
-      }
+      },
     });
     return response.data;
   } catch (err) {
@@ -42,7 +41,6 @@ export const updateUserInfo = async (updatedData: {
   }
 };
 
-
 // Delete user information
 export const deleteUserInfo = async (): Promise<{
   success: boolean;
@@ -51,8 +49,7 @@ export const deleteUserInfo = async (): Promise<{
   try {
     const axiosInstance = await getServerAxiosInstance();
     const response = await axiosInstance.delete("/me");
-    return response.data
-
+    return response.data;
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.message);
@@ -72,10 +69,10 @@ export const updateFamilyInfo = async (updatedData: {
   familyMember: { id: string; name: string; profileImageUrl: string | null };
 }> => {
   try {
-    const axiosInstance = await getServerAxiosInstance()
+    const axiosInstance = await getServerAxiosInstance();
     const formData = new FormData();
 
-    if(updatedData.name) {
+    if (updatedData.name) {
       formData.append("name", updatedData.name);
     }
     if (updatedData.profileImageUrl) {
@@ -84,11 +81,15 @@ export const updateFamilyInfo = async (updatedData: {
     } else {
       formData.append("remove_image", "true");
     }
-    const response = await axiosInstance.patch(`/me/family/${updatedData.familyId}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      }
-    });
+    const response = await axiosInstance.patch(
+      `/me/family/${updatedData.familyId}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
     return response.data;
   } catch (err) {
     if (err instanceof Error) {
@@ -105,7 +106,7 @@ export const addFamilyMember = async (familyData: {
   profileImageUrl?: File | string | null;
 }) => {
   try {
-    const axiosInstance = await getServerAxiosInstance()
+    const axiosInstance = await getServerAxiosInstance();
     const formData = new FormData();
 
     formData.append("name", familyData.name);
@@ -115,8 +116,9 @@ export const addFamilyMember = async (familyData: {
     } else {
       formData.append("remove_image", "true");
     }
+    console.log(formData);
     const response = await axiosInstance.post(`/me/family`, formData);
-    console.log("add family", response.data)
+    console.log("add family", response.data);
     return response.data;
   } catch (err) {
     if (err instanceof Error) {
@@ -127,7 +129,6 @@ export const addFamilyMember = async (familyData: {
   }
 };
 
-
 // Delete user information
 export const deleteFamilyInfo = async (
   familyId: string,
@@ -135,7 +136,7 @@ export const deleteFamilyInfo = async (
   try {
     const axiosInstance = await getServerAxiosInstance();
     const response = await axiosInstance.delete(`/me/family/${familyId}`);
-    return response.data
+    return response.data;
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.message);
