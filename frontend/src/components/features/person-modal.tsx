@@ -56,7 +56,7 @@ export default function PersonModal({
 }: PersonModalProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string>(defaultImage);
-  const [imageUrlData, setImageUrlData] = useState<File | null>(null)
+  const [imageUrlData, setImageUrlData] = useState<File | null>(null);
   const [name, setName] = useState<string>(defaultName || "");
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -88,15 +88,16 @@ export default function PersonModal({
     e.stopPropagation();
     revokeObjectURL();
     setImageUrl("/images/profile_default.png");
+    setImageUrlData(null)
   };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      setImageUrlData(file)
+      setImageUrlData(file);
       setImageUrl(imageUrl);
-      revokeObjectURL()
+      revokeObjectURL();
     }
   };
 
@@ -118,7 +119,10 @@ export default function PersonModal({
       let response;
 
       if (type === "user") {
-        response = await updateUserInfo({ name, profileImageUrl: imageUrlData });
+        response = await updateUserInfo({
+          name,
+          profileImageUrl: imageUrlData,
+        });
       } else if (familyId && type === "family") {
         response = await updateFamilyInfo({
           familyId,
