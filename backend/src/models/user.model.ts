@@ -4,9 +4,10 @@ const prisma = new PrismaClient();
 
 const fetchUSerById = async (id: number) => {
   const user = await prisma.users.findUnique({
-    where: { id },
+    where: { id :id, isDeleted: false },
     include: {
       userFamilies: {
+        where:{isDeleted:false},
         select: {
           id: true,
           profileImageUrl: true,
@@ -20,11 +21,10 @@ const fetchUSerById = async (id: number) => {
 
 const fetchUSerByEmail = async (email: string) => {
   const user = await prisma.users.findUnique({
-    where: {
-      email: email,
-    },
+    where: { email :email, isDeleted: false },
     include: {
       userFamilies: {
+        where:{isDeleted:false},
         select: {
           id: true,
           profileImageUrl: true,
