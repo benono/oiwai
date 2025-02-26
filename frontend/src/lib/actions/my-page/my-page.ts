@@ -23,7 +23,7 @@ export const updateUserInfo = async (updatedData: {
       formData.append("profileImage", updatedData.profileImageUrl);
       formData.append("remove_image", "false");
     } else {
-      formData.append("removeImage", "true");
+      formData.append("remove_image", "true");
     }
 
     const response = await axiosInstance.patch("/me", formData, {
@@ -117,7 +117,12 @@ export const addFamilyMember = async (familyData: {
       formData.append("remove_image", "true");
     }
     console.log(formData);
-    const response = await axiosInstance.post(`/me/family`, formData);
+    const response = await axiosInstance.post(`/me/family`, formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     console.log("add family", response.data);
     return response.data;
   } catch (err) {
