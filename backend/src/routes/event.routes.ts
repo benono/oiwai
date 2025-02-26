@@ -2,8 +2,9 @@ import { Router } from "express";
 import eventController from "../controllers/event.controller";
 import necesitiesModel from "../controllers/necessities.controller";
 import participantNecesitiesModel from "../controllers/participantNecessities.controller";
+import timelineController from "../controllers/timeline.controller";
 import requireAuthMiddleware from "../middleware/auth";
-
+import { isEventHost, isEventParticipant } from "../middleware/event.auth";
 const eventRouter = Router();
 
 // Routes
@@ -39,4 +40,24 @@ eventRouter.patch(
   participantNecesitiesModel.updateParticipantNecessities,
 );
 
+eventRouter.get(
+  "/:event_id/timelines",
+  isEventParticipant,
+  timelineController.getEventTimelines,
+);
+eventRouter.post(
+  "/:event_id/timelines",
+  isEventHost,
+  timelineController.createTimeline,
+);
+eventRouter.put(
+  "/:event_id/timelines/:timeline_id",
+  isEventHost,
+  timelineController.updateTimeline,
+);
+eventRouter.delete(
+  "/:event_id/timelines/:timeline_id",
+  isEventHost,
+  timelineController.deleteTimeline,
+);
 export default eventRouter;

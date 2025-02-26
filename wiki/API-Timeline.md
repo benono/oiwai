@@ -33,15 +33,15 @@ Retrieves event's timeline. (both host and guest can access)
 - Sort by start_time
 - If start_time is the same, sort by end_time (TODO check if this is correct)
 
-## 2. Create Timeline
+## 2. Create Multiple Timelines (Batch Creation)
 
 ### Endpoint
 
-POST /api/v1/events/{event_id}/timelines
+POST /api/v1/events/{event_id}/timelines/batch
 
 ### Description
 
-Creates a timeline for an event. (only host can access)
+Creates multiple timelines for an event. (only host can access)
 
 ### Request
 
@@ -78,7 +78,46 @@ Creates a timeline for an event. (only host can access)
 }
 ```
 
-## 3. Update Timeline
+## 3. Create Single Timeline
+
+### Endpoint
+
+POST /api/v1/events/{event_id}/timelines
+
+### Description
+
+Creates a timeline for an event. (only host can access)
+
+### Request
+
+```json
+{
+  "title": "string",
+  "description": "string",
+  "start_time": "string",
+  "end_time": "string"
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "string",
+  "data": {
+    "timeline": {
+      "id": "string",
+      "title": "string",
+      "description": "string",
+      "start_time": "string",
+      "end_time": "string"
+    }
+  }
+}
+```
+
+## 4. Update Timeline
 
 ### Endpoint
 
@@ -117,7 +156,7 @@ Updates a timeline for an event. (only host can access)
 }
 ```
 
-## 4. Delete Timeline
+## 5. Delete Timeline
 
 ### Endpoint
 
@@ -136,7 +175,7 @@ Deletes a timeline for an event. (only host can access)
 }
 ```
 
-## 5. Get Timelines (AI)
+## 6. Generate Timelines (AI)
 
 → 　 Pending
 
