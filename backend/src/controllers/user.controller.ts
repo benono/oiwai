@@ -14,7 +14,7 @@ const prisma = new PrismaClient();
 
 const defaultProfileImage = process.env.DEFAULT_PROFILE_IMAGE || "";
 
-const getuserById = async (req: Request, res: Response) => {
+const getUserById = async (req: Request, res: Response) => {
   try {
     const { userId } = getAuth(req);
     if (!userId) {
@@ -106,13 +106,13 @@ const updateUser = async (req: Request, res: Response) => {
 
       res.status(200).json({
         success: true,
-        message: "user updated sccessfully!",
+        message: "user updated successfully!",
         user: updatedUser,
       });
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "faild to update user" });
+    res.status(500).json({ error: "failed to update user" });
   }
 };
 
@@ -136,11 +136,11 @@ const deleteUser = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: "user deleted sccessfully!",
+      message: "user deleted successfully!",
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "faild to delete user" });
+    res.status(500).json({ error: "failed to delete user" });
   }
 };
 
@@ -180,13 +180,13 @@ const addNewUserFamily = async (req: Request, res: Response) => {
 
       res.status(200).json({
         success: true,
-        message: "user family  added sccessfully!",
+        message: "user family  added successfully!",
         familyMember: familyMember,
       });
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "faild to added user" });
+    res.status(500).json({ error: "failed to added user" });
   }
 };
 
@@ -226,13 +226,13 @@ const updateUserFamily = async (
 
       res.status(200).json({
         success: true,
-        message: "user family updated sccessfully!",
+        message: "user family updated successfully!",
         user: updatedUser,
       });
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "faild to update user family" });
+    res.status(500).json({ error: "failed to update user family" });
   }
 };
 
@@ -247,16 +247,16 @@ const deleteUserFamily = async (
 
     res.status(200).json({
       success: true,
-      message: "user family deleted sccessfully!",
+      message: "user family deleted successfully!",
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "faild to update user family" });
+    res.status(500).json({ error: "failed to update user family" });
   }
 };
 
 export default {
-  getuserById,
+  getUserById,
   getEventInfoByEmail,
   updateUser,
   deleteUser,

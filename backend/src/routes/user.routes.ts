@@ -6,7 +6,7 @@ import upload from "../middleware/uploadMiddleware";
 const usersRouter = Router();
 
 // Routes
-usersRouter.get("/", requireAuthMiddleware, usersController.getuserById);
+usersRouter.get("/", requireAuthMiddleware, usersController.getUserById);
 usersRouter.get(
   "/events",
   requireAuthMiddleware,
