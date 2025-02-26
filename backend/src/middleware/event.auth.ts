@@ -1,6 +1,7 @@
 import { clerkClient, getAuth } from "@clerk/express";
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import { UnauthorizedError } from "../errors";
 
 const prisma = new PrismaClient();
 
@@ -14,13 +15,11 @@ export const isEventHost = async (
     const eventId = Number(req.params.event_id);
     const { userId } = getAuth(req);
     if (!userId) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
+      throw new UnauthorizedError();
     }
     const user = await clerkClient.users.getUser(userId);
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
+      throw new UnauthorizedError();
     }
     const userOnApp = await prisma.users.findUnique({
       where: {
@@ -28,8 +27,7 @@ export const isEventHost = async (
       },
     });
     if (!userOnApp) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
+      throw new UnauthorizedError();
     }
 
     const event = await prisma.events.findFirst({
@@ -40,8 +38,7 @@ export const isEventHost = async (
     });
 
     if (!event) {
-      res.status(401).json({ error: "You are not the host of this event" });
-      return;
+      throw new UnauthorizedError("You are not the host of this event");
     }
 
     next();
@@ -87,15 +84,13 @@ export const isEventParticipant = async (
     });
 
     // TODO check if host is automatically added as a participant.
-    // const isHost = await prisma.events.findFirst({
-    //   where: {
-    //     id: eventId,
-    //     hostId: user.id,
-    //   },
-    // });
-    // if (!participant && !isHost) {
-
-    if (!participant) {
+    const isHost = await prisma.events.findFirst({
+      where: {
+        id: eventId,
+        hostId: user.id,
+      },
+    });
+    if (!participant && !isHost) {
       res
         .status(401)
         .json({ error: "You are not authorized to perform this action" });
