@@ -30,31 +30,31 @@ export const errorHandler = (
     case err instanceof ValidationError:
       res.status(400).send({
         success: false,
-        error: err.message,
+        message: err.message,
       });
       break;
     case err instanceof UnauthorizedError:
       res.status(401).send({
         success: false,
-        error: err.message,
+        message: err.message,
       });
       break;
     case err instanceof NotFoundError:
       res.status(404).send({
         success: false,
-        error: err.message,
+        message: err.message,
       });
       break;
     case err instanceof ForbiddenError:
       res.status(403).send({
         success: false,
-        error: err.message,
+        message: err.message,
       });
       break;
     default:
       res.status(500).send({
         success: false,
-        error: "Internal server error",
+        message: "Internal server error",
       });
       break;
   }
