@@ -1,8 +1,10 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { error } from "console";
+import { ValidationError } from "../errors";
 import necessitiesModel from "../models/necessities.model";
 import participantNecessitiesModel from "../models/participantNecessities.model";
 import Event from "../types/event";
+import toBuyModel from "./thingsToBuy.model";
 
 const prisma = new PrismaClient();
 
@@ -18,6 +20,26 @@ const fetchEventById = async (id: number) => {
 
 const updateEvent = async (
   tx: Prisma.TransactionClient,
+  eventId: number,
+  updates: Partial<Event>,
+) => {
+  const filteredUpdates = Object.fromEntries(
+    Object.entries(updates).filter(([_, v]) => v !== undefined),
+  );
+
+  if (Object.keys(filteredUpdates).length === 0) {
+    throw new Error("no valid update fields");
+  }
+
+  const user = await prisma.events.update({
+    where: { id: eventId },
+    data: { ...filteredUpdates },
+  });
+
+  return user;
+};
+
+const updateEventWithoutTransaction = async (
   eventId: number,
   updates: Partial<Event>,
 ) => {
@@ -72,7 +94,40 @@ const createNewNecessitiesInfo = async (
   }
 };
 
+const addToBuyItemInit = async (
+  eventId: number,
+  budget: number,
+  name: string,
+  price: number,
+  quantity: number,
+) => {
+  return await prisma.$transaction(async (tx) => {
+    // check if event exists
+    const event = await prisma.events.findUnique({
+      where: { id: eventId },
+    });
+    if (!event) {
+      throw new ValidationError("Event not found");
+    }
+    const updates: Partial<Event> = { budget: budget };
+    const updatedBudget = await updateEvent(tx, eventId, updates);
+
+    const createdItem = await toBuyModel.createToBuyItemWithTransaction(
+      tx,
+      eventId,
+      name,
+      price,
+      quantity,
+    );
+
+    return { updatedBudget, createdItem };
+  });
+};
+
 export default {
   fetchEventById,
+  updateEvent,
+  updateEventWithoutTransaction,
   createNewNecessitiesInfo,
+  addToBuyItemInit,
 };
