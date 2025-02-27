@@ -112,6 +112,7 @@ const deleteUser = async (userId: number, email: string) => {
     });
   });
 };
+
 const checkIsEventHost = async (
   email: string,
   eventId: number,

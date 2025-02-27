@@ -12,6 +12,7 @@ export async function seedBen() {
       email: "bentoki.1213@gmail.com",
       profileImageUrl:
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+      isDeleted: false,
       userFamilies: {
         create: [
           {
@@ -19,12 +20,14 @@ export async function seedBen() {
             name: "Amane",
             profileImageUrl:
               "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+            isDeleted: false,
           },
           {
             id: 11,
             name: "Chika",
             profileImageUrl:
               "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+            isDeleted: false,
           },
         ],
       },
@@ -39,6 +42,7 @@ export async function seedBen() {
       email: "naoya@test.com",
       profileImageUrl:
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+      isDeleted: false,
     },
   });
 
@@ -51,6 +55,7 @@ export async function seedBen() {
       email: "taro@test.com",
       profileImageUrl:
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+      isDeleted: false,
     },
   });
 
@@ -62,6 +67,7 @@ export async function seedBen() {
       email: "yuki@test.com",
       profileImageUrl:
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+      isDeleted: false,
     },
   });
 
@@ -183,7 +189,7 @@ export async function seedBen() {
     update: {},
     create: {
       eventId: event3.id,
-      name: "Amane",
+      name: "Tmp-Amane",
       isAttended: false,
     },
   });
@@ -195,7 +201,7 @@ export async function seedBen() {
     update: {},
     create: {
       eventId: event3.id,
-      name: "Hibito",
+      name: "Tmp-Hibito",
       isAttended: false,
     },
   });
@@ -207,7 +213,7 @@ export async function seedBen() {
     update: {},
     create: {
       eventId: event3.id,
-      name: "Mutta",
+      name: "Tmp-Mutta",
       isAttended: true,
     },
   });
