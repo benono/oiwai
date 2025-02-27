@@ -111,6 +111,8 @@ const deleteUser = async (userId: number, email: string) => {
       data: { isDeleted: true },
     });
   });
+};
+
 const checkIsEventHost = async (
   email: string,
   eventId: number,
