@@ -1,6 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { DEFAULT_PROFILE_IMAGE } from "../constants/default.image";
-import { NotFoundError } from "../errors";
 import type {
   ParticipantWithUser,
   TempParticipant,
@@ -148,25 +147,6 @@ const deleteTemporaryParticipant = async (
   });
 };
 
-const checkIsEventParticipant = async (
-  email: string,
-  eventId: number,
-): Promise<boolean> => {
-  const user = await prisma.users.findUnique({
-    where: { email },
-  });
-  if (!user) {
-    throw new NotFoundError("User");
-  }
-  const isParticipant = await prisma.eventParticipants.findFirst({
-    where: { eventId, userId: user.id },
-  });
-  if (!isParticipant) {
-    return false;
-  }
-  return true;
-};
-
 export default {
   addNewEventParticipant,
   getEventParticipants,
@@ -174,5 +154,4 @@ export default {
   deleteParticipant,
   addTemporaryParticipant,
   deleteTemporaryParticipant,
-  checkIsEventParticipant,
 };

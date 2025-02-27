@@ -1,9 +1,8 @@
 import { clerkClient, getAuth } from "@clerk/express";
 import { Request } from "express";
 import { NotFoundError, UnauthorizedError, ValidationError } from "../errors";
-import eventParticipantsModel from "../models/eventParticipants.model";
+import eventModel from "../models/event.model";
 import userModel from "../models/user.model";
-
 export const checkIsRequestFromHost = async (
   req: Request<{ event_id: string }>,
 ): Promise<boolean> => {
@@ -25,7 +24,7 @@ export const checkIsRequestFromHost = async (
   );
 };
 
-export const checkIsRequestFromParticipant = async (
+export const checkIsRequestFromHostOrParticipant = async (
   req: Request<{ event_id: string }>,
 ): Promise<boolean> => {
   const { userId } = getAuth(req);
@@ -40,7 +39,12 @@ export const checkIsRequestFromParticipant = async (
   if (isNaN(eventId)) {
     throw new ValidationError("Invalid event ID");
   }
-  return await eventParticipantsModel.checkIsEventParticipant(
+
+  const user = await clerkClient.users.getUser(userId);
+  if (!user) {
+    throw new UnauthorizedError();
+  }
+  return await eventModel.checkIsEventHostOrParticipant(
     user.emailAddresses[0].emailAddress,
     eventId,
   );
