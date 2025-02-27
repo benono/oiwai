@@ -28,7 +28,7 @@ const updateEvent = async (
     throw new Error("no valid update fields");
   }
 
-  const user = await prisma.events.update({
+  const user = await tx.events.update({
     where: { id: eventId },
     data: { ...filteredUpdates },
   });
@@ -73,6 +73,7 @@ const createNewNecessitiesInfo = async (
 
 const updateNewNecessities = async (
   eventId: number,
+  newNote: string,
   newNecessitiesList: Necessity[],
   updateNecessitiesList: Necessity[],
   deleteNecessitiesList: Necessity[],
@@ -80,6 +81,10 @@ const updateNewNecessities = async (
   try {
     return await prisma.$transaction(async (tx) => {
       await necessitiesModel.lockNecessities(tx, eventId);
+
+      const updates = { noteForNecessities: newNote };
+      const result = await updateEvent(tx, eventId, updates);
+      const note = result?.noteForNecessities;
 
       let necessities = [];
       if (newNecessitiesList.length) {
@@ -123,8 +128,7 @@ const updateNewNecessities = async (
           necessities.push(deletedNecessity);
         }
       }
-      const result = await fetchEventById(eventId);
-      const note = result?.noteForNecessities;
+
       return { necessities, note };
     });
   } catch (err) {
