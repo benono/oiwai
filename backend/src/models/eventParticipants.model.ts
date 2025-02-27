@@ -1,6 +1,5 @@
 import { EventTempParticipant, Prisma, PrismaClient } from "@prisma/client";
 import { Omit } from "@prisma/client/runtime/library";
-import { NotFoundError } from "../errors";
 import ParticipantWithUser from "../types/participants";
 
 const prisma = new PrismaClient();
@@ -137,25 +136,6 @@ const deleteTemporaryParticipant = async (
   });
 };
 
-const checkIsEventParticipant = async (
-  email: string,
-  eventId: number,
-): Promise<boolean> => {
-  const user = await prisma.users.findUnique({
-    where: { email },
-  });
-  if (!user) {
-    throw new NotFoundError("User");
-  }
-  const isParticipant = await prisma.eventParticipants.findFirst({
-    where: { eventId, userId: user.id },
-  });
-  if (!isParticipant) {
-    return false;
-  }
-  return true;
-};
-
 export default {
   addNewEventParticipant,
   getEventParticipants,
@@ -163,5 +143,4 @@ export default {
   deleteParticipant,
   addTemporaryParticipant,
   deleteTemporaryParticipant,
-  checkIsEventParticipant,
 };
