@@ -21,10 +21,8 @@ type ModalProps = {
   title: string;
   description?: string;
   button?: ReactNode;
-  deleteAction: (
-    id?: string | string[],
-  ) => Promise<{ success: boolean; message: string }>;
-  id?: string | string[];
+  deleteAction: (id?: string) => Promise<{ success: boolean; message: string }>;
+  id?: string;
   deleteErrorMessage: string;
   onSuccess?: () => void;
 };
@@ -42,7 +40,7 @@ export default function Modal({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { toast } = useToast()
+  const {toast} = useToast()
   const { signOut } = useClerk()
 
   const handleDelete = async (e: FormEvent) => {
