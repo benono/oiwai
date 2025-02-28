@@ -7,6 +7,7 @@ const eventRouter = Router();
 
 // Routes
 eventRouter.get("/:event_id", isEventHostOrParticipant, eventController.getEventById);
+eventRouter.get("/:event_id/is-host", isEventHostOrParticipant, eventController.checkIsEventHost);
 
 // Timelines
 eventRouter.get(
