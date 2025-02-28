@@ -248,4 +248,50 @@ export async function seedBen() {
       endTime: new Date("2025-04-03T18:00:00.000Z"),
     },
   });
+
+  // Event4 (Takoyaki party
+  await prisma.events.upsert({
+    where: {
+      id: 4,
+    },
+    update: {},
+    create: {
+      hostId: 1,
+      title: "Takoyaki party",
+      thumbnailUrl:
+        "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+      startTime: new Date("2025-04-03T12:00:00.000Z"),
+      endTime: new Date("2025-04-03T17:00:00.000Z"),
+      country: "Canada",
+      postalCode: "V6Z 1L2",
+      province: "BC",
+      city: "Vancouver",
+      address1: "978 Granvill St",
+      address2: "",
+      isAskRestrictions: false,
+      theme: "#7fffd4",
+      noteForThingsToBuy: "",
+      noteForNecessities: "",
+      eventParticipants: {
+        create: [
+          {
+            userId: user4.id,
+            userFamilyId: 10,
+            messageToHost: "",
+            restrictionNote: "",
+            isAccepted: true,
+            isAttended: false,
+          },
+          {
+            userId: user4.id,
+            userFamilyId: 11,
+            messageToHost: "",
+            restrictionNote: "",
+            isAccepted: true,
+            isAttended: true,
+          },
+        ],
+      },
+    },
+  });
 }
