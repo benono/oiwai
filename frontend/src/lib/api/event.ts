@@ -7,7 +7,7 @@ export const getEventInformation = async (
 ): Promise<{ event: EventType }> => {
   try {
     const axiosInstance = await getServerAxiosInstance();
-    const response = await axiosInstance.get(`events/${eventId}`);
+    const response = await axiosInstance.get(`/events/${eventId}`);
     return response.data;
   } catch (err) {
     if (err instanceof Error) {
