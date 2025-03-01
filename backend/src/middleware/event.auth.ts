@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ForbiddenError } from "../errors";
 import {
+  checkIsRequestFromHost,
   checkIsRequestFromHostOrParticipant,
 } from "../utils/request-checker";
 
@@ -26,7 +27,6 @@ export const isEventHost = async (
     next(error);
   }
 };
-
 
 /**
  * Middleware to check if the user is a participant of the event (including the host)
