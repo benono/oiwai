@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { error } from "console";
-import { ValidationError } from "../errors";
+import { NotFoundError, ValidationError } from "../errors";
 import necessitiesModel from "../models/necessities.model";
 import participantNecessitiesModel from "../models/participantNecessities.model";
 import Event from "../types/event";
@@ -16,6 +16,35 @@ const fetchEventById = async (id: number) => {
     where: { id },
   });
   return event;
+};
+
+const checkIsEventHostOrParticipant = async (
+  email: string,
+  eventId: number,
+) => {
+  const user = await prisma.users.findUnique({
+    where: {
+      email: email,
+    },
+  });
+  if (!user) {
+    throw new NotFoundError("User");
+  }
+  // check if the user is the host of the event
+  const isHost = await prisma.events.findFirst({
+    where: {
+      id: eventId,
+      hostId: user.id,
+    },
+  });
+  if (isHost) {
+    return true;
+  }
+  // check if the user is a participant of the event
+  const isParticipant = await prisma.eventParticipants.findFirst({
+    where: { eventId, userId: user.id },
+  });
+  return isParticipant ? true : false;
 };
 
 const updateEvent = async (
@@ -130,4 +159,5 @@ export default {
   updateEventWithoutTransaction,
   createNewNecessitiesInfo,
   addToBuyItemInit,
+  checkIsEventHostOrParticipant,
 };
