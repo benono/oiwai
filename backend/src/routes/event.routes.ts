@@ -6,7 +6,6 @@ import thingsToBuyController from "../controllers/tningsToBuy.controller";
 import {
   isEventHost,
   isEventHostOrParticipant,
-  isEventParticipant,
 } from "../middleware/event.auth";
 const eventRouter = Router();
 
@@ -47,7 +46,7 @@ eventRouter.delete(
 // Participants
 eventRouter.get(
   "/:event_id/who-is-coming",
-  isEventParticipant,
+  //isEventParticipant,
   eventParticipantsController.getWhoIsComing,
 );
 
@@ -82,6 +81,12 @@ eventRouter.get(
   "/:event_id/things-to-buy",
   isEventHost,
   thingsToBuyController.getThingsToBuyItems,
+);
+
+eventRouter.get(
+  "/:event_id/things-to-buy/:item_id",
+  isEventHost,
+  thingsToBuyController.getThingsToBuyItem,
 );
 
 eventRouter.post(

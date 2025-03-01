@@ -11,6 +11,13 @@ const fetchToBuyItems = async (eventId: number) => {
   return Items;
 };
 
+const fetchToBuyItem = async (itemId: number) => {
+  const Item = await prisma.thingsToBuy.findUnique({
+    where: { id: itemId },
+  });
+  return Item;
+};
+
 const createToBuyItemWithTransaction = async (
   tx: Prisma.TransactionClient,
   eventId: number,
@@ -107,6 +114,7 @@ const deleteToBuyItems = async (itemId: number) => {
 
 export default {
   fetchToBuyItems,
+  fetchToBuyItem,
   createToBuyItemWithTransaction,
   createToBuyItemWithoutTransaction,
   updateCheckForToBuyItems,

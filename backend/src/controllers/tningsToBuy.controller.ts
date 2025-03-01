@@ -1,5 +1,5 @@
 import console from "console";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ValidationError } from "../errors/validation.error";
 import eventModel from "../models/event.model";
 import toBuyModel from "../models/thingsToBuy.model";
@@ -27,6 +27,36 @@ const getThingsToBuyItems = async (
       console.error(err);
       res.status(500).json({ error: "Unable to get to-buy-items by id" });
     }
+  }
+};
+
+const getThingsToBuyItem = async (
+  req: Request<{ event_id: string; item_id: string }>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const eventId = Number(req.params.event_id);
+    const itemId = Number(req.params.item_id);
+    // Validate ID
+    if (isNaN(eventId)) {
+      throw new ValidationError("Invalid event ID");
+    }
+    if (isNaN(itemId)) {
+      throw new ValidationError("Invalid item ID");
+    }
+    const thingToBuy = await toBuyModel.fetchToBuyItem(itemId);
+    if (!thingToBuy) {
+      res.status(404).json({ error: "Item not found" });
+      return;
+    }
+
+    const result = await eventModel.fetchEventById(eventId);
+    const budget = result ? result.budget : 0;
+
+    res.status(200).json({ data: { thingToBuy }, budget });
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -246,6 +276,7 @@ const deleteThingsToBuy = async (
 
 export default {
   getThingsToBuyItems,
+  getThingsToBuyItem,
   addThingsToBuyItemInit,
   updateBudget,
   addThingsToBuyItem,
