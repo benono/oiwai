@@ -1,11 +1,10 @@
 import { Router } from "express";
 import eventController from "../controllers/event.controller";
-import necesitiesModel from "../controllers/necessities.controller";
-import participantNecesitiesModel from "../controllers/participantNecessities.controller";
+import necessitiesModel from "../controllers/necessities.controller";
+import participantNecessitiesModel from "../controllers/participantNecessities.controller";
 import timelineController from "../controllers/timeline.controller";
 import requireAuthMiddleware from "../middleware/auth";
 import eventParticipantsController from "../controllers/eventParticipants.controller";
-import timelineController from "../controllers/timeline.controller";
 import { isEventHost, isEventHostOrParticipant } from "../middleware/event.auth";
 const eventRouter = Router();
 
@@ -16,31 +15,31 @@ eventRouter.get("/:event_id/is-host", isEventHostOrParticipant, eventController.
 eventRouter.get(
   "/:event_id/necessities",
   requireAuthMiddleware,
-  necesitiesModel.getNecessities,
+  necessitiesModel.getNecessities,
 );
 
 eventRouter.post(
   "/:event_id/necessities",
   requireAuthMiddleware,
-  necesitiesModel.addNewNecessitiesInfo,
+  necessitiesModel.addNewNecessitiesInfo,
 );
 
 eventRouter.patch(
   "/:event_id/necessities",
   requireAuthMiddleware,
-  necesitiesModel.updateNecessitiesInfo,
+  necessitiesModel.updateNecessitiesInfo,
 );
 
 eventRouter.get(
   "/:event_id/me/necessities",
   requireAuthMiddleware,
-  participantNecesitiesModel.getParticipantNecessities,
+  participantNecessitiesModel.getParticipantNecessities,
 );
 
 eventRouter.patch(
   "/:event_id/me/necessities/:necessity_id",
   requireAuthMiddleware,
-  participantNecesitiesModel.updateParticipantNecessities,
+  participantNecessitiesModel.updateParticipantNecessities,
 );
 
 // Timelines
@@ -67,7 +66,7 @@ eventRouter.delete(
 // Participants
 eventRouter.get(
   "/:event_id/who-is-coming",
-  isEventParticipant,
+  isEventHostOrParticipant,
   eventParticipantsController.getWhoIsComing,
 );
 
