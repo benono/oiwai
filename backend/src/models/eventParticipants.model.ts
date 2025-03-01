@@ -1,7 +1,9 @@
-import { EventTempParticipant, Prisma, PrismaClient } from "@prisma/client";
-import { Omit } from "@prisma/client/runtime/library";
-import { NotFoundError } from "../errors";
-import ParticipantWithUser from "../types/participants";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { DEFAULT_PROFILE_IMAGE } from "../constants/default.image";
+import type {
+  ParticipantWithUser,
+  TempParticipant,
+} from "../types/participants";
 
 const prisma = new PrismaClient();
 
@@ -34,7 +36,7 @@ const getEventParticipants = async (
 ): Promise<{
   acceptedParticipants: ParticipantWithUser[];
   declinedParticipants: ParticipantWithUser[];
-  tempParticipants: Omit<EventTempParticipant, "eventId">[];
+  tempParticipants: TempParticipant[];
 }> => {
   const participantsData = await prisma.eventParticipants.findMany({
     where: { eventId },
@@ -67,8 +69,8 @@ const getEventParticipants = async (
         ? participant.userFamilies?.name ?? ""
         : participant.user?.name ?? "",
       profileImageUrl: participant.userFamilyId
-        ? participant.userFamilies?.profileImageUrl ?? ""
-        : participant.user?.profileImageUrl ?? "",
+        ? participant.userFamilies?.profileImageUrl ?? DEFAULT_PROFILE_IMAGE
+        : participant.user?.profileImageUrl ?? DEFAULT_PROFILE_IMAGE,
       messageToHost: participant.messageToHost,
       restrictionNote: participant.restrictionNote,
       isAccepted: participant.isAccepted,
@@ -81,14 +83,22 @@ const getEventParticipants = async (
   const declinedParticipants = participants.filter(
     (participant) => !participant.isAccepted,
   );
-  const tempParticipants = await prisma.eventTempParticipant.findMany({
-    where: { eventId },
-    select: {
-      id: true,
-      name: true,
-      isAttended: true,
-    },
-  });
+  const tempParticipants = await prisma.eventTempParticipant
+    .findMany({
+      where: { eventId },
+      select: {
+        id: true,
+        name: true,
+        isAttended: true,
+      },
+    })
+    .then((participants) =>
+      participants.map((p) => ({
+        ...p,
+        profileImageUrl: DEFAULT_PROFILE_IMAGE,
+      })),
+    );
+
   return { acceptedParticipants, declinedParticipants, tempParticipants };
 };
 
@@ -137,25 +147,6 @@ const deleteTemporaryParticipant = async (
   });
 };
 
-const checkIsEventParticipant = async (
-  email: string,
-  eventId: number,
-): Promise<boolean> => {
-  const user = await prisma.users.findUnique({
-    where: { email },
-  });
-  if (!user) {
-    throw new NotFoundError("User");
-  }
-  const isParticipant = await prisma.eventParticipants.findFirst({
-    where: { eventId, userId: user.id },
-  });
-  if (!isParticipant) {
-    return false;
-  }
-  return true;
-};
-
 export default {
   addNewEventParticipant,
   getEventParticipants,
@@ -163,5 +154,4 @@ export default {
   deleteParticipant,
   addTemporaryParticipant,
   deleteTemporaryParticipant,
-  checkIsEventParticipant,
 };
