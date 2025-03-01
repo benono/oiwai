@@ -1,11 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import { ForbiddenError } from "../errors";
 import {
-  checkIsRequestFromHost,
   checkIsRequestFromHostOrParticipant,
 } from "../utils/request-checker";
 
-// check if the user is the host of the event
+/**
+ * Middleware to check if the user is the host of the event
+ * @param {Request} req - Express request object with event_id parameter
+ * @param {Response} res - Express response object
+ * @param {NextFunction} next - Express next middleware function
+ * @throws {ForbiddenError} If user is not the host of the event
+ */
 export const isEventHost = async (
   req: Request<{ event_id: string }>,
   res: Response,
@@ -22,6 +27,14 @@ export const isEventHost = async (
   }
 };
 
+
+/**
+ * Middleware to check if the user is a participant of the event (including the host)
+ * @param {Request} req - Express request object with event_id parameter
+ * @param {Response} res - Express response object
+ * @param {NextFunction} next - Express next middleware function
+ * @throws {ForbiddenError} If user is not a participant of the event
+ */
 // check if the user is a participant of the event (including the host)
 export const isEventHostOrParticipant = async (
   req: Request<{ event_id: string }>,
