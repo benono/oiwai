@@ -9,9 +9,9 @@ export type ShoppingItemType = BaseItemType & {
   isPurchase: boolean;
 };
 
-export type BudgetType = BudgetType & {
+export type BudgetDetailType = BudgetType & {
   remainBudget: number;
-  totalSpend: number;
+  totalspend: number;
 };
 
 export type BudgetType = number;

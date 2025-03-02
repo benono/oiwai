@@ -1,4 +1,4 @@
-import { BudgetType, ShoppingItemType } from "@/types/to-buy";
+import { BudgetDetailType, BudgetType, ShoppingItemType } from "@/types/to-buy";
 import { AxiosError } from "axios";
 import { getServerAxiosInstance } from "./axios-server";
 
@@ -14,8 +14,8 @@ type ThingToBuyResponse = {
 
 type ThingsToBuyBudgetResponse = {
   budget: BudgetType;
-  remainBudget: BudgetType;
-  totalSpend: BudgetType;
+  remainBudget: BudgetDetailType["remainBudget"];
+  totalspend: BudgetDetailType["totalspend"];
 };
 
 // Fetch things to buy
@@ -57,7 +57,7 @@ export const getThingsToBuyBudget = async (
     return {
       budget: response.data.budget,
       remainBudget: response.data.remainBudget,
-      totalSpend: response.data.totalSpend,
+      totalspend: response.data.totalspend,
     };
   } catch (err) {
     if (err instanceof AxiosError && err.response) {

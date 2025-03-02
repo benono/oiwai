@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { updatePurchaseStatus } from "@/lib/actions/event/to-buy";
 import { showErrorToast } from "@/lib/toast/toast-utils";
-import { BudgetType, ShoppingItemType } from "@/types/to-buy";
+import { BudgetDetailType, BudgetType, ShoppingItemType } from "@/types/to-buy";
 import { ChevronRightIcon, PencilLineIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,24 +13,21 @@ type BudgetOverviewProps = {
   itemsList: ShoppingItemType[];
   budget: BudgetType;
   eventId: string;
+  remainBudget: BudgetDetailType["remainBudget"];
+  totalspend: BudgetDetailType["totalspend"];
 };
 
 export default function BudgetOverview({
   itemsList,
   budget,
   eventId,
+  totalspend,
+  remainBudget,
 }: BudgetOverviewProps) {
   const router = useRouter();
 
   const thingsToBuy = itemsList ?? [];
 
-  const calculateTotalPurchased = (items: ShoppingItemType[]) => {
-    return items.reduce(
-      (total, item) =>
-        item.isPurchase ? total + item.price * item.quantity : total,
-      0,
-    );
-  };
 
   const handleTogglePurchased = async (id: ShoppingItemType["id"]) => {
     try {
@@ -60,9 +57,6 @@ export default function BudgetOverview({
     }
   };
 
-  const totalSpendAmount = calculateTotalPurchased(thingsToBuy);
-  const remainingBudget = budget - totalSpendAmount;
-
   return (
     <div>
       <div>
@@ -75,8 +69,8 @@ export default function BudgetOverview({
             <PencilLineIcon />
           </Button>
         </Link>
-        <p>Total spend: ${totalSpendAmount}</p>
-        <p>Budget remain: ${remainingBudget}</p>
+        <p>Total spend: ${totalspend}</p>
+        <p>Budget remain: ${remainBudget}</p>
         <ul>
           {itemsList.map((item) => (
             <li key={item.id} className="flex items-center">
