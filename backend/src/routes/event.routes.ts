@@ -125,4 +125,10 @@ eventRouter.delete(
   thingsToBuyController.deleteThingsToBuy,
 );
 
+eventRouter.get(
+  "/:event_id/things-to-buy/budget",
+  isEventHost,
+  thingsToBuyController.getThingsToBuyBudget,
+);
+
 export default eventRouter;
