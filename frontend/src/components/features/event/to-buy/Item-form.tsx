@@ -10,15 +10,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
-import { addItem } from "@/lib/actions/event/to-buy";
+import { addItem, updateItem } from "@/lib/actions/event/to-buy";
 import { showErrorToast } from "@/lib/toast/toast-utils";
+import { Budget, ShoppingItem } from "@/types/to-buy";
 import { zodResolver } from "@hookform/resolvers/zod";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 type ItemFormProps = {
   eventId: string;
+  thingToBuy: ShoppingItem;
+  remainBudget: Budget;
 };
 
 const FormSchema = z.object({
@@ -33,25 +36,50 @@ const FormSchema = z.object({
     .nonnegative({ message: "Quantity must be a non-negative number." }),
 });
 
-export default function ItemForm({ eventId }: ItemFormProps) {
+export default function ItemForm({
+  eventId,
+  thingToBuy,
+  remainBudget,
+}: ItemFormProps) {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      item: "",
-      price: 0,
-      quantity: 0,
+      item: thingToBuy ? thingToBuy.item : "",
+      price: thingToBuy ? thingToBuy.price : 0,
+      quantity: thingToBuy ? thingToBuy.quantity : 0,
     },
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
-      const requestData = { ...data, eventId };
-      const response = await addItem({ requestData, eventId });
+      let response;
+      const requestData = { ...data };
+
+      if (thingToBuy) {
+        response = await updateItem({
+          eventId,
+          item_id: thingToBuy.id,
+          requestData,
+        });
+      } else {
+        response = await addItem({ requestData, eventId });
+      }
+
       if (response?.success) {
-        router.push(`/event/${eventId}/timeline`);
+        router.push(`/event/${eventId}/to-buy`);
       }
     } catch (err) {
-      showErrorToast(toast, err, "Failed to add item. Please try again.");
+      if (err instanceof Error) {
+        showErrorToast(toast, err, err.message);
+      } else {
+        showErrorToast(
+          toast,
+          err,
+          "An error occurred while processing your request. Please try again.",
+        );
+      }
     }
   };
 
@@ -91,6 +119,9 @@ export default function ItemForm({ eventId }: ItemFormProps) {
                   className="h-12 font-medium placeholder:text-textSub"
                 />
               </FormControl>
+              <p>
+                You have $ <span>{remainBudget}</span> left in your budget.
+              </p>
               <FormMessage />
             </FormItem>
           )}
