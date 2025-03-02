@@ -1,10 +1,10 @@
-export type Item = {
+export type BaseItemType = {
   item: string;
   price: number;
   quantity: number;
 };
 
-export type ShoppingItem = Item & {
+export type ShoppingItem = BaseItemType & {
   id: string;
   isPurchase: boolean;
 };

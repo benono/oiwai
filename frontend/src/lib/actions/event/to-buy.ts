@@ -1,7 +1,7 @@
 "use server";
 
 import { getServerAxiosInstance } from "@/lib/api/axios-server";
-import { Budget, Item } from "@/types/to-buy";
+import { BaseItemType, Budget } from "@/types/to-buy";
 import { AxiosError } from "axios";
 
 // Create things to buy
@@ -12,7 +12,7 @@ export const createThingsToBuy = async ({
 }: {
   eventId: string;
   budget: Budget;
-  requestData: Item;
+  requestData: BaseItemType;
 }): Promise<{
   success: boolean;
   message: string;
@@ -43,7 +43,7 @@ export const addItem = async ({
   requestData,
 }: {
   eventId: string;
-  requestData: Item;
+  requestData: BaseItemType;
 }): Promise<{
   success: boolean;
   message: string;
@@ -112,7 +112,7 @@ export const updateItem = async ({
 }: {
   eventId: string;
   itemId: string;
-  requestData: Item;
+  requestData: BaseItemType;
 }): Promise<{
   success: boolean;
   message: string;
