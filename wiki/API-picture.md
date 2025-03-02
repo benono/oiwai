@@ -40,9 +40,13 @@ Post pictures for event album. (host and guests can post)
 
 Content-Type: multipart/form-data
 
-| Parameter     | Type | Required | Description            |
-| ------------- | ---- | -------- | ---------------------- |
-| profile_image | file | No       | New profile image file |
+{
+"pictures": [
+{
+"picture": "file"
+}
+]
+}
 
 ````
 
