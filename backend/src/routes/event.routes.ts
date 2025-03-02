@@ -84,6 +84,12 @@ eventRouter.get(
 );
 
 eventRouter.get(
+  "/:event_id/things-to-buy/budget",
+  isEventHost,
+  thingsToBuyController.getThingsToBuyBudget,
+);
+
+eventRouter.get(
   "/:event_id/things-to-buy/:item_id",
   isEventHost,
   thingsToBuyController.getThingsToBuyItem,
@@ -123,12 +129,6 @@ eventRouter.delete(
   "/:event_id/things-to-buy/:item_id",
   isEventHost,
   thingsToBuyController.deleteThingsToBuy,
-);
-
-eventRouter.get(
-  "/:event_id/things-to-buy/budget",
-  isEventHost,
-  thingsToBuyController.getThingsToBuyBudget,
 );
 
 export default eventRouter;
