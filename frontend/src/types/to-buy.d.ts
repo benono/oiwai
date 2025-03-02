@@ -1,5 +1,5 @@
 export type BaseItemType = {
-  item: string;
+  name: string;
   price: number;
   quantity: number;
 };

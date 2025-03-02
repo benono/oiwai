@@ -31,7 +31,7 @@ type ItemFormProps = {
 };
 
 const FormSchema = z.object({
-  item: z
+  name: z
     .string()
     .min(2, { message: "Item name must be at least 2 characters." }),
   price: z.coerce
@@ -52,7 +52,7 @@ export default function ItemForm({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      item: thingToBuy ? thingToBuy.item : "",
+      name: thingToBuy ? thingToBuy.name : "",
       price: thingToBuy ? thingToBuy.price : 0,
       quantity: thingToBuy ? thingToBuy.quantity : 0,
     },
@@ -111,7 +111,7 @@ export default function ItemForm({
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
         <FormField
           control={form.control}
-          name="item"
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="font-semibold">
@@ -186,7 +186,7 @@ export default function ItemForm({
           type="submit"
           className="h-10 w-full rounded-full text-base font-bold"
         >
-          Add Item
+          {thingToBuy ? "Update shopping list" : "Add to shopping list"}
         </Button>
       </form>
     </FormProvider>
