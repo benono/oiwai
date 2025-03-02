@@ -65,6 +65,38 @@ const getThingsToBuyItem = async (
   }
 };
 
+const getThingsToBuyBudget = async (
+  req: Request<{ event_id: string }>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const eventId = Number(req.params.event_id);
+    // Validate ID
+    if (isNaN(eventId)) {
+      throw new ValidationError("Invalid event ID");
+    }
+
+    const result = await eventModel.fetchEventById(eventId);
+    const budget = result ? result.budget : 0;
+
+    const thingsToBuy = await toBuyModel.fetchToBuyItems(eventId);
+
+    let totalspend = 0;
+    for (let i = 0; i < thingsToBuy.length; i++) {
+      if (thingsToBuy[i].isPurchase) {
+        totalspend =
+          totalspend + thingsToBuy[i].price * thingsToBuy[i].quantity;
+      }
+    }
+    const remainBudget = budget - totalspend;
+
+    res.status(200).json({ budget, totalspend, remainBudget });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const addThingsToBuyItemInit = async (
   req: Request<{ event_id: string }>,
   res: Response,
@@ -252,6 +284,7 @@ const deleteThingsToBuy = async (
 export default {
   getThingsToBuyItems,
   getThingsToBuyItem,
+  getThingsToBuyBudget,
   addThingsToBuyItemInit,
   updateBudget,
   addThingsToBuyItem,
