@@ -5,7 +5,7 @@ export type BaseItemType = {
 };
 
 export type ShoppingItem = BaseItemType & {
-  id: string;
+  id: number;
   isPurchase: boolean;
 };
 

@@ -32,7 +32,7 @@ export default function BudgetOverview({
     );
   };
 
-  const handleTogglePurchased = async (id: string) => {
+  const handleTogglePurchased = async (id: ShoppingItem["id"]) => {
     try {
       const updatedItem = thingsToBuy.find((item) => item.id === id);
       if (!updatedItem) return;

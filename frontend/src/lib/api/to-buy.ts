@@ -74,7 +74,7 @@ export const getThingsToBuyBudget = async (
 // Fetch thing to buy
 export const getThingToBuy = async (
   eventId: string,
-  itemId: number,
+  itemId: ShoppingItem["id"],
 ): Promise<ThingToBuyResponse> => {
   try {
     const axiosInstance = await getServerAxiosInstance();
