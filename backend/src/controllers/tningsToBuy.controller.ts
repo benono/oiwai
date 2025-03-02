@@ -1,4 +1,3 @@
-import console from "console";
 import { NextFunction, Request, Response } from "express";
 import { ValidationError } from "../errors/validation.error";
 import eventModel from "../models/event.model";
@@ -8,6 +7,7 @@ import Event from "../types/event";
 const getThingsToBuyItems = async (
   req: Request<{ event_id: string }>,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const eventId = Number(req.params.event_id);
@@ -21,12 +21,7 @@ const getThingsToBuyItems = async (
 
     res.status(200).json({ data: { thingsToBuy }, budget });
   } catch (err) {
-    if (err instanceof ValidationError) {
-      res.status(400).json({ success: false, error: err.message });
-    } else {
-      console.error(err);
-      res.status(500).json({ error: "Unable to get to-buy-items by id" });
-    }
+    next(err);
   }
 };
 
@@ -54,7 +49,17 @@ const getThingsToBuyItem = async (
     const result = await eventModel.fetchEventById(eventId);
     const budget = result ? result.budget : 0;
 
-    res.status(200).json({ data: { thingToBuy }, budget });
+    const thingsToBuy = await toBuyModel.fetchToBuyItems(eventId);
+
+    let remainBudget = 0;
+    for (let i = 0; i < thingsToBuy.length; i++) {
+      if (thingsToBuy[i].isPurchase) {
+        remainBudget =
+          remainBudget + thingsToBuy[1].price * thingsToBuy[1].quantity;
+      }
+    }
+
+    res.status(200).json({ data: { thingToBuy }, budget, remainBudget });
   } catch (err) {
     next(err);
   }
@@ -63,6 +68,7 @@ const getThingsToBuyItem = async (
 const addThingsToBuyItemInit = async (
   req: Request<{ event_id: string }>,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const eventId = Number(req.params.event_id);
@@ -87,20 +93,14 @@ const addThingsToBuyItemInit = async (
 
     res.status(200).json({ budget, item });
   } catch (err) {
-    if (err instanceof ValidationError) {
-      res.status(400).json({ success: false, error: err.message });
-    } else {
-      console.error(err);
-      res
-        .status(500)
-        .json({ error: "Unable to add to-buy-items and budget by id" });
-    }
+    next(err);
   }
 };
 
 const updateBudget = async (
   req: Request<{ event_id: string }>,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const eventId = Number(req.params.event_id);
@@ -119,20 +119,14 @@ const updateBudget = async (
       message: "updated budget successfully!",
     });
   } catch (err) {
-    if (err instanceof ValidationError) {
-      res.status(400).json({ success: false, error: err.message });
-    } else {
-      console.error(err);
-      res
-        .status(500)
-        .json({ error: "Unable to add to-buy-items and budget by id" });
-    }
+    next(err);
   }
 };
 
 const addThingsToBuyItem = async (
   req: Request<{ event_id: string }>,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const eventId = Number(req.params.event_id);
@@ -156,20 +150,14 @@ const addThingsToBuyItem = async (
       data: thingsToBuy,
     });
   } catch (err) {
-    if (err instanceof ValidationError) {
-      res.status(400).json({ success: false, error: err.message });
-    } else {
-      console.error(err);
-      res
-        .status(500)
-        .json({ error: "Unable to add to-buy-items and budget by id" });
-    }
+    next(err);
   }
 };
 
 const updateItemPurchased = async (
   req: Request<{ event_id: string; item_id: string }>,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const eventId = Number(req.params.event_id);
@@ -193,18 +181,14 @@ const updateItemPurchased = async (
       message: "updated checkbox successfully!",
     });
   } catch (err) {
-    if (err instanceof ValidationError) {
-      res.status(400).json({ success: false, error: err.message });
-    } else {
-      console.error(err);
-      res.status(500).json({ error: "Unable to update checkbox" });
-    }
+    next(err);
   }
 };
 
 const updateThingsToBuy = async (
   req: Request<{ event_id: string; item_id: string }>,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const eventId = Number(req.params.event_id);
@@ -234,18 +218,14 @@ const updateThingsToBuy = async (
       data: { thingsToBuy },
     });
   } catch (err) {
-    if (err instanceof ValidationError) {
-      res.status(400).json({ success: false, error: err.message });
-    } else {
-      console.error(err);
-      res.status(500).json({ error: "Unable to update checkbox" });
-    }
+    next(err);
   }
 };
 
 const deleteThingsToBuy = async (
   req: Request<{ event_id: string; item_id: string }>,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const eventId = Number(req.params.event_id);
@@ -265,12 +245,7 @@ const deleteThingsToBuy = async (
       message: "deleted item successfully!",
     });
   } catch (err) {
-    if (err instanceof ValidationError) {
-      res.status(400).json({ success: false, error: err.message });
-    } else {
-      console.error(err);
-      res.status(500).json({ error: "Unable to update checkbox" });
-    }
+    next(err);
   }
 };
 
