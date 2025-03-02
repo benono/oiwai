@@ -5,7 +5,7 @@ import { toast } from "@/hooks/use-toast";
 import { updatePurchaseStatus } from "@/lib/actions/event/to-buy";
 import { showErrorToast } from "@/lib/toast/toast-utils";
 import { Budget, ShoppingItem } from "@/types/to-buy";
-import { PencilLineIcon } from "lucide-react";
+import { ChevronRightIcon, PencilLineIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -79,15 +79,30 @@ export default function BudgetOverview({
         <p>Budget remain: ${remainingBudget}</p>
         <ul>
           {itemsList.map((item) => (
-            <li key={item.id}>
-              <label>
+            <li key={item.id} className="flex items-center">
+              <label
+                className="flex cursor-pointer items-center gap-2"
+                onClick={() => {
+                  handleTogglePurchased(item.id);
+                }}
+              >
                 <input
                   type="checkbox"
                   checked={item.isPurchase}
-                  onChange={() => handleTogglePurchased(item.id)}
+                  onChange={() => {}}
+                  className="cursor-pointer"
                 />
-                {item.item} - ${item.price} × {item.quantity}
+                {item.item}
               </label>
+              <Link
+                href={`/event/${eventId}/to-buy/${item.id}/edit`}
+                className="flex flex-grow items-center justify-end gap-2"
+              >
+                <span>
+                  ${item.price} × {item.quantity}
+                </span>
+                <ChevronRightIcon size={16} />
+              </Link>
             </li>
           ))}
         </ul>
