@@ -1,9 +1,12 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { updatePurchaseStatus } from "@/lib/actions/event/to-buy";
 import { showErrorToast } from "@/lib/toast/toast-utils";
 import { Budget, ShoppingItem } from "@/types/to-buy";
+import { PencilLineIcon } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type BudgetOverviewProps = {
@@ -36,9 +39,9 @@ export default function BudgetOverview({
 
       const isPurchase = !updatedItem.isPurchase;
       const response = await updatePurchaseStatus({
-        isPurchased: isPurchase,
         eventId: eventId,
         item_id: id,
+        isPurchased: isPurchase,
       });
 
       if (response?.success) {
@@ -64,6 +67,14 @@ export default function BudgetOverview({
     <div>
       <div>
         <p>Budget: ${budget}</p>
+        <Link
+          href={`/event/${eventId}/to-buy/budget/edit`}
+          className="flex w-full justify-between"
+        >
+          <Button className="h-8 w-8 rounded-full bg-textSub/20 text-textSub shadow-none hover:bg-textSub/20 hover:opacity-70">
+            <PencilLineIcon />
+          </Button>
+        </Link>
         <p>Total spend: ${totalSpendAmount}</p>
         <p>Budget remain: ${remainingBudget}</p>
         <ul>
