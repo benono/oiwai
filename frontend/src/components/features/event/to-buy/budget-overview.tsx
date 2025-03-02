@@ -4,14 +4,14 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { updatePurchaseStatus } from "@/lib/actions/event/to-buy";
 import { showErrorToast } from "@/lib/toast/toast-utils";
-import { Budget, ShoppingItem } from "@/types/to-buy";
+import { BudgetType, ShoppingItemType } from "@/types/to-buy";
 import { ChevronRightIcon, PencilLineIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type BudgetOverviewProps = {
-  itemsList: ShoppingItem[];
-  budget: Budget;
+  itemsList: ShoppingItemType[];
+  budget: BudgetType;
   eventId: string;
 };
 
@@ -24,7 +24,7 @@ export default function BudgetOverview({
 
   const thingsToBuy = itemsList ?? [];
 
-  const calculateTotalPurchased = (items: ShoppingItem[]) => {
+  const calculateTotalPurchased = (items: ShoppingItemType[]) => {
     return items.reduce(
       (total, item) =>
         item.isPurchase ? total + item.price * item.quantity : total,
@@ -32,7 +32,7 @@ export default function BudgetOverview({
     );
   };
 
-  const handleTogglePurchased = async (id: ShoppingItem["id"]) => {
+  const handleTogglePurchased = async (id: ShoppingItemType["id"]) => {
     try {
       const updatedItem = thingsToBuy.find((item) => item.id === id);
       if (!updatedItem) return;

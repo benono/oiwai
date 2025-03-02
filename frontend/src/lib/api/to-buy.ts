@@ -1,15 +1,15 @@
-import { Budget, BudgetType, ShoppingItem } from "@/types/to-buy";
+import { BudgetType, ShoppingItemType } from "@/types/to-buy";
 import { AxiosError } from "axios";
 import { getServerAxiosInstance } from "./axios-server";
 
 type ThingsToBuyResponse = {
-  thingsToBuy: ShoppingItem[];
-  budget: Budget;
+  thingsToBuy: ShoppingItemType[];
+  budget: BudgetType;
 };
 
 type ThingToBuyResponse = {
-  thingToBuy: { thingToBuy: ShoppingItem };
-  remainBudget: Budget;
+  thingToBuy: { thingToBuy: ShoppingItemType };
+  remainBudget: BudgetType;
 };
 
 type ThingsToBuyBudgetResponse = {
@@ -74,7 +74,7 @@ export const getThingsToBuyBudget = async (
 // Fetch thing to buy
 export const getThingToBuy = async (
   eventId: string,
-  itemId: ShoppingItem["id"],
+  itemId: ShoppingItemType["id"],
 ): Promise<ThingToBuyResponse> => {
   try {
     const axiosInstance = await getServerAxiosInstance();

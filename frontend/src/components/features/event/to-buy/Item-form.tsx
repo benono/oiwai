@@ -16,7 +16,7 @@ import {
   updateItem,
 } from "@/lib/actions/event/to-buy";
 import { showErrorToast } from "@/lib/toast/toast-utils";
-import { Budget, ShoppingItem } from "@/types/to-buy";
+import { BudgetType, ShoppingItemType } from "@/types/to-buy";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
@@ -24,8 +24,8 @@ import { z } from "zod";
 
 type ItemFormProps = {
   eventId: string;
-  thingToBuy?: ShoppingItem;
-  remainBudget: Budget;
+  thingToBuy?: ShoppingItemType;
+  remainBudget: BudgetType;
   isInitialCreate?: boolean;
 };
 

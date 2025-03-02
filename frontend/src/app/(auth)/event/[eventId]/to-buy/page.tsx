@@ -3,13 +3,13 @@ import BudgetOverview from "@/components/features/event/to-buy/budget-overview";
 import { Button } from "@/components/ui/button";
 import { checkIsHost } from "@/lib/api/event";
 import { getThingsToBuy } from "@/lib/api/to-buy";
-import { Budget, ShoppingItem } from "@/types/to-buy";
+import { BudgetType, ShoppingItemType } from "@/types/to-buy";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 async function fetchItemsData(eventId: string): Promise<{
-  itemsList: ShoppingItem[] | null;
-  budget: Budget;
+  itemsList: ShoppingItemType[] | null;
+  budget: BudgetType;
 }> {
   try {
     const isHost = await checkIsHost(eventId);

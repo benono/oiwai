@@ -4,14 +4,14 @@ export type BaseItemType = {
   quantity: number;
 };
 
-export type ShoppingItem = BaseItemType & {
+export type ShoppingItemType = BaseItemType & {
   id: number;
   isPurchase: boolean;
 };
 
-export type BudgetType = Budget & {
+export type BudgetType = BudgetType & {
   remainBudget: number;
   totalSpend: number;
 };
 
-export type Budget = number;
+export type BudgetType = number;

@@ -2,14 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { deleteItem } from "@/lib/actions/event/to-buy";
-import { ShoppingItem } from "@/types/to-buy";
+import { ShoppingItemType } from "@/types/to-buy";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Modal from "../../modal";
 
 type ItemDeleteButtonProps = {
   eventId: string;
-  itemId: ShoppingItem["id"];
+  itemId: ShoppingItemType["id"];
 };
 export default function ItemDeleteButton({
   eventId,
