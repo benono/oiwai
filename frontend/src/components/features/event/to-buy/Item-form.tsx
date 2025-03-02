@@ -20,7 +20,7 @@ import { z } from "zod";
 
 type ItemFormProps = {
   eventId: string;
-  thingToBuy: ShoppingItem;
+  thingToBuy?: ShoppingItem;
   remainBudget: Budget;
 };
 
@@ -60,7 +60,7 @@ export default function ItemForm({
       if (thingToBuy) {
         response = await updateItem({
           eventId,
-          item_id: thingToBuy.id,
+          itemId: thingToBuy.id,
           requestData,
         });
       } else {

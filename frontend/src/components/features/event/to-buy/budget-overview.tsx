@@ -40,7 +40,7 @@ export default function BudgetOverview({
       const isPurchase = !updatedItem.isPurchase;
       const response = await updatePurchaseStatus({
         eventId: eventId,
-        item_id: id,
+        itemId: id,
         isPurchased: isPurchase,
       });
 

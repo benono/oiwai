@@ -70,12 +70,12 @@ export const addItem = async ({
 // Update purchase status
 export const updatePurchaseStatus = async ({
   eventId,
-  item_id,
+  itemId,
   isPurchased,
 }: {
   isPurchased: boolean;
   eventId: string;
-  item_id: string;
+  itemId: string;
 }): Promise<{
   success: boolean;
   message: string;
@@ -83,7 +83,7 @@ export const updatePurchaseStatus = async ({
   try {
     const axiosInstance = await getServerAxiosInstance();
     const response = await axiosInstance.patch(
-      `/events/${eventId}/things-to-buy/${item_id}/is-purchased`,
+      `/events/${eventId}/things-to-buy/${itemId}/is-purchased`,
       { isPurchased },
       {
         headers: {
@@ -107,11 +107,11 @@ export const updatePurchaseStatus = async ({
 // Update item
 export const updateItem = async ({
   eventId,
-  item_id,
+  itemId,
   requestData,
 }: {
   eventId: string;
-  item_id: string;
+  itemId: string;
   requestData: Item;
 }): Promise<{
   success: boolean;
@@ -120,7 +120,7 @@ export const updateItem = async ({
   try {
     const axiosInstance = await getServerAxiosInstance();
     const response = await axiosInstance.put(
-      `/events/${eventId}/things-to-buy/${item_id}`,
+      `/events/${eventId}/things-to-buy/${itemId}`,
       {
         item: requestData,
       },
@@ -142,7 +142,6 @@ export const updateBudget = async ({
   budget,
 }: {
   eventId: string;
-  item_id: string;
   budget: Budget;
 }): Promise<{
   success: boolean;
@@ -173,7 +172,7 @@ export const updateBudget = async ({
 // Delete item
 export const deleteItem = async (
   eventId: string,
-  item_id: number,
+  itemId: string,
 ): Promise<{
   success: boolean;
   message: string;
@@ -181,7 +180,7 @@ export const deleteItem = async (
   try {
     const axiosInstance = await getServerAxiosInstance();
     const response = await axiosInstance.delete(
-      `events/${eventId}/things-to-buy/${item_id}`,
+      `/events/${eventId}/things-to-buy/${itemId}`,
     );
 
     return response.data;

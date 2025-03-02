@@ -36,9 +36,9 @@ async function fetchItemsData(eventId: string): Promise<{
 export default async function ThingsToBuy({
   params,
 }: {
-  params: { eventId: string };
+  params: Promise<{ eventId: string }>;
 }) {
-  const { eventId } = params;
+  const { eventId } = await params;
 
   // Fetch items data
   const { itemsList, budget } = await fetchItemsData(eventId);

@@ -1,5 +1,5 @@
 import BreadcrumbNavigation from "@/components/features/event/breadcrumb-navigation";
-import ItemForm from "@/components/features/event/to-buy/Item-form";
+import ItemForm from "@/components/features/event/to-buy/item-form"
 import { getThingsToBuy } from "@/lib/api/to-buy";
 
 export default async function Budget({

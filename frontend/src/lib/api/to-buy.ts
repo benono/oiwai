@@ -41,12 +41,12 @@ export const getThingsToBuy = async (
 // Fetch thing to buy
 export const getThingToBuy = async (
   eventId: string,
-  item_id: number,
+  itemId: number,
 ): Promise<ThingToBuyResponse> => {
   try {
     const axiosInstance = await getServerAxiosInstance();
     const response = await axiosInstance.get(
-      `/events/${eventId}/things-to-buy/${item_id}`,
+      `/events/${eventId}/things-to-buy/${itemId}`,
     );
 
     return {
