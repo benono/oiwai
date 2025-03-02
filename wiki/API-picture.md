@@ -96,3 +96,32 @@ Deletes pictures.
   "message": "string"
 }
 ```
+
+## 4. get Pictures by tag(after face recognition)
+
+### Endpoint
+
+GET /api/v1/events/{event_id}/album/tags
+
+### Description
+
+Retrieves pictures organize by face recognition tag.
+
+### Response
+
+```json
+{
+  "data": {
+    "pictures": [
+      [
+        {
+          "id": "string",
+          "userId": "string",
+          "imageUrl": "string",
+          "tag": "string"
+        }
+      ]
+    ]
+  }
+}
+```
