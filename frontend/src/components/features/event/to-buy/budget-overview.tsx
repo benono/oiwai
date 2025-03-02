@@ -86,7 +86,7 @@ export default function BudgetOverview({
                   onChange={() => {}}
                   className="cursor-pointer"
                 />
-                {item.item}
+                {item.name}
               </label>
               <Link
                 href={`/event/${eventId}/to-buy/${item.id}/edit`}

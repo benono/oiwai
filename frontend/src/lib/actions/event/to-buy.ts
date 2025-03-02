@@ -22,7 +22,7 @@ export const createThingsToBuy = async ({
     const response = await axiosInstance.post(
       `/events/${eventId}/things-to-buy/init`,
       {
-        budget: budget,
+        budget: Number(budget),
         item: requestData,
       },
     );
