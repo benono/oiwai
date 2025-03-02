@@ -51,13 +51,13 @@ const getThingsToBuyItem = async (
 
     const thingsToBuy = await toBuyModel.fetchToBuyItems(eventId);
 
-    let remainBudget = 0;
+    let spend = 0;
     for (let i = 0; i < thingsToBuy.length; i++) {
       if (thingsToBuy[i].isPurchase) {
-        remainBudget =
-          remainBudget + thingsToBuy[1].price * thingsToBuy[1].quantity;
+        spend = spend + thingsToBuy[i].price * thingsToBuy[i].quantity;
       }
     }
+    const remainBudget = budget - spend;
 
     res.status(200).json({ data: { thingToBuy }, budget, remainBudget });
   } catch (err) {
