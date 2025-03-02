@@ -10,7 +10,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
-import { addItem, updateItem } from "@/lib/actions/event/to-buy";
+import {
+  addItem,
+  createThingsToBuy,
+  updateItem,
+} from "@/lib/actions/event/to-buy";
 import { showErrorToast } from "@/lib/toast/toast-utils";
 import { Budget, ShoppingItem } from "@/types/to-buy";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +26,7 @@ type ItemFormProps = {
   eventId: string;
   thingToBuy?: ShoppingItem;
   remainBudget: Budget;
+  isInitialCreate?: boolean;
 };
 
 const FormSchema = z.object({
@@ -40,6 +45,7 @@ export default function ItemForm({
   eventId,
   thingToBuy,
   remainBudget,
+  isInitialCreate,
 }: ItemFormProps) {
   const router = useRouter();
 
@@ -61,6 +67,12 @@ export default function ItemForm({
         response = await updateItem({
           eventId,
           itemId: thingToBuy.id,
+          requestData,
+        });
+      } else if (isInitialCreate) {
+        response = await createThingsToBuy({
+          eventId,
+          budget: remainBudget,
           requestData,
         });
       } else {

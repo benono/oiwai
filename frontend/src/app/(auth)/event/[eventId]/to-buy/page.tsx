@@ -20,7 +20,7 @@ async function fetchItemsData(eventId: string): Promise<{
     const budget = response.budget;
 
     if (!thingsToBuy || thingsToBuy.length === 0) {
-      redirect(`/event/${eventId}/to-buy/budget`);
+      redirect(`/event/${eventId}/to-buy/budget/create`);
     }
 
     return {
