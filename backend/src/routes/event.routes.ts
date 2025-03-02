@@ -34,7 +34,7 @@ eventRouter.delete(
 // Participants
 eventRouter.get(
   "/:event_id/who-is-coming",
-  isEventParticipant,
+  isEventHostOrParticipant,
   eventParticipantsController.getWhoIsComing,
 );
 
