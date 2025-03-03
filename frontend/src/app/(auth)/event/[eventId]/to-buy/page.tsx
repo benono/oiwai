@@ -37,6 +37,7 @@ async function fetchItemsData(eventId: string): Promise<{
     };
   } catch (err) {
     console.error(err);
+    redirect(`/event/${eventId}/to-buy/budget/create`);
     notFound();
   }
 }
