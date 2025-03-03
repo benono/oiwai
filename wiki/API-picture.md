@@ -132,7 +132,7 @@ Retrieves one preview picture from each face-recognition tags.
 
 ### Endpoint
 
-GET /api/v1/events/{event_id}/album/{tag_id}
+GET /api/v1/events/{event_id}/album/{tag}
 
 ### Description
 
