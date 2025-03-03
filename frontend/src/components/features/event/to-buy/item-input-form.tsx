@@ -19,8 +19,7 @@ import { showErrorToast } from "@/lib/toast/toast-utils";
 import { BudgetType, ShoppingItemType } from "@/types/to-buy";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { FormProvider, useForm, useWatch } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 type ItemFormProps = {
@@ -57,17 +56,6 @@ export default function ItemInputForm({
       quantity: thingToBuy ? thingToBuy.quantity : 0,
     },
   });
-
-  const [calculatedRemainBudget, setCalculatedRemainBudget] =
-    useState(remainBudget);
-  const price = useWatch({ control: form.control, name: "price" }) || 0;
-  const quantity = useWatch({ control: form.control, name: "quantity" }) || 0;
-
-  // Track and update the remaining budget
-  useEffect(() => {
-    const totalCost = price * quantity;
-    setCalculatedRemainBudget(remainBudget - totalCost);
-  }, [price, quantity, remainBudget]);
 
   const onSubmit = async (requestData: z.infer<typeof FormSchema>) => {
     try {
@@ -142,16 +130,15 @@ export default function ItemInputForm({
                     className="h-12 font-medium placeholder:text-textSub"
                   />
                   <p
-                    className={`text-sm font-semibold ${calculatedRemainBudget < 0 ? "text-red-500" : ""}`}
+                    className={`mt-1 text-xs font-semibold ${remainBudget < 0 ? "text-red-500" : ""}`}
                   >
-                    {calculatedRemainBudget < 0 ? (
-                      `You have exceeded your budget by $${Math.abs(calculatedRemainBudget)}`
+                    {remainBudget < 0 ? (
+                      `You have exceeded your budget by $${remainBudget}`
                     ) : (
                       <>
                         You have
                         <span className="text-accentGreen">
-                          {" "}
-                          ${calculatedRemainBudget}{" "}
+                          ${remainBudget}
                         </span>
                         left in your budget.
                       </>
