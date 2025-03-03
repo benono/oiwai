@@ -19,15 +19,11 @@ async function fetchItemsData(eventId: string): Promise<{
 
     const ThingsToBuyResponse = await getThingsToBuy(eventId);
     const thingsToBuy = ThingsToBuyResponse.thingsToBuy;
-    const budget = ThingsToBuyResponse.budget;
-
-    if (budget === 0) {
-      redirect(`/event/${eventId}/to-buy/budget/create`);
-    }
 
     const budgetResponse = await getThingsToBuyBudget(eventId);
     const remainBudget = budgetResponse.remainBudget;
     const totalSpend = budgetResponse.totalSpend;
+    const budget = budgetResponse.budget;
 
     return {
       itemsList: thingsToBuy,
@@ -37,7 +33,6 @@ async function fetchItemsData(eventId: string): Promise<{
     };
   } catch (err) {
     console.error(err);
-    redirect(`/event/${eventId}/to-buy/budget/create`);
     notFound();
   }
 }
@@ -52,6 +47,11 @@ export default async function ThingsToBuy({
   // Fetch items data
   const { itemsList, budget, remainBudget, totalSpend } =
     await fetchItemsData(eventId);
+
+  // If the budget is not set, redirect to the create budget page
+  if (budget <= 0) {
+    redirect(`/event/${eventId}/to-buy/budget/create`);
+  }
 
   if (!itemsList) {
     notFound();
