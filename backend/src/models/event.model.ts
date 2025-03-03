@@ -4,11 +4,10 @@ import { NotFoundError, ValidationError } from "../errors";
 import necessitiesModel from "../models/necessities.model";
 import participantNecessitiesModel from "../models/participantNecessities.model";
 import Event from "../types/event";
+import { Necessity } from "../types/necessities";
 import toBuyModel from "./thingsToBuy.model";
 
 const prisma = new PrismaClient();
-
-type Necessity = { item: string };
 
 // Fetch event infomation by id
 const fetchEventById = async (id: number) => {
@@ -60,7 +59,7 @@ const updateEvent = async (
     throw new Error("no valid update fields");
   }
 
-  const user = await prisma.events.update({
+  const user = await tx.events.update({
     where: { id: eventId },
     data: { ...filteredUpdates },
   });
@@ -90,24 +89,24 @@ const updateEventWithoutTransaction = async (
 
 const createNewNecessitiesInfo = async (
   eventId: number,
-  newNessitiesList: Necessity[],
+  newNecessitiesList: Omit<Necessity, "id">[],
   newNote: string,
 ) => {
   try {
     return await prisma.$transaction(async (tx) => {
       let necessities = [];
-      if (newNessitiesList.length) {
-        for (let i = 0; i < newNessitiesList.length; i++) {
-          const newNessity = await necessitiesModel.createNewNecessities(
+      if (newNecessitiesList.length) {
+        for (let i = 0; i < newNecessitiesList.length; i++) {
+          const newNecessity = await necessitiesModel.createNewNecessities(
             tx,
             eventId,
-            newNessitiesList[i].item,
+            newNecessitiesList[i].item,
           );
-          necessities.push(newNessity);
+          necessities.push(newNecessity);
           await participantNecessitiesModel.createNewParticipantNecessities(
             tx,
             eventId,
-            newNessity.id,
+            newNecessity.id,
           );
         }
       }
@@ -153,11 +152,78 @@ const addToBuyItemInit = async (
   });
 };
 
+const updateNewNecessities = async (
+  eventId: number,
+  newNote: string,
+  newNecessitiesList: Necessity[],
+  updateNecessitiesList: Necessity[],
+  deleteNecessitiesList: Necessity[],
+) => {
+  try {
+    return await prisma.$transaction(async (tx) => {
+      await necessitiesModel.lockNecessities(tx, eventId);
+
+      const updates = { noteForNecessities: newNote };
+      const result = await updateEvent(tx, eventId, updates);
+      const note = result?.noteForNecessities;
+
+      let necessities = [];
+      if (newNecessitiesList.length) {
+        for (let i = 0; i < newNecessitiesList.length; i++) {
+          const newNecessity = await necessitiesModel.createNewNecessities(
+            tx,
+            eventId,
+            newNecessitiesList[i].item,
+          );
+          necessities.push(newNecessity);
+          await participantNecessitiesModel.createNewParticipantNecessities(
+            tx,
+            eventId,
+            newNecessity.id,
+          );
+        }
+      }
+
+      if (updateNecessitiesList.length) {
+        for (let i = 0; i < updateNecessitiesList.length; i++) {
+          console.log(i);
+          const updatedNecessity = await necessitiesModel.updateNecessities(
+            tx,
+            updateNecessitiesList[i].id,
+            updateNecessitiesList[i].item,
+          );
+          necessities.push(updatedNecessity);
+        }
+      }
+
+      if (deleteNecessitiesList.length) {
+        for (let i = 0; i < deleteNecessitiesList.length; i++) {
+          await participantNecessitiesModel.deleteParticipantNecessities(
+            tx,
+            deleteNecessitiesList[i].id,
+          );
+          const deletedNecessity = await necessitiesModel.deleteNecessities(
+            tx,
+            deleteNecessitiesList[i].id,
+          );
+          necessities.push(deletedNecessity);
+        }
+      }
+
+      return { necessities, note };
+    });
+  } catch (err) {
+    console.error("Transaction failed:", error);
+    throw error;
+  }
+};
+
 export default {
   fetchEventById,
   updateEvent,
   updateEventWithoutTransaction,
   createNewNecessitiesInfo,
   addToBuyItemInit,
+  updateNewNecessities,
   checkIsEventHostOrParticipant,
 };
