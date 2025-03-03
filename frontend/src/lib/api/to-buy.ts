@@ -1,15 +1,21 @@
-import { Budget, ShoppingItem } from "@/types/to-buy";
+import { BudgetDetailType, BudgetType, ShoppingItemType } from "@/types/to-buy";
 import { AxiosError } from "axios";
 import { getServerAxiosInstance } from "./axios-server";
 
 type ThingsToBuyResponse = {
-  thingsToBuy: ShoppingItem[];
-  budget: Budget;
+  thingsToBuy: ShoppingItemType[];
+  budget: BudgetType;
 };
 
 type ThingToBuyResponse = {
-  thingToBuy: { thingToBuy: ShoppingItem };
-  remainBudget: Budget;
+  thingToBuy: { thingToBuy: ShoppingItemType };
+  remainBudget: BudgetType;
+};
+
+type ThingsToBuyBudgetResponse = {
+  budget: BudgetType;
+  remainBudget: BudgetDetailType["remainBudget"];
+  totalspend: BudgetDetailType["totalspend"];
 };
 
 // Fetch things to buy
@@ -38,10 +44,37 @@ export const getThingsToBuy = async (
   }
 };
 
+// Fetch budget, total spend, remain budget
+export const getThingsToBuyBudget = async (
+  eventId: string,
+): Promise<ThingsToBuyBudgetResponse> => {
+  try {
+    const axiosInstance = await getServerAxiosInstance();
+    const response = await axiosInstance.get(
+      `/events/${eventId}/things-to-buy/budget`,
+    );
+
+    return {
+      budget: response.data.budget,
+      remainBudget: response.data.remainBudget,
+      totalspend: response.data.totalspend,
+    };
+  } catch (err) {
+    if (err instanceof AxiosError && err.response) {
+      throw new Error(
+        err.response?.data?.message ||
+          "An error occurred while fetching the budget detail.",
+      );
+    } else {
+      throw new Error("Failed to fetch the budget detail. Please try again.");
+    }
+  }
+};
+
 // Fetch thing to buy
 export const getThingToBuy = async (
   eventId: string,
-  itemId: number,
+  itemId: ShoppingItemType["id"],
 ): Promise<ThingToBuyResponse> => {
   try {
     const axiosInstance = await getServerAxiosInstance();
@@ -57,10 +90,10 @@ export const getThingToBuy = async (
     if (err instanceof AxiosError && err.response) {
       throw new Error(
         err.response?.data?.message ||
-          "An error occurred while fetching the list.",
+          "An error occurred while fetching the thing to buy.",
       );
     } else {
-      throw new Error("Failed to fetch item information. Please try again.");
+      throw new Error("Failed to fetch the thing to buy. Please try again.");
     }
   }
 };

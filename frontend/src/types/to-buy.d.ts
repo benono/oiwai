@@ -1,12 +1,17 @@
 export type BaseItemType = {
-  item: string;
+  name: string;
   price: number;
   quantity: number;
 };
 
-export type ShoppingItem = BaseItemType & {
-  id: string;
+export type ShoppingItemType = BaseItemType & {
+  id: number;
   isPurchase: boolean;
 };
 
-export type Budget = number;
+export type BudgetDetailType = BudgetType & {
+  remainBudget: number;
+  totalspend: number;
+};
+
+export type BudgetType = number;

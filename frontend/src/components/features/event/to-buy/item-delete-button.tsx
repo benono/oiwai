@@ -2,13 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { deleteItem } from "@/lib/actions/event/to-buy";
+import { ShoppingItemType } from "@/types/to-buy";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Modal from "../../modal";
 
 type ItemDeleteButtonProps = {
   eventId: string;
-  itemId: string;
+  itemId: ShoppingItemType["id"];
 };
 export default function ItemDeleteButton({
   eventId,
@@ -17,7 +18,7 @@ export default function ItemDeleteButton({
   const router = useRouter();
 
   const handleDelete = async () => {
-    const response = await deleteItem(eventId as string, itemId as string);
+    const response = await deleteItem(eventId, itemId);
     if (response.success) {
       router.push(`/event/${eventId}/to-buy`);
     }
@@ -36,7 +37,7 @@ export default function ItemDeleteButton({
       button="Delete"
       deleteAction={handleDelete}
       deleteErrorMessage="Failed to delete item"
-      id={itemId as string}
+      id={itemId.toString()}
     />
   );
 }

@@ -8,7 +8,7 @@ import { notFound, redirect } from "next/navigation";
 export default async function EditItem({
   params,
 }: {
-  params: Promise<{ eventId: string; itemId: string }>;
+  params: Promise<{ eventId: string; itemId: number }>;
 }) {
   const { eventId, itemId } = await params;
 
@@ -16,7 +16,7 @@ export default async function EditItem({
     const isHost = await checkIsHost(eventId);
     if (!isHost) redirect(`/event/${eventId}`);
 
-    const response = await getThingToBuy(eventId, Number(itemId));
+    const response = await getThingToBuy(eventId, itemId);
     const thingToBuy = response.thingToBuy.thingToBuy;
     const remainBudget = response.remainBudget;
 

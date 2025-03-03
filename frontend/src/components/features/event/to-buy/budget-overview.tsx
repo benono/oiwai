@@ -4,35 +4,32 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { updatePurchaseStatus } from "@/lib/actions/event/to-buy";
 import { showErrorToast } from "@/lib/toast/toast-utils";
-import { Budget, ShoppingItem } from "@/types/to-buy";
-import { PencilLineIcon } from "lucide-react";
+import { BudgetDetailType, BudgetType, ShoppingItemType } from "@/types/to-buy";
+import { ChevronRightIcon, PencilLineIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type BudgetOverviewProps = {
-  itemsList: ShoppingItem[];
-  budget: Budget;
+  itemsList: ShoppingItemType[];
+  budget: BudgetType;
   eventId: string;
+  remainBudget: BudgetDetailType["remainBudget"];
+  totalspend: BudgetDetailType["totalspend"];
 };
 
 export default function BudgetOverview({
   itemsList,
   budget,
   eventId,
+  totalspend,
+  remainBudget,
 }: BudgetOverviewProps) {
   const router = useRouter();
 
   const thingsToBuy = itemsList ?? [];
 
-  const calculateTotalPurchased = (items: ShoppingItem[]) => {
-    return items.reduce(
-      (total, item) =>
-        item.isPurchase ? total + item.price * item.quantity : total,
-      0,
-    );
-  };
 
-  const handleTogglePurchased = async (id: string) => {
+  const handleTogglePurchased = async (id: ShoppingItemType["id"]) => {
     try {
       const updatedItem = thingsToBuy.find((item) => item.id === id);
       if (!updatedItem) return;
@@ -60,9 +57,6 @@ export default function BudgetOverview({
     }
   };
 
-  const totalSpendAmount = calculateTotalPurchased(thingsToBuy);
-  const remainingBudget = budget - totalSpendAmount;
-
   return (
     <div>
       <div>
@@ -75,19 +69,34 @@ export default function BudgetOverview({
             <PencilLineIcon />
           </Button>
         </Link>
-        <p>Total spend: ${totalSpendAmount}</p>
-        <p>Budget remain: ${remainingBudget}</p>
+        <p>Total spend: ${totalspend}</p>
+        <p>Budget remain: ${remainBudget}</p>
         <ul>
           {itemsList.map((item) => (
-            <li key={item.id}>
-              <label>
+            <li key={item.id} className="flex items-center">
+              <label
+                className="flex cursor-pointer items-center gap-2"
+                onClick={() => {
+                  handleTogglePurchased(item.id);
+                }}
+              >
                 <input
                   type="checkbox"
                   checked={item.isPurchase}
-                  onChange={() => handleTogglePurchased(item.id)}
+                  onChange={() => {}}
+                  className="cursor-pointer"
                 />
-                {item.item} - ${item.price} × {item.quantity}
+                {item.name}
               </label>
+              <Link
+                href={`/event/${eventId}/to-buy/${item.id}/edit`}
+                className="flex flex-grow items-center justify-end gap-2"
+              >
+                <span>
+                  ${item.price} × {item.quantity}
+                </span>
+                <ChevronRightIcon size={16} />
+              </Link>
             </li>
           ))}
         </ul>
