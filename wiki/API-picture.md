@@ -40,12 +40,13 @@ Post pictures for event album. (host and guests can post)
 
 Content-Type: multipart/form-data
 
+```json
 {
 "pictures": [
-{
-"picture": "file"
-}
-]
+  {
+    "picture": "file"
+  }
+  ]
 }
 
 ````
@@ -97,7 +98,7 @@ Deletes pictures.
 }
 ```
 
-## 4. get Pictures by tag(after face recognition)
+## 4. get Preview Picture by tag(after face-recognition)
 
 ### Endpoint
 
@@ -105,23 +106,47 @@ GET /api/v1/events/{event_id}/album/tags
 
 ### Description
 
-Retrieves pictures organize by face recognition tag.
+Retrieves one preview picture from each face-recognition tags.
 
 ### Response
 
 ```json
-{
-  "data": {
-    "pictures": [
-      [
-        {
-          "id": "string",
-          "userId": "string",
-          "imageUrl": "string",
-          "tag": "string"
-        }
-      ]
-    ]
-  }
-}
+[
+    {
+        "tagId": 1,
+        "previewImageUrl": "https://example.com/image.jpg",   
+    },
+    {
+        "tagId": 2,
+        "previewImageUrl": "https://example.com/image.jpg",   
+    },
+    {
+        "tagId": 3,
+        "previewImageUrl": "https://example.com/image.jpg",   
+    },
+]```
+
+## 5. get All Pictures categorized by tag(after face-recognition)
+
+### Endpoint
+
+GET /api/v1/events/{event_id}/album/{tag_id}
+
+### Description
+
+Retrieves pictures organize by face-recognition tag.
+
+### Response
+
+```json
+[
+  tag1[
+    imageUrl: "https://example.com/image.jpg",
+    imageUrl: "https://example.com/image.jpg",
+  ],
+  tag2[
+    imageUrl: "https://example.com/image.jpg",
+    imageUrl: "https://example.com/image.jpg",
+  ]
+]
 ```
