@@ -19,9 +19,12 @@ export default {
     "text-accentPurple",
   ],
   theme: {
-  	extend: {
-  		colors: {
-  			background: "hsl(var(--background))",
+    extend: {
+      borderWidth: {
+        "0.2": "0.2px",
+      },
+      colors: {
+        background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         text: "hsl(60, 2%, 25%, 100%)",
         textSub: "hsl(60, 1%, 62%, 100%)",
@@ -33,7 +36,9 @@ export default {
         accentPurple: "hsl(284, 29%, 44%, 100%)",
         error: "hsl(0, 84%, 60%, 100%)",
         warning: "hsl(25, 95%, 53%, 100%)",
-  			card: {
+  			backgroundSub: "#F4E5C6",
+
+				card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
   			},

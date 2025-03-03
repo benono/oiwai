@@ -1,5 +1,5 @@
 export type BaseItemType = {
-  name: string;
+  item: string;
   price: number;
   quantity: number;
 };
@@ -11,7 +11,7 @@ export type ShoppingItemType = BaseItemType & {
 
 export type BudgetDetailType = BudgetType & {
   remainBudget: number;
-  totalspend: number;
+  totalSpend: number;
 };
 
 export type BudgetType = number;

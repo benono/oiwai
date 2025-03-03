@@ -100,7 +100,7 @@ export default function BudgetForm({ eventId, budget }: BudgetFormProps) {
         />
         <Button
           type="submit"
-          className="h-10 w-full rounded-full text-base font-bold"
+          className="h-12 w-full rounded-full text-base font-bold"
         >
           {budget ? "Update budget" : "Next"}
         </Button>

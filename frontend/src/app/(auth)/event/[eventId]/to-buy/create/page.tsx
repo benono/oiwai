@@ -1,6 +1,8 @@
 import BreadcrumbNavigation from "@/components/features/event/breadcrumb-navigation";
-import ItemForm from "@/components/features/event/to-buy/item-form";
+import ItemInputForm from "@/components/features/event/to-buy/item-input-form";
+import { checkIsHost } from "@/lib/api/event";
 import { getThingsToBuyBudget } from "@/lib/api/to-buy";
+import { redirect } from "next/navigation";
 
 export default async function Budget({
   params,
@@ -10,6 +12,10 @@ export default async function Budget({
   searchParams: Promise<{ budget?: number }>;
 }) {
   const { eventId } = await params;
+
+  const isHost = await checkIsHost(eventId);
+  if (!isHost) redirect(`/event/${eventId}`);
+
   const { budget } = await searchParams;
   const response = await getThingsToBuyBudget(eventId);
 
@@ -24,19 +30,23 @@ export default async function Budget({
   }
 
   const breadcrumbProps = {
-    path: budget ? `/event/${eventId}` : `/event/${eventId}/to-buy`,
-    previousPageName: budget ? "Event home" : "Things to buy",
+    path: budget
+      ? `/event/${eventId}/to-buy/budget/create`
+      : `/event/${eventId}/to-buy`,
+    previousPageName: budget ? "Set budget" : "Things to buy",
   };
 
   return (
-    <>
-      <BreadcrumbNavigation {...breadcrumbProps} />
-      <h1>Add item</h1>
-      <ItemForm
+    <section className="space-y-4">
+      <div>
+        <BreadcrumbNavigation {...breadcrumbProps} />
+        <h1 className="text-xl font-bold">Add item</h1>
+      </div>
+      <ItemInputForm
         eventId={eventId}
         remainBudget={remainBudget}
         isInitialCreate={isInitialCreate}
       />
-    </>
+    </section>
   );
 }

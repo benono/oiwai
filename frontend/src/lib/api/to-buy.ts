@@ -15,7 +15,7 @@ type ThingToBuyResponse = {
 type ThingsToBuyBudgetResponse = {
   budget: BudgetType;
   remainBudget: BudgetDetailType["remainBudget"];
-  totalspend: BudgetDetailType["totalspend"];
+  totalSpend: BudgetDetailType["totalSpend"];
 };
 
 // Fetch things to buy
@@ -57,7 +57,7 @@ export const getThingsToBuyBudget = async (
     return {
       budget: response.data.budget,
       remainBudget: response.data.remainBudget,
-      totalspend: response.data.totalspend,
+      totalSpend: response.data.totalSpend,
     };
   } catch (err) {
     if (err instanceof AxiosError && err.response) {

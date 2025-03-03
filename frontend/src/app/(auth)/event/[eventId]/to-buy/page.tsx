@@ -11,7 +11,7 @@ async function fetchItemsData(eventId: string): Promise<{
   itemsList: ShoppingItemType[] | null;
   budget: BudgetType;
   remainBudget: BudgetDetailType["remainBudget"];
-  totalspend: BudgetDetailType["totalspend"];
+  totalSpend: BudgetDetailType["totalSpend"];
 }> {
   try {
     const isHost = await checkIsHost(eventId);
@@ -21,19 +21,19 @@ async function fetchItemsData(eventId: string): Promise<{
     const thingsToBuy = ThingsToBuyResponse.thingsToBuy;
     const budget = ThingsToBuyResponse.budget;
 
-    const budgetResponse = await getThingsToBuyBudget(eventId);
-    const remainBudget = budgetResponse.remainBudget;
-    const totalspend = budgetResponse.totalspend;
-
-    if (!thingsToBuy || thingsToBuy.length === 0) {
+    if (budget === 0) {
       redirect(`/event/${eventId}/to-buy/budget/create`);
     }
+
+    const budgetResponse = await getThingsToBuyBudget(eventId);
+    const remainBudget = budgetResponse.remainBudget;
+    const totalSpend = budgetResponse.totalSpend;
 
     return {
       itemsList: thingsToBuy,
       budget,
       remainBudget,
-      totalspend,
+      totalSpend,
     };
   } catch (err) {
     console.error(err);
@@ -49,7 +49,7 @@ export default async function ThingsToBuy({
   const { eventId } = await params;
 
   // Fetch items data
-  const { itemsList, budget, remainBudget, totalspend } =
+  const { itemsList, budget, remainBudget, totalSpend } =
     await fetchItemsData(eventId);
 
   if (!itemsList) {
@@ -58,25 +58,30 @@ export default async function ThingsToBuy({
 
   return (
     <section className="space-y-4">
-      <BreadcrumbNavigation
-        path={`/event/${eventId}`}
-        previousPageName="Event Home"
-      />
+      <div>
+        <BreadcrumbNavigation
+          path={`/event/${eventId}`}
+          previousPageName="Event Home"
+        />
+        <h1 className="text-xl font-bold">Things to buy</h1>
+      </div>
       <BudgetOverview
         itemsList={itemsList}
         budget={budget}
         eventId={eventId}
         remainBudget={remainBudget}
-        totalspend={totalspend}
+        totalSpend={totalSpend}
       />
-      <Link href={`/event/${eventId}/to-buy/create`}>
-        <Button
-          type="button"
-          className="h-12 w-full rounded-full text-base font-bold"
-        >
-          Add item
-        </Button>
-      </Link>
+      <div className="flex justify-end">
+        <Link href={`/event/${eventId}/to-buy/create`}>
+          <Button
+            type="button"
+            className="mt-4 h-12 rounded-full border border-primary bg-white px-12 text-base font-bold text-primary hover:text-white"
+          >
+            Add item
+          </Button>
+        </Link>
+      </div>
     </section>
   );
 }

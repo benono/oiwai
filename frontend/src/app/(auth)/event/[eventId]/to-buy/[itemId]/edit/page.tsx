@@ -1,6 +1,6 @@
 import BreadcrumbNavigation from "@/components/features/event/breadcrumb-navigation";
 import ItemDeleteButton from "@/components/features/event/to-buy/item-delete-button";
-import ItemForm from "@/components/features/event/to-buy/item-form";
+import ItemInputForm from "@/components/features/event/to-buy/item-input-form";
 import { checkIsHost } from "@/lib/api/event";
 import { getThingToBuy } from "@/lib/api/to-buy";
 import { notFound, redirect } from "next/navigation";
@@ -21,21 +21,23 @@ export default async function EditItem({
     const remainBudget = response.remainBudget;
 
     return (
-      <>
-        <BreadcrumbNavigation
-          path={`/event/${eventId}/to-buy`}
-          previousPageName="Things to buy"
-        />
+      <section className="space-y-4">
         <div>
-          <h1>Edit item</h1>
+          <BreadcrumbNavigation
+            path={`/event/${eventId}/to-buy`}
+            previousPageName="Things to buy"
+          />
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-bold">Edit item</h1>
+            <ItemDeleteButton eventId={eventId} itemId={itemId} />
+          </div>
         </div>
-        <ItemDeleteButton eventId={eventId} itemId={itemId} />
-        <ItemForm
+        <ItemInputForm
           eventId={eventId}
           thingToBuy={thingToBuy}
           remainBudget={remainBudget}
         />
-      </>
+      </section>
     );
   } catch (err) {
     console.error(err);
