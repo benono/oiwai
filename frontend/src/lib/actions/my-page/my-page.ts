@@ -116,14 +116,12 @@ export const addFamilyMember = async (familyData: {
     } else {
       formData.append("remove_image", "true");
     }
-    console.log(formData);
     const response = await axiosInstance.post(`/me/family`, formData,
       {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-    console.log("add family", response.data);
     return response.data;
   } catch (err) {
     if (err instanceof Error) {
