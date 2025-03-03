@@ -23,15 +23,7 @@ type BudgetFormProps = {
 };
 
 const budgetSchema = z.object({
-  budget: z
-    .string()
-    .min(1, { message: "Please enter a budget" })
-    .refine((val) => Number(val) > 0, {
-      message: "Budget cannot be negative",
-    })
-    .refine((val) => Number.isInteger(Number(val)), {
-      message: "Budget must be a whole number",
-    }),
+  budget: z.coerce.number().min(1, { message: "Budget must be over $1" }),
 });
 
 type BudgetFormValues = z.infer<typeof budgetSchema>;
@@ -41,7 +33,7 @@ export default function BudgetForm({ eventId, budget }: BudgetFormProps) {
   const form = useForm<BudgetFormValues>({
     resolver: zodResolver(budgetSchema),
     defaultValues: {
-      budget: budget ? budget.toString() : "",
+      budget: budget ? budget : 0,
     },
   });
 

@@ -32,13 +32,13 @@ type ItemFormProps = {
 const FormSchema = z.object({
   item: z
     .string()
-    .min(2, { message: "Item name must be at least 2 characters." }),
+    .min(1, { message: "Item name must be at least 1 character" }),
   price: z.coerce
     .number()
-    .nonnegative({ message: "Price must be a non-negative number." }),
+    .nonnegative({ message: "Price must be a non-negative number" }),
   quantity: z.coerce
     .number()
-    .nonnegative({ message: "Quantity must be a non-negative number." }),
+    .nonnegative({ message: "Quantity must be a non-negative number" }),
 });
 
 export default function ItemInputForm({
