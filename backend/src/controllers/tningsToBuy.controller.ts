@@ -128,7 +128,7 @@ const addThingsToBuyItemInit = async (
     res.status(200).json({
       success: true,
       message: "added item successfully!",
-      data: thingsToBuy,
+      data: { thingsToBuy },
       budget,
     });
   } catch (err) {
