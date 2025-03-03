@@ -42,14 +42,13 @@ Content-Type: multipart/form-data
 
 ```json
 {
-"pictures": [
-  {
-    "picture": "file"
-  }
+  "pictures": [
+    {
+      "picture": "file"
+    }
   ]
 }
-
-````
+```
 
 ### Response
 
@@ -63,7 +62,7 @@ Content-Type: multipart/form-data
     }
   ]
 }
-````
+```
 
 ## 3. Delete Pictures
 
@@ -111,20 +110,23 @@ Retrieves one preview picture from each face-recognition tags.
 ### Response
 
 ```json
-[
+{
+  [
     {
         "tagId": 1,
-        "previewImageUrl": "https://example.com/image.jpg",   
+        "previewImageUrl": "https://example.com/image.jpg",
     },
     {
         "tagId": 2,
-        "previewImageUrl": "https://example.com/image.jpg",   
+        "previewImageUrl": "https://example.com/image.jpg",
     },
     {
         "tagId": 3,
-        "previewImageUrl": "https://example.com/image.jpg",   
+        "previewImageUrl": "https://example.com/image.jpg",
     },
-]```
+  ]
+}
+```
 
 ## 5. get All Pictures categorized by tag(after face-recognition)
 
@@ -139,14 +141,17 @@ Retrieves pictures organize by face-recognition tag.
 ### Response
 
 ```json
-[
-  tag1[
-    imageUrl: "https://example.com/image.jpg",
-    imageUrl: "https://example.com/image.jpg",
+{
+  [
+  "tag1":[
+    "imageUrl": "https://example.com/image.jpg",
+    "imageUrl": "https://example.com/image.jpg",
   ],
-  tag2[
-    imageUrl: "https://example.com/image.jpg",
-    imageUrl: "https://example.com/image.jpg",
+  "tag2":[
+    "imageUrl": "https://example.com/image.jpg",
+    "imageUrl": "https://example.com/image.jpg",
+    ]
   ]
-]
+}
+
 ```
