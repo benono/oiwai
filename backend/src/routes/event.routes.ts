@@ -1,11 +1,12 @@
 import { Router } from "express";
 import eventController from "../controllers/event.controller";
-import eventParticipantsController from "../controllers/eventParticipants.controller";
+import necessitiesModel from "../controllers/necessities.controller";
+import participantNecessitiesModel from "../controllers/participantNecessities.controller";
 import timelineController from "../controllers/timeline.controller";
-import {
-  isEventHost,
-  isEventHostOrParticipant,
-} from "../middleware/event.auth";
+import requireAuthMiddleware from "../middleware/auth";
+import eventParticipantsController from "../controllers/eventParticipants.controller";
+import { isEventHost, isEventHostOrParticipant } from "../middleware/event.auth";
+
 const eventRouter = Router();
 
 // Routes
@@ -18,6 +19,36 @@ eventRouter.get(
   "/:event_id/is-host",
   isEventHostOrParticipant,
   eventController.checkIsEventHost,
+);
+
+eventRouter.get(
+  "/:event_id/necessities",
+  requireAuthMiddleware,
+  necessitiesModel.getNecessities,
+);
+
+eventRouter.post(
+  "/:event_id/necessities",
+  requireAuthMiddleware,
+  necessitiesModel.addNewNecessitiesInfo,
+);
+
+eventRouter.patch(
+  "/:event_id/necessities",
+  requireAuthMiddleware,
+  necessitiesModel.updateNecessitiesInfo,
+);
+
+eventRouter.get(
+  "/:event_id/me/necessities",
+  requireAuthMiddleware,
+  participantNecessitiesModel.getParticipantNecessities,
+);
+
+eventRouter.patch(
+  "/:event_id/me/necessities/:necessity_id",
+  requireAuthMiddleware,
+  participantNecessitiesModel.updateParticipantNecessities,
 );
 
 // Timelines
@@ -41,7 +72,6 @@ eventRouter.delete(
   isEventHost,
   timelineController.deleteTimeline,
 );
-
 // Participants
 eventRouter.get(
   "/:event_id/who-is-coming",
