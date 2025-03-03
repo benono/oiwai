@@ -82,16 +82,16 @@ const getThingsToBuyBudget = async (
 
     const thingsToBuy = await toBuyModel.fetchToBuyItems(eventId);
 
-    let totalspend = 0;
+    let totalSpend = 0;
     for (let i = 0; i < thingsToBuy.length; i++) {
       if (thingsToBuy[i].isPurchase) {
-        totalspend =
-          totalspend + thingsToBuy[i].price * thingsToBuy[i].quantity;
+        totalSpend =
+          totalSpend + thingsToBuy[i].price * thingsToBuy[i].quantity;
       }
     }
-    const remainBudget = budget - totalspend;
+    const remainBudget = budget - totalSpend;
 
-    res.status(200).json({ budget, totalspend, remainBudget });
+    res.status(200).json({ budget, totalSpend, remainBudget });
   } catch (err) {
     next(err);
   }
@@ -110,20 +110,27 @@ const addThingsToBuyItemInit = async (
     }
 
     const newBudget = req.body.budget;
-    const { name, price, quantity } = req.body.item;
+    const itemName = req.body.item.item;
+    const price = req.body.item.price ? req.body.item.price : 0;
+    const quantity = req.body.item.quantity ? req.body.item.quantity : 0;
 
     const result = await eventModel.addToBuyItemInit(
       eventId,
       newBudget,
-      name,
+      itemName,
       price,
       quantity,
     );
 
     const budget = result.updatedBudget.budget;
-    const item = result.createdItem;
+    const thingsToBuy = result.createdItem;
 
-    res.status(200).json({ budget, item });
+    res.status(200).json({
+      success: true,
+      message: "added item successfully!",
+      data: thingsToBuy,
+      budget,
+    });
   } catch (err) {
     next(err);
   }
@@ -167,11 +174,13 @@ const addThingsToBuyItem = async (
       throw new ValidationError("Invalid event ID");
     }
 
-    const { name, price, quantity } = req.body.item;
+    const itemName = req.body.item.item;
+    const price = req.body.item.price ? req.body.item.price : 0;
+    const quantity = req.body.item.quantity ? req.body.item.quantity : 0;
 
     const thingsToBuy = await toBuyModel.createToBuyItemWithoutTransaction(
       eventId,
-      name,
+      itemName,
       price,
       quantity,
     );
@@ -226,7 +235,7 @@ const updateThingsToBuy = async (
     const eventId = Number(req.params.event_id);
     const itemId = Number(req.params.item_id);
 
-    const name = req.body.item.name;
+    const itemName = req.body.item.item;
     const price = req.body.item.price ? req.body.item.price : 0;
     const quantity = req.body.item.quantity ? req.body.item.quantity : 0;
 
@@ -239,14 +248,14 @@ const updateThingsToBuy = async (
 
     const thingsToBuy = await toBuyModel.updateToBuyItems(
       itemId,
-      name,
+      itemName,
       price,
       quantity,
     );
 
     res.status(200).json({
       success: true,
-      message: "updated checkbox successfully!",
+      message: "updated item successfully!",
       data: { thingsToBuy },
     });
   } catch (err) {

@@ -21,14 +21,14 @@ const fetchToBuyItem = async (itemId: number) => {
 const createToBuyItemWithTransaction = async (
   tx: Prisma.TransactionClient,
   eventId: number,
-  name: string,
+  item: string,
   price: number,
   quantity: number,
 ) => {
   const createdItem = await tx.thingsToBuy.create({
     data: {
       eventId: eventId,
-      item: name,
+      item: item,
       price: price,
       quantity: quantity,
       isPurchase: false,
@@ -39,14 +39,14 @@ const createToBuyItemWithTransaction = async (
 
 const createToBuyItemWithoutTransaction = async (
   eventId: number,
-  name: string,
+  item: string,
   price: number,
   quantity: number,
 ) => {
   const createdItem = await prisma.thingsToBuy.create({
     data: {
       eventId: eventId,
-      item: name,
+      item: item,
       price: price,
       quantity: quantity,
       isPurchase: false,
@@ -59,10 +59,10 @@ const updateCheckForToBuyItems = async (
   itemId: number,
   isPurchased: boolean,
 ) => {
-  const item = await prisma.thingsToBuy.findUnique({
+  const itemResult = await prisma.thingsToBuy.findUnique({
     where: { id: itemId },
   });
-  if (!item) {
+  if (!itemResult) {
     throw new ValidationError("Item not found");
   }
 
@@ -77,21 +77,21 @@ const updateCheckForToBuyItems = async (
 
 const updateToBuyItems = async (
   itemId: number,
-  name: string,
+  item: string,
   price: number,
   quantity: number,
 ) => {
-  const item = await prisma.thingsToBuy.findUnique({
+  const itemResult = await prisma.thingsToBuy.findUnique({
     where: { id: itemId },
   });
-  if (!item) {
+  if (!itemResult) {
     throw new ValidationError("Item not found");
   }
 
   const updatedItem = await prisma.thingsToBuy.update({
     where: { id: itemId },
     data: {
-      item: name,
+      item: item,
       price: price,
       quantity: quantity,
     },
@@ -100,10 +100,10 @@ const updateToBuyItems = async (
 };
 
 const deleteToBuyItems = async (itemId: number) => {
-  const item = await prisma.thingsToBuy.findUnique({
+  const itemResult = await prisma.thingsToBuy.findUnique({
     where: { id: itemId },
   });
-  if (!item) {
+  if (!itemResult) {
     throw new ValidationError("Item not found");
   }
   const deletedItem = await prisma.thingsToBuy.delete({
