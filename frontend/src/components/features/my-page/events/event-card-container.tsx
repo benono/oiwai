@@ -1,6 +1,6 @@
-import { getMyPageEventInfo } from "@/lib/api/mypage";
 import { notFound } from "next/navigation";
 import EventCardList from "./event-card-list";
+import { getMyPageEventInfo } from "@/lib/actions/my-page/my-page";
 
 export default async function EventCardContainer() {
   let eventResponse;

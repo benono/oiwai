@@ -36,7 +36,7 @@ export default function EventCardList({ events, error }: EventCardListProps) {
         const endTimeDate = new Date(endTime);
         return (
           <li key={id} className="hover:opacity-70">
-            <Link href="/" className="grid gap-4">
+            <Link href={`/event/${id}`} className="grid gap-4">
               <div className="relative">
                 <Image
                   src={thumbnailUrl}
