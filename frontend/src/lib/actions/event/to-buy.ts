@@ -4,7 +4,7 @@ import { getServerAxiosInstance } from "@/lib/api/axios-server";
 import { BaseItemType, BudgetType, ShoppingItemType } from "@/types/to-buy";
 import { AxiosError } from "axios";
 
-// Create things to buy
+// Create things to buy (including budget)
 export const createThingsToBuy = async ({
   eventId,
   budget,
@@ -22,7 +22,7 @@ export const createThingsToBuy = async ({
     const response = await axiosInstance.post(
       `/events/${eventId}/things-to-buy/init`,
       {
-        budget: Number(budget),
+        budget: budget,
         item: requestData,
       },
     );
@@ -85,11 +85,6 @@ export const updatePurchaseStatus = async ({
     const response = await axiosInstance.patch(
       `/events/${eventId}/things-to-buy/${itemId}/is-purchased`,
       { isPurchased },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
     );
 
     return response.data;
@@ -98,7 +93,7 @@ export const updatePurchaseStatus = async ({
       throw new AxiosError(err.response?.data.message);
     } else {
       throw new AxiosError(
-        "Failed to update purchase status. Please try again.",
+        "Failed to update the purchase status. Please try again.",
       );
     }
   }
@@ -152,11 +147,6 @@ export const updateBudget = async ({
     const response = await axiosInstance.patch(
       `/events/${eventId}/things-to-buy/budget`,
       { budget },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
     );
 
     return response.data;

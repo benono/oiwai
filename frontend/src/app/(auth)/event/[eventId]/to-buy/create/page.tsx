@@ -16,7 +16,10 @@ export default async function Budget({
   const isHost = await checkIsHost(eventId);
   if (!isHost) redirect(`/event/${eventId}`);
 
+  // If adding an item for the first time, the budget amount is get from the parameter
   const { budget } = await searchParams;
+
+  // Get budget if items are added for the second time or later
   const response = await getThingsToBuyBudget(eventId);
 
   let remainBudget;

@@ -12,35 +12,36 @@ export default async function EditItem({
 }) {
   const { eventId, itemId } = await params;
 
+  let thingToBuy, remainBudget;
   try {
     const isHost = await checkIsHost(eventId);
     if (!isHost) redirect(`/event/${eventId}`);
 
     const response = await getThingToBuy(eventId, itemId);
-    const thingToBuy = response.thingToBuy.thingToBuy;
-    const remainBudget = response.remainBudget;
-
-    return (
-      <section className="space-y-4">
-        <div>
-          <BreadcrumbNavigation
-            path={`/event/${eventId}/to-buy`}
-            previousPageName="Things to buy"
-          />
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold">Edit item</h1>
-            <ItemDeleteButton eventId={eventId} itemId={itemId} />
-          </div>
-        </div>
-        <ItemInputForm
-          eventId={eventId}
-          thingToBuy={thingToBuy}
-          remainBudget={remainBudget}
-        />
-      </section>
-    );
+    thingToBuy = response.thingToBuy.thingToBuy;
+    remainBudget = response.remainBudget;
   } catch (err) {
     console.error(err);
     notFound();
   }
+
+  return (
+    <section className="space-y-4">
+      <div>
+        <BreadcrumbNavigation
+          path={`/event/${eventId}/to-buy`}
+          previousPageName="Things to buy"
+        />
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-bold">Edit item</h1>
+          <ItemDeleteButton eventId={eventId} itemId={itemId} />
+        </div>
+      </div>
+      <ItemInputForm
+        eventId={eventId}
+        thingToBuy={thingToBuy}
+        remainBudget={remainBudget}
+      />
+    </section>
+  );
 }

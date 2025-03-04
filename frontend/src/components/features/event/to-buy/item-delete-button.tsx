@@ -1,7 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 import { deleteItem } from "@/lib/actions/event/to-buy";
+import { showErrorToast } from "@/lib/toast/toast-utils";
 import { ShoppingItemType } from "@/types/to-buy";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -18,11 +20,26 @@ export default function ItemDeleteButton({
   const router = useRouter();
 
   const handleDelete = async () => {
-    const response = await deleteItem(eventId, itemId);
-    if (response.success) {
-      router.push(`/event/${eventId}/to-buy`);
+    try {
+      const response = await deleteItem(eventId, itemId);
+
+      if (response.success) {
+        router.push(`/event/${eventId}/to-buy`);
+      }
+
+      return { success: false, message: "No action performed" };
+    } catch (err) {
+      if (err instanceof Error) {
+        showErrorToast(toast, err, err.message);
+      } else {
+        showErrorToast(
+          toast,
+          err,
+          "An error occurred while processing your request. Please try again.",
+        );
+      }
+      return { success: false, message: "An error occurred" };
     }
-    return { success: false, message: "No action performed" };
   };
 
   return (

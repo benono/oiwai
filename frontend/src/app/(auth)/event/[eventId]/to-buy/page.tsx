@@ -8,7 +8,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 async function fetchItemsData(eventId: string): Promise<{
-  itemsList: ShoppingItemType[] | null;
+  thingsToBuy: ShoppingItemType[] | null;
   budget: BudgetType;
   remainBudget: BudgetDetailType["remainBudget"];
   totalSpend: BudgetDetailType["totalSpend"];
@@ -21,15 +21,10 @@ async function fetchItemsData(eventId: string): Promise<{
     const thingsToBuy = ThingsToBuyResponse.thingsToBuy;
 
     const budgetResponse = await getThingsToBuyBudget(eventId);
-    const remainBudget = budgetResponse.remainBudget;
-    const totalSpend = budgetResponse.totalSpend;
-    const budget = budgetResponse.budget;
 
     return {
-      itemsList: thingsToBuy,
-      budget,
-      remainBudget,
-      totalSpend,
+      thingsToBuy,
+      ...budgetResponse,
     };
   } catch (err) {
     console.error(err);
@@ -45,7 +40,7 @@ export default async function ThingsToBuy({
   const { eventId } = await params;
 
   // Fetch items data
-  const { itemsList, budget, remainBudget, totalSpend } =
+  const { thingsToBuy, budget, remainBudget, totalSpend } =
     await fetchItemsData(eventId);
 
   // If the budget is not set, redirect to the create budget page
@@ -53,7 +48,7 @@ export default async function ThingsToBuy({
     redirect(`/event/${eventId}/to-buy/budget/create`);
   }
 
-  if (!itemsList) {
+  if (!thingsToBuy) {
     notFound();
   }
 
@@ -67,7 +62,7 @@ export default async function ThingsToBuy({
         <h1 className="text-xl font-bold">Things to buy</h1>
       </div>
       <BudgetOverview
-        itemsList={itemsList}
+        thingsToBuy={thingsToBuy}
         budget={budget}
         eventId={eventId}
         remainBudget={remainBudget}

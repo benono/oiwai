@@ -62,18 +62,21 @@ export default function ItemInputForm({
       let response;
 
       if (thingToBuy) {
+        // Update item
         response = await updateItem({
           eventId,
           itemId: thingToBuy.id,
           requestData,
         });
       } else if (isInitialCreate) {
+        // Set budget and add item for the first time
         response = await createThingsToBuy({
           eventId,
-          budget: remainBudget,
+          budget: Number(remainBudget), // Need to convert into number
           requestData,
         });
       } else {
+        // Add item
         response = await addItem({ requestData, eventId });
       }
 

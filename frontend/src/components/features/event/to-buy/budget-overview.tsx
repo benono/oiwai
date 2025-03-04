@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type BudgetOverviewProps = {
-  itemsList: ShoppingItemType[];
+  thingsToBuy: ShoppingItemType[];
   budget: BudgetType;
   eventId: string;
   remainBudget: BudgetDetailType["remainBudget"];
@@ -19,14 +19,13 @@ type BudgetOverviewProps = {
 };
 
 export default function BudgetOverview({
-  itemsList,
+  thingsToBuy,
   budget,
   eventId,
   totalSpend,
   remainBudget,
 }: BudgetOverviewProps) {
   const router = useRouter();
-  const thingsToBuy = itemsList;
 
   const handleTogglePurchased = async (id: ShoppingItemType["id"]) => {
     try {
@@ -58,7 +57,7 @@ export default function BudgetOverview({
 
   return (
     <section className="space-y-4">
-      <div className="space-y-3 rounded-md border-0.2 border-gray-300 bg-background p-4 shadow-sm">
+      <div className="space-y-2 rounded-md border-0.2 border-gray-300 bg-background p-4 shadow-sm">
         <div className="flex w-full flex-col gap-3">
           <p className="text-sm font-semibold">Budget remain</p>
           <div className="mx-auto flex items-center justify-center gap-2">
@@ -95,7 +94,7 @@ export default function BudgetOverview({
         </div>
       </div>
       <ul>
-        {itemsList.map((item) => (
+        {thingsToBuy.map((item) => (
           <li key={item.id} className="flex items-center py-3">
             <Button
               variant="ghost"
@@ -123,11 +122,11 @@ export default function BudgetOverview({
               href={`/event/${eventId}/to-buy/${item.id}/edit`}
               className="flex flex-grow items-center justify-end gap-2"
             >
-              {item.price > 0 && item.quantity > 0 && (
-                <span className="font-medium">
-                  ${item.price} × {item.quantity}
-                </span>
-              )}
+              <span className="font-medium">
+                {item.price > 0 ? `$${item.price}` : ""}
+                {item.quantity > 0 ? " × " : ""}
+                {item.quantity > 0 && item.quantity}
+              </span>
               <ChevronRightIcon size={16} className="text-gray-600" />
             </Link>
           </li>

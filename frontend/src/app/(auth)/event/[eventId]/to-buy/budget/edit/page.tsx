@@ -11,11 +11,11 @@ export default async function CreateBudget({
 }) {
   const { eventId } = await params;
 
-  const isHost = await checkIsHost(eventId);
-  if (!isHost) redirect(`/event/${eventId}`);
-
   let budget;
   try {
+    const isHost = await checkIsHost(eventId);
+    if (!isHost) redirect(`/event/${eventId}`);
+
     const response = await getThingsToBuyBudget(eventId);
     budget = response.budget;
   } catch (err) {

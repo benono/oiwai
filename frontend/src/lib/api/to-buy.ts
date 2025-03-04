@@ -36,10 +36,12 @@ export const getThingsToBuy = async (
     if (err instanceof AxiosError && err.response) {
       throw new Error(
         err.response?.data?.message ||
-          "An error occurred while fetching the list.",
+          "An error occurred while fetching the list of things to buy.",
       );
     } else {
-      throw new Error("Failed to fetch things to buy. Please try again.");
+      throw new Error(
+        "Failed to fetch the list of things to buy. Please try again.",
+      );
     }
   }
 };
@@ -63,10 +65,10 @@ export const getThingsToBuyBudget = async (
     if (err instanceof AxiosError && err.response) {
       throw new Error(
         err.response?.data?.message ||
-          "An error occurred while fetching the budget detail.",
+          "An error occurred while fetching the budget overview.",
       );
     } else {
-      throw new Error("Failed to fetch the budget detail. Please try again.");
+      throw new Error("Failed to fetch the budget overview. Please try again.");
     }
   }
 };
