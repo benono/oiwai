@@ -123,7 +123,7 @@ export default function ItemInputForm({
           name="price"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="font-semibold">Price</FormLabel>
+              <FormLabel className="font-semibold">Price (per item)</FormLabel>
               <FormControl>
                 <div>
                   <Input
@@ -139,11 +139,11 @@ export default function ItemInputForm({
                       `You have exceeded your budget by $${remainBudget}`
                     ) : (
                       <>
-                        You have
+                        You have &nbsp;
                         <span className="text-accentGreen">
                           ${remainBudget}
                         </span>
-                        left in your budget.
+                        &nbsp; left in your budget.
                       </>
                     )}
                   </p>
