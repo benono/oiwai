@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 const fetchAlbumPictures = async (eventId: number) => {
   const pictures = await prisma.pictures.findMany({
     where: { eventId: eventId },
+    select: { id: true, userId: true, imageUrl: true },
     orderBy: {
       id: "asc",
     },
@@ -29,7 +30,7 @@ const addNewPicture = async (
 
       const uploadedImages = await Promise.all(uploadPromises);
 
-      const createdImages = await tx.pictures.createMany({
+      await tx.pictures.createMany({
         data: uploadedImages.map(({ url, publicId }) => ({
           eventId: eventId,
           userId: userId,
@@ -38,7 +39,16 @@ const addNewPicture = async (
         })),
       });
 
-      return createdImages;
+      const createdUrls = await tx.pictures.findMany({
+        where: {
+          eventId: eventId,
+          userId: userId,
+          imageUrl: { in: uploadedImages.map(({ url }) => url) },
+        },
+        select: { imageUrl: true },
+      });
+
+      return createdUrls;
     } catch (error) {
       console.error("Transaction failed:", error);
       throw new Error("Failed to upload images and save to DB");
@@ -46,15 +56,26 @@ const addNewPicture = async (
   });
 };
 
-const deletePicture = async (userId: number, pictureIds: number[]) => {
+const deletePicture = async (
+  userId: number,
+  isHost: boolean,
+  pictureIds: number[],
+) => {
   return await prisma.$transaction(async (tx) => {
     try {
       const existingPictures = await tx.pictures.findMany({
         where: { id: { in: pictureIds } },
       });
 
-      if (existingPictures.length === 0) {
-        throw new Error("No images found in DB");
+      if (existingPictures.length !== pictureIds.length) {
+        throw new Error("images not found in DB");
+      }
+
+      if (!isHost) {
+        const isPoster = existingPictures.every((image) => image.id === userId);
+        if (!isPoster) {
+          throw new Error("You can not  delete pictures you did not posted.");
+        }
       }
 
       const deletePromises = existingPictures.map((image) =>
@@ -62,7 +83,7 @@ const deletePicture = async (userId: number, pictureIds: number[]) => {
       );
       await Promise.all(deletePromises);
 
-      const deletedPicture = await tx.pictures.deleteMany({
+      await tx.pictures.deleteMany({
         where: {
           id: {
             in: pictureIds,
@@ -76,8 +97,30 @@ const deletePicture = async (userId: number, pictureIds: number[]) => {
   });
 };
 
+const fetchPreviewPictures = async (eventId: number) => {
+  const pictures = await prisma.pictures.findMany({
+    where: { eventId: eventId },
+    orderBy: {
+      id: "asc",
+    },
+  });
+  return pictures;
+};
+
+const fetchPicturesByTag = async (eventId: number, tag: string) => {
+  const pictures = await prisma.pictures.findMany({
+    where: { eventId: eventId },
+    orderBy: {
+      id: "asc",
+    },
+  });
+  return pictures;
+};
+
 export default {
   fetchAlbumPictures,
   addNewPicture,
   deletePicture,
+  fetchPreviewPictures,
+  fetchPicturesByTag,
 };

@@ -3,9 +3,28 @@ import { getAuth } from "@clerk/express";
 import { NextFunction, Request, Response } from "express";
 import { ValidationError } from "../errors/validation.error";
 import albumModel from "../models/album.model";
+import eventModel from "../models/event.model";
 import usersModel from "../models/user.model";
 
-const fetchAlbumPictures = async (
+const getAlbumPictures = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const eventId = Number(req.params.event_id);
+    // Validate ID
+    if (isNaN(eventId)) {
+      throw new ValidationError("Invalid event ID");
+    }
+    const pictures = await albumModel.fetchAlbumPictures(eventId);
+    res.status(200).json({ data: { pictures } });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const uploadAlbumPictures = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -37,9 +56,13 @@ const fetchAlbumPictures = async (
       return;
     }
 
-    const image = await albumModel.addNewPicture(eventId, user.id, files);
+    const pictures = await albumModel.addNewPicture(eventId, user.id, files);
 
-    res.status(200).json({ user });
+    res.status(200).json({
+      success: true,
+      message: "uploaded pictures successfully!",
+      data: { pictures },
+    });
   } catch (err) {
     next(err);
   }
@@ -76,16 +99,27 @@ const deleteAlbumPictures = async (
       res.status(404).json({ error: "User not found" });
       return;
     }
+    const event = await eventModel.fetchEventById(eventId);
+    if (!event) {
+      res.status(404).json({ error: "Event not found" });
+      return;
+    }
 
-    const image = await albumModel.deletePicture(user.id, deleteIds);
+    //check user is host
+    const isHost = event.hostId === user.id;
 
-    res.status(200).json({ user });
+    await albumModel.deletePicture(user.id, isHost, deleteIds);
+
+    res
+      .status(200)
+      .json({ success: true, message: "uploaded pictures successfully!" });
   } catch (err) {
     next(err);
   }
 };
 
 export default {
-  fetchAlbumPictures,
+  getAlbumPictures,
+  uploadAlbumPictures,
   deleteAlbumPictures,
 };

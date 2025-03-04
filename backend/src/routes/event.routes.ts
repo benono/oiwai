@@ -1,13 +1,26 @@
 import { Router } from "express";
+import albumComtroller from "../controllers/album.comtroller";
 import eventController from "../controllers/event.controller";
 import eventParticipantsController from "../controllers/eventParticipants.controller";
 import timelineController from "../controllers/timeline.controller";
-import { isEventHost, isEventHostOrParticipant } from "../middleware/event.auth";
+import {
+  isEventHost,
+  isEventHostOrParticipant,
+} from "../middleware/event.auth";
+import upload from "../middleware/uploadMiddleware";
 const eventRouter = Router();
 
 // Routes
-eventRouter.get("/:event_id", isEventHostOrParticipant, eventController.getEventById);
-eventRouter.get("/:event_id/is-host", isEventHostOrParticipant, eventController.checkIsEventHost);
+eventRouter.get(
+  "/:event_id",
+  isEventHostOrParticipant,
+  eventController.getEventById,
+);
+eventRouter.get(
+  "/:event_id/is-host",
+  isEventHostOrParticipant,
+  eventController.checkIsEventHost,
+);
 
 // Timelines
 eventRouter.get(
@@ -18,6 +31,7 @@ eventRouter.get(
 eventRouter.post(
   "/:event_id/timelines",
   isEventHost,
+  upload.single("profileImage"),
   timelineController.createTimeline,
 );
 eventRouter.put(
@@ -42,4 +56,21 @@ eventRouter.patch(
   eventParticipantsController.updateParticipantAttendance,
 );
 
+//Album
+eventRouter.get(
+  "/:event_id/album",
+  //isEventHostOrParticipant,
+  albumComtroller.getAlbumPictures,
+);
+eventRouter.post(
+  "/:event_id/album",
+  isEventHostOrParticipant,
+  upload.array("pictures", 20),
+  albumComtroller.getAlbumPictures,
+);
+eventRouter.delete(
+  "/:event_id/album",
+  isEventHostOrParticipant,
+  albumComtroller.getAlbumPictures,
+);
 export default eventRouter;
