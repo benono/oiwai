@@ -27,16 +27,16 @@ export default async function ThingsToBuy({
     thingsToBuy = response.thingsToBuy;
     ({ budget, remainBudget, totalSpend } = response.budgetDetails);
 
-    if (budget <= 0) {
-      redirect(`/event/${eventId}/to-buy/budget/create`);
-    }
-
     if (!thingsToBuy) {
       notFound();
     }
   } catch (err) {
     console.error(err);
     notFound();
+  }
+
+  if (budget <= 0) {
+    redirect(`/event/${eventId}/to-buy/budget/create`);
   }
 
   return (
