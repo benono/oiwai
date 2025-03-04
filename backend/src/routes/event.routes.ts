@@ -102,6 +102,11 @@ eventRouter.post(
   isEventHost,
   eventParticipantsController.addTemporaryParticipant,
 );
+eventRouter.patch(
+  "/:event_id/participants/temporary/:participant_id/attendance",
+  isEventHost,
+  eventParticipantsController.updateTemporaryParticipantAttendance,
+);
 eventRouter.delete(
   "/:event_id/participants/temporary/:participant_id",
   isEventHost,
