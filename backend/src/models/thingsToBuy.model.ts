@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { ValidationError } from "../errors/validation.error";
+import { NotFoundError } from "../errors";
 
 const prisma = new PrismaClient();
 
@@ -63,7 +63,7 @@ const updateCheckForToBuyItems = async (
     where: { id: itemId },
   });
   if (!itemResult) {
-    throw new ValidationError("Item not found");
+    throw new NotFoundError("Item not found");
   }
 
   const updatedItem = await prisma.thingsToBuy.update({
@@ -85,7 +85,7 @@ const updateToBuyItems = async (
     where: { id: itemId },
   });
   if (!itemResult) {
-    throw new ValidationError("Item not found");
+    throw new NotFoundError("Item not found");
   }
 
   const updatedItem = await prisma.thingsToBuy.update({
@@ -104,7 +104,7 @@ const deleteToBuyItems = async (itemId: number) => {
     where: { id: itemId },
   });
   if (!itemResult) {
-    throw new ValidationError("Item not found");
+    throw new NotFoundError("Item not found");
   }
   const deletedItem = await prisma.thingsToBuy.delete({
     where: { id: itemId },

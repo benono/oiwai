@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { NotFoundError } from "../errors";
 import { ValidationError } from "../errors/validation.error";
 import eventModel from "../models/event.model";
 import toBuyModel from "../models/thingsToBuy.model";
@@ -42,8 +43,7 @@ const getThingsToBuyItem = async (
     }
     const thingToBuy = await toBuyModel.fetchToBuyItem(itemId);
     if (!thingToBuy) {
-      res.status(404).json({ error: "Item not found" });
-      return;
+      throw new NotFoundError("Item not found");
     }
 
     const result = await eventModel.fetchEventById(eventId);
@@ -237,7 +237,11 @@ const updateThingsToBuy = async (
 
     const itemName = req.body.item.item;
     const price = req.body.item.price ? req.body.item.price : 0;
-    const quantity = req.body.item.quantity ? req.body.item.quantity : 0;
+    const quantity = req.body.item.quantity;
+
+    if (!quantity) {
+      throw new ValidationError("Invalid quantity");
+    }
 
     // Validate ID
     if (isNaN(eventId)) {
