@@ -41,19 +41,22 @@ export default function BudgetForm({ eventId, budget }: BudgetFormProps) {
     try {
       const requestData = { ...data, budget: Number(data.budget) };
 
-      if (budget) {
-        const response = await updateBudget({
-          eventId,
-          budget: requestData.budget,
-        });
-
-        if (response?.success) {
-          router.push(`/event/${eventId}/to-buy`);
-        }
-      } else {
+      // Redirect to the add item page after setting the budget
+      if (!budget) {
         router.push(
           `/event/${eventId}/to-buy/create?budget=${requestData.budget}`,
         );
+
+        return;
+      }
+
+      const response = await updateBudget({
+        eventId,
+        budget: requestData.budget,
+      });
+
+      if (response?.success) {
+        router.push(`/event/${eventId}/to-buy`);
       }
     } catch (err) {
       if (err instanceof Error) {
