@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { error } from "console";
-import { NotFoundError, ValidationError } from "../errors";
+import { NotFoundError } from "../errors";
 import necessitiesModel from "../models/necessities.model";
 import participantNecessitiesModel from "../models/participantNecessities.model";
 import Event from "../types/event";
@@ -135,7 +135,7 @@ const addToBuyItemInit = async (
       where: { id: eventId },
     });
     if (!event) {
-      throw new ValidationError("Event not found");
+      throw new NotFoundError("Event not found");
     }
     const updates: Partial<Event> = { budget: budget };
     const updatedBudget = await updateEvent(tx, eventId, updates);
