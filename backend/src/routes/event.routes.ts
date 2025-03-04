@@ -59,7 +59,7 @@ eventRouter.patch(
 //Album
 eventRouter.get(
   "/:event_id/album",
-  //isEventHostOrParticipant,
+  isEventHostOrParticipant,
   albumComtroller.getAlbumPictures,
 );
 eventRouter.post(

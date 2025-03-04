@@ -4,10 +4,11 @@ import cloudinaryUtil from "../utils/cloudinary.util";
 
 const prisma = new PrismaClient();
 
-const fetchAlbumPictures = async (eventId: number) => {
+const fetchAlbumPictures = async (eventId: number, limit: number) => {
   const pictures = await prisma.pictures.findMany({
     where: { eventId: eventId },
     select: { id: true, userId: true, imageUrl: true },
+    take: limit > 0 ? limit : undefined,
     orderBy: {
       id: "asc",
     },

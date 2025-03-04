@@ -17,7 +17,8 @@ const getAlbumPictures = async (
     if (isNaN(eventId)) {
       throw new ValidationError("Invalid event ID");
     }
-    const pictures = await albumModel.fetchAlbumPictures(eventId);
+    const limit = req.query.limit ? Number(req.query.limit) : 0;
+    const pictures = await albumModel.fetchAlbumPictures(eventId, limit);
     res.status(200).json({ data: { pictures } });
   } catch (err) {
     next(err);
