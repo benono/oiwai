@@ -8,16 +8,23 @@ import { notFound, redirect } from "next/navigation";
 export default async function EditItem({
   params,
 }: {
-  params: Promise<{ eventId: string; itemId: number }>;
+  params: Promise<{ eventId: string; itemId: string }>;
 }) {
   const { eventId, itemId } = await params;
 
   let thingToBuy, remainBudget;
+
+  // Check if the value is NaN or if it's not an integer
+  const numericItemId = Number(itemId);
+  if (isNaN(numericItemId) || !Number.isInteger(numericItemId)) {
+    notFound();
+  }
+
   try {
     const isHost = await checkIsHost(eventId);
     if (!isHost) redirect(`/event/${eventId}`);
 
-    const response = await getThingToBuy(eventId, itemId);
+    const response = await getThingToBuy(eventId, numericItemId);
     thingToBuy = response.thingToBuy.thingToBuy;
     remainBudget = response.remainBudget;
   } catch (err) {
@@ -34,7 +41,7 @@ export default async function EditItem({
         />
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold">Edit item</h1>
-          <ItemDeleteButton eventId={eventId} itemId={itemId} />
+          <ItemDeleteButton eventId={eventId} itemId={numericItemId} />
         </div>
       </div>
       <ItemInputForm
