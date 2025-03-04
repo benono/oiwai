@@ -20,7 +20,7 @@ export default async function ThingsToBuy({
 
   try {
     const isHost = await checkIsHost(eventId);
-    if (!isHost) return redirect(`/event/${eventId}`);
+    if (!isHost) redirect(`/event/${eventId}`);
 
     const response = await getThingsToBuyWithBudget(eventId);
     thingsToBuy = response.thingsToBuy;
