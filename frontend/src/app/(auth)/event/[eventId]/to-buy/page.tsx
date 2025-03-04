@@ -20,13 +20,13 @@ export default async function ThingsToBuy({
 
   try {
     const isHost = await checkIsHost(eventId);
-    if (!isHost) redirect(`/event/${eventId}`);
+    if (!isHost) return redirect(`/event/${eventId}`);
 
     const response = await getThingsToBuyWithBudget(eventId);
+    console.log(response);
     thingsToBuy = response.thingsToBuy;
     ({ budget, remainBudget, totalSpend } = response.budgetDetails);
 
-    // If the budget is not set, redirect to the create budget page
     if (budget <= 0) {
       redirect(`/event/${eventId}/to-buy/budget/create`);
     }
