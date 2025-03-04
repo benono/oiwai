@@ -1,12 +1,15 @@
 import { Router } from "express";
 import eventController from "../controllers/event.controller";
+import eventParticipantsController from "../controllers/eventParticipants.controller";
 import necessitiesModel from "../controllers/necessities.controller";
 import participantNecessitiesModel from "../controllers/participantNecessities.controller";
 import timelineController from "../controllers/timeline.controller";
+import thingsToBuyController from "../controllers/tningsToBuy.controller";
 import requireAuthMiddleware from "../middleware/auth";
-import eventParticipantsController from "../controllers/eventParticipants.controller";
-import { isEventHost, isEventHostOrParticipant } from "../middleware/event.auth";
-
+import {
+  isEventHost,
+  isEventHostOrParticipant,
+} from "../middleware/event.auth";
 const eventRouter = Router();
 
 // Routes
@@ -108,6 +111,61 @@ eventRouter.delete(
   "/:event_id/participants/temporary/:participant_id",
   isEventHost,
   eventParticipantsController.deleteTemporaryParticipant,
+);
+
+//Things to buy
+eventRouter.get(
+  "/:event_id/things-to-buy",
+  isEventHost,
+  thingsToBuyController.getThingsToBuyItems,
+);
+
+eventRouter.get(
+  "/:event_id/things-to-buy/budget",
+  isEventHost,
+  thingsToBuyController.getThingsToBuyBudget,
+);
+
+eventRouter.get(
+  "/:event_id/things-to-buy/:item_id",
+  isEventHost,
+  thingsToBuyController.getThingsToBuyItem,
+);
+
+eventRouter.post(
+  "/:event_id/things-to-buy/init",
+  isEventHost,
+  thingsToBuyController.addThingsToBuyItemInit,
+);
+
+eventRouter.patch(
+  "/:event_id/things-to-buy/budget",
+  isEventHost,
+  thingsToBuyController.updateBudget,
+);
+
+eventRouter.post(
+  "/:event_id/things-to-buy/",
+  isEventHost,
+  thingsToBuyController.addThingsToBuyItem,
+);
+
+eventRouter.patch(
+  "/:event_id/things-to-buy/:item_id/is-purchased",
+  isEventHost,
+  thingsToBuyController.updateItemPurchased,
+);
+
+eventRouter.put(
+  "/:event_id/things-to-buy/:item_id",
+  isEventHost,
+  thingsToBuyController.updateThingsToBuy,
+);
+
+eventRouter.delete(
+  "/:event_id/things-to-buy/:item_id",
+  isEventHost,
+  thingsToBuyController.deleteThingsToBuy,
 );
 
 export default eventRouter;
