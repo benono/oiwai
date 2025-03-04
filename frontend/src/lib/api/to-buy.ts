@@ -18,6 +18,11 @@ type ThingsToBuyBudgetResponse = {
   totalSpend: BudgetDetailType["totalSpend"];
 };
 
+type ThingsToBuyWithBudgetResponse = {
+  thingsToBuy: ShoppingItemType[];
+  budgetDetails: ThingsToBuyBudgetResponse;
+};
+
 // Fetch things to buy
 export const getThingsToBuy = async (
   eventId: string,
@@ -96,6 +101,32 @@ export const getThingToBuy = async (
       );
     } else {
       throw new Error("Failed to fetch the thing to buy. Please try again.");
+    }
+  }
+};
+
+// Fetch things to buy with budget details
+export const getThingsToBuyWithBudget = async (
+  eventId: string,
+): Promise<ThingsToBuyWithBudgetResponse> => {
+  try {
+    const thingsToBuy = await getThingsToBuy(eventId);
+    const budgetDetails = await getThingsToBuyBudget(eventId);
+
+    return {
+      thingsToBuy: thingsToBuy.thingsToBuy,
+      budgetDetails,
+    };
+  } catch (err) {
+    if (err instanceof AxiosError && err.response) {
+      throw new Error(
+        err.response?.data?.message ||
+          "An error occurred while fetching the things to buy with budget details.",
+      );
+    } else {
+      throw new Error(
+        "Failed to fetch the things to buy with budget details. Please try again.",
+      );
     }
   }
 };

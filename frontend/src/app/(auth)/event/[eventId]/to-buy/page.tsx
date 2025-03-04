@@ -2,35 +2,9 @@ import BreadcrumbNavigation from "@/components/features/event/breadcrumb-navigat
 import BudgetOverview from "@/components/features/event/to-buy/budget-overview";
 import { Button } from "@/components/ui/button";
 import { checkIsHost } from "@/lib/api/event";
-import { getThingsToBuy, getThingsToBuyBudget } from "@/lib/api/to-buy";
-import { BudgetDetailType, BudgetType, ShoppingItemType } from "@/types/to-buy";
+import { getThingsToBuyWithBudget } from "@/lib/api/to-buy";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-
-async function fetchItemsData(eventId: string): Promise<{
-  thingsToBuy: ShoppingItemType[] | null;
-  budget: BudgetType;
-  remainBudget: BudgetDetailType["remainBudget"];
-  totalSpend: BudgetDetailType["totalSpend"];
-}> {
-  try {
-    const isHost = await checkIsHost(eventId);
-    if (!isHost) redirect(`/event/${eventId}`);
-
-    const ThingsToBuyResponse = await getThingsToBuy(eventId);
-    const thingsToBuy = ThingsToBuyResponse.thingsToBuy;
-
-    const budgetResponse = await getThingsToBuyBudget(eventId);
-
-    return {
-      thingsToBuy,
-      ...budgetResponse,
-    };
-  } catch (err) {
-    console.error(err);
-    notFound();
-  }
-}
 
 export default async function ThingsToBuy({
   params,
@@ -39,16 +13,29 @@ export default async function ThingsToBuy({
 }) {
   const { eventId } = await params;
 
-  // Fetch items data
-  const { thingsToBuy, budget, remainBudget, totalSpend } =
-    await fetchItemsData(eventId);
+  let thingsToBuy = [];
+  let budget = 0;
+  let remainBudget = 0;
+  let totalSpend = 0;
 
-  // If the budget is not set, redirect to the create budget page
-  if (budget <= 0) {
-    redirect(`/event/${eventId}/to-buy/budget/create`);
-  }
+  try {
+    const isHost = await checkIsHost(eventId);
+    if (!isHost) redirect(`/event/${eventId}`);
 
-  if (!thingsToBuy) {
+    const response = await getThingsToBuyWithBudget(eventId);
+    thingsToBuy = response.thingsToBuy;
+    ({ budget, remainBudget, totalSpend } = response.budgetDetails);
+
+    // If the budget is not set, redirect to the create budget page
+    if (budget <= 0) {
+      redirect(`/event/${eventId}/to-buy/budget/create`);
+    }
+
+    if (!thingsToBuy) {
+      notFound();
+    }
+  } catch (err) {
+    console.error(err);
     notFound();
   }
 
