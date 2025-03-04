@@ -4,7 +4,7 @@
 
 ### Endpoint
 
-GET /api/v1/events/{event_id}/album
+GET /api/v1/events/{event_id}/album?limit=3
 
 ### Description
 
@@ -113,15 +113,15 @@ Retrieves one preview picture from each face-recognition tags.
 {
   [
     {
-        "tagId": 1,
+        "tag": 1,
         "previewImageUrl": "https://example.com/image.jpg",
     },
     {
-        "tagId": 2,
+        "tag": 2,
         "previewImageUrl": "https://example.com/image.jpg",
     },
     {
-        "tagId": 3,
+        "tag": 3,
         "previewImageUrl": "https://example.com/image.jpg",
     },
   ]
@@ -143,14 +143,8 @@ Retrieves pictures organize by face-recognition tag.
 ```json
 {
   [
-  "tag1":[
     "imageUrl": "https://example.com/image.jpg",
     "imageUrl": "https://example.com/image.jpg",
-  ],
-  "tag2":[
-    "imageUrl": "https://example.com/image.jpg",
-    "imageUrl": "https://example.com/image.jpg",
-    ]
   ]
 }
 
