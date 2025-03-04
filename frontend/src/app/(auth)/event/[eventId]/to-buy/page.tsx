@@ -23,7 +23,6 @@ export default async function ThingsToBuy({
     if (!isHost) return redirect(`/event/${eventId}`);
 
     const response = await getThingsToBuyWithBudget(eventId);
-    console.log(response);
     thingsToBuy = response.thingsToBuy;
     ({ budget, remainBudget, totalSpend } = response.budgetDetails);
 
