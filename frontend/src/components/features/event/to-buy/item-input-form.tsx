@@ -38,7 +38,8 @@ const FormSchema = z.object({
     .nonnegative({ message: "Price must be a non-negative number" }),
   quantity: z.coerce
     .number()
-    .nonnegative({ message: "Quantity must be a non-negative number" }),
+    .nonnegative({ message: "Quantity must be a non-negative number" })
+    .min(1, { message: "Quantity must be at least 1" }),
 });
 
 export default function ItemInputForm({
@@ -53,7 +54,7 @@ export default function ItemInputForm({
     defaultValues: {
       item: thingToBuy ? thingToBuy.item : "",
       price: thingToBuy ? thingToBuy.price : 0,
-      quantity: thingToBuy ? thingToBuy.quantity : 0,
+      quantity: thingToBuy ? thingToBuy.quantity : 1,
     },
   });
 
