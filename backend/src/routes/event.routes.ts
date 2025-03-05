@@ -65,12 +65,12 @@ eventRouter.get(
 eventRouter.post(
   "/:event_id/album",
   isEventHostOrParticipant,
-  upload.array("pictures", 20),
-  albumComtroller.getAlbumPictures,
+  upload.array("picture", 20),
+  albumComtroller.uploadAlbumPictures,
 );
 eventRouter.delete(
   "/:event_id/album",
   isEventHostOrParticipant,
-  albumComtroller.getAlbumPictures,
+  albumComtroller.deleteAlbumPictures,
 );
 export default eventRouter;

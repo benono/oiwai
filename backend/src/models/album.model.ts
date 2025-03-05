@@ -21,16 +21,20 @@ const addNewPicture = async (
   userId: number,
   files: Express.Multer.File[],
 ) => {
-  return await prisma.$transaction(async (tx) => {
-    try {
-      const folder = `Album${eventId}`;
+  try {
+    const folder = `Album${eventId}`;
 
-      const uploadPromises = files.map((file) =>
-        cloudinaryUtil.uploadImage(file.buffer, folder),
-      );
+    const startTime = performance.now();
+    const uploadPromises = files.map((file) =>
+      cloudinaryUtil.uploadImage(file.buffer, folder),
+    );
 
-      const uploadedImages = await Promise.all(uploadPromises);
+    const uploadedImages = await Promise.all(uploadPromises);
 
+    const endTime = performance.now();
+    console.log(`Time : ${~~(endTime - startTime)}ms`);
+
+    return await prisma.$transaction(async (tx) => {
       await tx.pictures.createMany({
         data: uploadedImages.map(({ url, publicId }) => ({
           eventId: eventId,
@@ -50,11 +54,11 @@ const addNewPicture = async (
       });
 
       return createdUrls;
-    } catch (error) {
-      console.error("Transaction failed:", error);
-      throw new Error("Failed to upload images and save to DB");
-    }
-  });
+    });
+  } catch (error) {
+    console.error("Transaction failed:", error);
+    throw new Error("Failed to upload images and save to DB");
+  }
 };
 
 const deletePicture = async (
@@ -67,7 +71,6 @@ const deletePicture = async (
       const existingPictures = await tx.pictures.findMany({
         where: { id: { in: pictureIds } },
       });
-
       if (existingPictures.length !== pictureIds.length) {
         throw new Error("images not found in DB");
       }
@@ -79,10 +82,13 @@ const deletePicture = async (
         }
       }
 
+      const startTime = performance.now();
       const deletePromises = existingPictures.map((image) =>
         cloudinaryUtil.deleteImage(image.imagePublicId),
       );
       await Promise.all(deletePromises);
+      const endTime = performance.now();
+      console.log(`Time : ${~~(endTime - startTime)}ms`);
 
       await tx.pictures.deleteMany({
         where: {
@@ -93,7 +99,7 @@ const deletePicture = async (
       });
     } catch (err) {
       console.error("Transaction failed:", error);
-      throw new Error("Failed to upload images and save to DB");
+      throw new Error("Failed to delete images and save to DB");
     }
   });
 };
