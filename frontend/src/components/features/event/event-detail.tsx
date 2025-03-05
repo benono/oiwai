@@ -26,14 +26,14 @@ export default function EventDetail({ eventData, isHost }: eventDataProps) {
       />
       <div className="space-y-3">
         <div className="flex justify-between">
-          <h1 className="text-xl font-bold">{eventData.title}</h1>
+          <h1 className="px-3 text-xl font-bold">{eventData.title}</h1>
           {isHost && (
             <Button className="h-8 w-8 rounded-full bg-textSub/20 text-textSub shadow-none hover:bg-textSub/20 hover:opacity-70">
               <PencilLineIcon />
             </Button>
           )}
         </div>
-        <div className="flex items-center gap-4 pl-3">
+        <div className="flex items-center gap-4 px-3">
           <Calendar size={24} />
           <div>
             <p className="font-semibold">
@@ -45,7 +45,7 @@ export default function EventDetail({ eventData, isHost }: eventDataProps) {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3 pl-3">
+        <div className="flex items-center gap-3 px-3">
           <MapPin size={24} />
           <p className="text-sm font-semibold">
             {eventData.address1},{eventData.address2}{eventData.city},

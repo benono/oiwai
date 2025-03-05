@@ -46,8 +46,8 @@ export default async function EventHome({
         ))}
       </section>
       {!isHost && (
-        <section>
-          <div className="flex justify-between border-b-[0.2px] border-gray-300 pb-2">
+        <section className="px-3">
+          <div className="flex items-center justify-between border-b-[0.2px] border-gray-300 pb-2">
             <h2 className="font-semibold">Who is coming</h2>
             <p className="text-sm font-medium text-textSub">
               <span>{guests.length}</span> Going
@@ -84,7 +84,7 @@ export default async function EventHome({
       )}
 
       {/* TODO: Allow the host to upload photos */}
-      <section>
+      <section className="px-3">
         <p className="text-center text-sm font-medium">
           Share a photo that makes this event even more special!
         </p>
