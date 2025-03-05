@@ -20,22 +20,28 @@ const getAlbumPictures = async (
 
     const { userId } = getAuth(req);
     if (!userId) {
-      throw new NotFoundError("User not found from Auth");
+      throw new NotFoundError("User");
     }
     const loginUser = await clerkClient.users.getUser(userId);
     const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
 
     const user = await usersModel.fetchUSerByEmail(loginEmail);
     if (!user) {
-      throw new NotFoundError("User not found");
+      throw new NotFoundError("User");
+    }
+
+    const event = await eventModel.fetchEventById(eventId);
+    if (!event) {
+      throw new NotFoundError("Event");
     }
 
     const limit = req.query.limit ? Number(req.query.limit) : 0;
     const result = await albumModel.fetchAlbumPictures(eventId, limit);
 
+    const isHost = user.id === event.hostId;
     const pictures = result.map((picture) => ({
       ...picture,
-      isDeletablet: picture.userId === user.id,
+      isDeletablet: isHost ? isHost : picture.userId === user.id,
     }));
     res.status(200).json({ data: { pictures } });
   } catch (err) {
@@ -58,19 +64,19 @@ const uploadAlbumPictures = async (
     const files = req.files as Express.Multer.File[];
 
     if (!files || files.length === 0) {
-      throw new NotFoundError("No picture updloaded");
+      throw new ValidationError("Invalid picture ID");
     }
 
     const { userId } = getAuth(req);
     if (!userId) {
-      throw new NotFoundError("User not found from Auth");
+      throw new NotFoundError("User");
     }
     const loginUser = await clerkClient.users.getUser(userId);
     const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
 
     const user = await usersModel.fetchUSerByEmail(loginEmail);
     if (!user) {
-      throw new NotFoundError("User not found");
+      throw new NotFoundError("User");
     }
 
     const pictures = await albumModel.addNewPicture(eventId, user.id, files);
@@ -78,7 +84,7 @@ const uploadAlbumPictures = async (
     res.status(200).json({
       success: true,
       message: "uploaded pictures successfully!",
-      //data: { pictures },
+      data: { pictures },
     });
   } catch (err) {
     next(err);
@@ -109,14 +115,14 @@ const deleteAlbumPictures = async (
 
     const { userId } = getAuth(req);
     if (!userId) {
-      throw new NotFoundError("User not found");
+      throw new NotFoundError("User");
     }
     const loginUser = await clerkClient.users.getUser(userId);
     const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
 
     const user = await usersModel.fetchUSerByEmail(loginEmail);
     if (!user) {
-      throw new NotFoundError("User not found");
+      throw new NotFoundError("User");
     }
 
     const event = await eventModel.fetchEventById(eventId);
