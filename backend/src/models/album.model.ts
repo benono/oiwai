@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { error } from "console";
+import { ForbiddenError, NotFoundError } from "../errors";
 import cloudinaryUtil from "../utils/cloudinary.util";
 
 const prisma = new PrismaClient();
@@ -24,15 +25,11 @@ const addNewPicture = async (
   try {
     const folder = `Album${eventId}`;
 
-    const startTime = performance.now();
     const uploadPromises = files.map((file) =>
       cloudinaryUtil.uploadImage(file.buffer, folder),
     );
 
     const uploadedImages = await Promise.all(uploadPromises);
-
-    const endTime = performance.now();
-    console.log(`Time : ${~~(endTime - startTime)}ms`);
 
     return await prisma.$transaction(async (tx) => {
       await tx.pictures.createMany({
@@ -72,23 +69,24 @@ const deletePicture = async (
         where: { id: { in: pictureIds } },
       });
       if (existingPictures.length !== pictureIds.length) {
-        throw new Error("images not found in DB");
+        throw new NotFoundError("Picture");
       }
 
       if (!isHost) {
-        const isPoster = existingPictures.every((image) => image.id === userId);
+        const isPoster = existingPictures.every(
+          (image) => image.userId === userId,
+        );
         if (!isPoster) {
-          throw new Error("You can not  delete pictures you did not posted.");
+          throw new ForbiddenError(
+            "You can not  delete pictures you did not posted.",
+          );
         }
       }
 
-      const startTime = performance.now();
       const deletePromises = existingPictures.map((image) =>
         cloudinaryUtil.deleteImage(image.imagePublicId),
       );
       await Promise.all(deletePromises);
-      const endTime = performance.now();
-      console.log(`Time : ${~~(endTime - startTime)}ms`);
 
       await tx.pictures.deleteMany({
         where: {

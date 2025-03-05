@@ -1,6 +1,6 @@
-import { clerkClient } from "@clerk/clerk-sdk-node";
-import { getAuth } from "@clerk/express";
+import { clerkClient, getAuth } from "@clerk/express";
 import { NextFunction, Request, Response } from "express";
+import { NotFoundError } from "../errors";
 import { ValidationError } from "../errors/validation.error";
 import albumModel from "../models/album.model";
 import eventModel from "../models/event.model";
@@ -17,8 +17,26 @@ const getAlbumPictures = async (
     if (isNaN(eventId)) {
       throw new ValidationError("Invalid event ID");
     }
+
+    const { userId } = getAuth(req);
+    if (!userId) {
+      throw new NotFoundError("User not found from Auth");
+    }
+    const loginUser = await clerkClient.users.getUser(userId);
+    const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
+
+    const user = await usersModel.fetchUSerByEmail(loginEmail);
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+
     const limit = req.query.limit ? Number(req.query.limit) : 0;
-    const pictures = await albumModel.fetchAlbumPictures(eventId, limit);
+    const result = await albumModel.fetchAlbumPictures(eventId, limit);
+
+    const pictures = result.map((picture) => ({
+      ...picture,
+      isDeletablet: picture.userId === user.id,
+    }));
     res.status(200).json({ data: { pictures } });
   } catch (err) {
     next(err);
@@ -40,21 +58,19 @@ const uploadAlbumPictures = async (
     const files = req.files as Express.Multer.File[];
 
     if (!files || files.length === 0) {
-      return res.status(400).json({ message: "No files uploaded" });
+      throw new NotFoundError("No picture updloaded");
     }
 
     const { userId } = getAuth(req);
     if (!userId) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
+      throw new NotFoundError("User not found from Auth");
     }
     const loginUser = await clerkClient.users.getUser(userId);
     const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
 
     const user = await usersModel.fetchUSerByEmail(loginEmail);
     if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
+      throw new NotFoundError("User not found");
     }
 
     const pictures = await albumModel.addNewPicture(eventId, user.id, files);
@@ -62,7 +78,7 @@ const uploadAlbumPictures = async (
     res.status(200).json({
       success: true,
       message: "uploaded pictures successfully!",
-      data: { pictures },
+      //data: { pictures },
     });
   } catch (err) {
     next(err);
@@ -81,39 +97,40 @@ const deleteAlbumPictures = async (
       throw new ValidationError("Invalid event ID");
     }
 
-    const deleteIds = req.body.pictures;
+    const deleteReq = req.body.pictures;
+
+    const deleteIds = deleteReq.map((item: any) => {
+      return Number(item.id);
+    });
 
     if (!deleteIds || deleteIds.length === 0) {
-      return res.status(400).json({ message: "No files to delete" });
+      throw new ValidationError("Invalid picture ID");
     }
 
     const { userId } = getAuth(req);
     if (!userId) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
+      throw new NotFoundError("User not found");
     }
     const loginUser = await clerkClient.users.getUser(userId);
     const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
 
     const user = await usersModel.fetchUSerByEmail(loginEmail);
     if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
+      throw new NotFoundError("User not found");
     }
+
     const event = await eventModel.fetchEventById(eventId);
     if (!event) {
-      res.status(404).json({ error: "Event not found" });
-      return;
+      throw new NotFoundError("Event");
     }
 
     //check user is host
     const isHost = event.hostId === user.id;
-
     await albumModel.deletePicture(user.id, isHost, deleteIds);
 
     res
       .status(200)
-      .json({ success: true, message: "uploaded pictures successfully!" });
+      .json({ success: true, message: "Dleted pictures successfully!" });
   } catch (err) {
     next(err);
   }
