@@ -1,6 +1,6 @@
 import EventDetail from "@/components/features/event/event-detail";
 import MenuIcon from "@/components/features/event/menu-icon";
-import { MENU_LIST } from "@/constants/icons";
+import { MENU_LIST_GUEST, MENU_LIST_HOST } from "@/constants/icons";
 import { checkIsHost, getEventInformation } from "@/lib/api/event";
 import { notFound } from "next/navigation";
 
@@ -28,11 +28,9 @@ export default async function EventHome({
       {isHost ? "You are a host" : "You are a guest"}
       {eventData ? <EventDetail eventData={eventData} /> : <p>Loading...</p>}
 
-      {/* TODO: Change the displayed icon based on whether the user is a host or a
-      guest */}
       {/* TODO: Display the review icon after the event has ended. */}
-      <section className="grid grid-cols-4 grid-rows-2 gap-4">
-        {MENU_LIST.map((menu) => (
+      <section className="grid grid-cols-4 gap-4">
+        {(isHost ? MENU_LIST_HOST : MENU_LIST_GUEST).map((menu) => (
           <MenuIcon key={menu.path} iconDetail={menu} eventId={eventId} />
         ))}
       </section>

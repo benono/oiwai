@@ -10,7 +10,7 @@ import {
   UsersRound,
 } from "lucide-react";
 
-export const MENU_LIST = [
+const MENU_LIST_COMMON = [
   {
     iconName: "Necessity",
     backgroundColor: "primary/20",
@@ -35,6 +35,10 @@ export const MENU_LIST = [
     iconColor: "accentPurple",
     path: "announcements",
   },
+];
+
+export const MENU_LIST_HOST = [
+  ...MENU_LIST_COMMON,
   {
     iconName: "Buy",
     backgroundColor: "accentGreen/20",
@@ -54,6 +58,8 @@ export const MENU_LIST = [
     path: "rsvp/responses",
   },
 ];
+
+export const MENU_LIST_GUEST = [...MENU_LIST_COMMON];
 
 export const ICON_MAP: Record<string, LucideIcon> = {
   Necessity: ListCheck,
