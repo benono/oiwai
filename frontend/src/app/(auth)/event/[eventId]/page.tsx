@@ -33,7 +33,11 @@ export default async function EventHome({
   return (
     <section className="space-y-8">
       {isHost ? "You are a host" : "You are a guest"}
-      {eventData ? <EventDetail eventData={eventData} /> : <p>Loading...</p>}
+      {eventData ? (
+        <EventDetail eventData={eventData} isHost={isHost} />
+      ) : (
+        <p>Loading...</p>
+      )}
 
       {/* TODO: Display the review icon after the event has ended. */}
       <section className="grid grid-cols-4 gap-4">
