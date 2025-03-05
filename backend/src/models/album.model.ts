@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { error } from "console";
 import { ForbiddenError, NotFoundError } from "../errors";
 import cloudinaryUtil from "../utils/cloudinary.util";
+import compresstionUtil from "../utils/imageCompression.util";
 
 const prisma = new PrismaClient();
 
@@ -25,8 +26,15 @@ const addNewPicture = async (
   try {
     const folder = `Album${eventId}`;
 
-    const uploadPromises = files.map((file) =>
-      cloudinaryUtil.uploadImage(file.buffer, folder),
+    let uploadFiles: Buffer[] = [];
+    uploadFiles = await Promise.all(
+      files.map(async (file) => {
+        return await compresstionUtil.compressImage(file.buffer);
+      }),
+    );
+
+    const uploadPromises = uploadFiles.map((file) =>
+      cloudinaryUtil.uploadImage(file, folder),
     );
 
     const uploadedImages = await Promise.all(uploadPromises);
