@@ -1,20 +1,20 @@
 interface Event {
   id: number;
   hostId: number;
-  title: String;
-  thumbnailUrl: String;
+  title: string;
+  thumbnailUrl: string;
   startTime: Date;
   endTime: Date;
-  country: String;
-  postalCode: String;
-  province: String;
-  city: String;
-  address1: String;
-  address2: String;
-  isAskRestrictions: Boolean;
-  theme: String;
-  noteForThingsToBuy: String;
-  noteForNecessities: String;
+  country: string;
+  postalCode: string;
+  province: string;
+  city: string;
+  address1: string;
+  address2: string;
+  isAskRestrictions: boolean;
+  theme: string;
+  noteForThingsToBuy: string;
+  noteForNecessities: string;
   budget: number;
 }
 
