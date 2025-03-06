@@ -1,52 +1,149 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { addPictures } from "@/lib/actions/event/album";
+import { showErrorToast } from "@/lib/toast/toast-utils";
 import { PlusIcon, X } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { notFound, useRouter } from "next/navigation";
+import { useCallback, useRef, useState } from "react";
 
-export default function Post() {
-  const [images, setImages] = useState<File[]>([]);
+type PostProps = {
+  eventId: string;
+};
 
-  console.log(images)
+export default function Post({ eventId }: PostProps) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [imageUrlsData, setImageUrlsData] = useState<File[]>([]);
+
+  const { toast } = useToast();
+  const router = useRouter();
+  const inputImageRef = useRef<HTMLInputElement>(null!);
+
+  const revokeObjectURL = useCallback(() => {
+    imageUrls.forEach((url) => {
+      if (url.startsWith("blob:")) {
+        URL.revokeObjectURL(url);
+      }
+    });
+    setImageUrls([]);
+  }, [imageUrls]);
+
+  const handleFileInputClick = () => {
+    if (inputImageRef.current) {
+      inputImageRef.current.click();
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const fileArray = Array.from(e.target.files);
-      setImages((prev) => [...prev, ...fileArray]);
+    if (!e.target.files) return;
+
+    const imageFiles = Array.from(e.target.files);
+
+    // check for same photo
+    const existingFileNames = new Set(imageUrlsData.map((file) => file.name));
+    const uniqueFiles = imageFiles.filter(
+      (file) => !existingFileNames.has(file.name),
+    );
+
+    if (uniqueFiles.length === 0) return;
+    setImageUrlsData((prev) => [...prev, ...uniqueFiles]);
+
+    const newImageUrls = uniqueFiles.map((file) => URL.createObjectURL(file));
+    setImageUrls((prev) => [...prev, ...newImageUrls]);
+  };
+
+  const handleDelete = (index: number, url: string) => {
+    const deletedImageUrls = imageUrls.filter((_, i) => i !== index);
+    const deletedImageUrlsData = imageUrlsData.filter((_, i) => i !== index);
+    setImageUrls(deletedImageUrls);
+    setImageUrlsData(deletedImageUrlsData);
+
+    if (url.startsWith("blob:")) {
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  const handlePost = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    let response;
+
+    if (imageUrlsData.length === 0) {
+      showErrorToast(toast, "Please select at least one image.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      response = await addPictures(eventId, imageUrlsData);
+
+      if (!response?.success) {
+        notFound();
+      }
+
+      setImageUrls([]);
+      setImageUrlsData([]);
+      revokeObjectURL();
+      router.push(`/event/${eventId}/album`);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        showErrorToast(toast, err.message);
+      } else {
+        showErrorToast(toast, "Unknown error occurred");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <form className="grid gap-4">
-      <Button className="h-auto w-fit justify-self-end rounded-full px-8 py-2">
-        Post
+      <Button
+        onClick={handlePost}
+        className="h-auto w-fit justify-self-end rounded-full px-8 py-2"
+      >
+        {isLoading ? "Loading..." : "Post"}
       </Button>
       <ul className="grid grid-cols-3 gap-[2px]">
-        <li className="flex items-center justify-center hover:opacity-70">
+        <li
+          className="flex items-center justify-center hover:opacity-70"
+          onClick={handleFileInputClick}
+        >
           <input
             type="file"
             name="images"
             multiple
             hidden
+            ref={inputImageRef}
             onChange={handleFileChange}
           />
           <PlusIcon size={24} className="text-primary" />
         </li>
-        <li className="hover:opacity-70">
-          <button className="relative h-[100px] w-full">
-            <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-text/50">
-              <X size={14} className="text-white" />
-            </div>
-            <Image
-              src="/images/sample_profile.png"
-              alt="test"
-              width={124}
-              height={100}
-              className="h-[100px] object-cover"
-            />
-          </button>
-        </li>
+        {imageUrls.map((image, index) => (
+          <li className="h-[100px] hover:opacity-70" key={index}>
+            <button
+              className="relative h-auto w-full"
+              onClick={(e) => {
+                e.preventDefault();
+                handleDelete(index, image);
+              }}
+            >
+              <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-text/50">
+                <X size={14} className="text-white" />
+              </div>
+              <Image
+                src={image}
+                alt="test"
+                width={124}
+                height={100}
+                className="h-[100px] object-cover"
+              />
+            </button>
+          </li>
+        ))}
       </ul>
     </form>
   );
