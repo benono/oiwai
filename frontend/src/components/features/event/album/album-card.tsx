@@ -21,7 +21,8 @@ export default function AlbumCard({ albumData }: AlbumCardProps) {
           />
         </Link>
       ))}
-      <div className="flex h-32 w-full cursor-pointer items-center justify-center hover:opacity-70">
+      {/* TODO: check if we pass the input data to another page */}
+      {/* <div className="flex h-32 w-full cursor-pointer items-center justify-center hover:opacity-70">
         <input
           type="file"
           name="images"
@@ -30,7 +31,10 @@ export default function AlbumCard({ albumData }: AlbumCardProps) {
           // onChange={handleFileChange}
         />
         <PlusIcon size={24} className="text-primary" />
-      </div>
+      </div> */}
+      <Link href="album/post" className="flex h-32 w-full cursor-pointer items-center justify-center hover:opacity-70">
+        <PlusIcon size={24} className="text-primary" />
+      </Link>
     </div>
   );
 }

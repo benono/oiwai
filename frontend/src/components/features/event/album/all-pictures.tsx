@@ -6,6 +6,7 @@ import { showErrorToast } from "@/lib/toast/toast-utils";
 import { BasePictureType } from "@/types/album";
 import { useAuth } from "@clerk/nextjs";
 import { PlusIcon } from "lucide-react";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import Picture from "./picture";
 
@@ -55,8 +56,9 @@ export default function AllPictures({ eventId }: AllPicturesProps) {
 
   return (
     <section>
-      <ul className="grid gap-1 grid-cols-3">
-        <li className="flex h-[100px] w-full cursor-pointer items-center justify-center hover:opacity-70">
+      <ul className="grid grid-cols-3 gap-1">
+        {/* TODO: check if we pass the input data to another page */}
+        {/* <li className="flex h-[100px] w-full cursor-pointer items-center justify-center hover:opacity-70">
           <input
             type="file"
             name="images"
@@ -65,8 +67,14 @@ export default function AllPictures({ eventId }: AllPicturesProps) {
             // onChange={handleFileChange}
           />
           <PlusIcon size={24} className="text-primary" />
-        </li>
-        {pictures.map(({id, isDeletable, imageUrl}) => (
+        </li> */}
+        <Link
+          href="post"
+          className="flex h-[100px] w-full cursor-pointer items-center justify-center hover:opacity-70"
+        >
+          <PlusIcon size={24} className="text-primary" />
+        </Link>
+        {pictures.map(({ id, isDeletable, imageUrl }) => (
           <Picture
             key={id}
             eventId={eventId}
