@@ -17,7 +17,7 @@ const fetchEventById = async (id: number) => {
   return event;
 };
 
-const createEvent = async (userId: number, creates: Omit<Event, "id">) => {
+const createEvent = async (creates: Omit<Event, "id">) => {
   const filteredCreates = Object.fromEntries(
     Object.entries(creates).filter(([_, v]) => v !== undefined),
   );

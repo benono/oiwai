@@ -1,7 +1,14 @@
+import { clerkClient, getAuth } from "@clerk/express";
 import { NextFunction, Request, Response } from "express";
-import { ValidationError } from "../errors";
+import { NotFoundError, ValidationError } from "../errors";
 import eventModel from "../models/event.model";
+import userModel from "../models/user.model";
+import Event from "../types/event";
+import MulterFile from "../types/multerfile";
+import uploadImage from "../utils/cloudinary.util";
 import { checkIsRequestFromHost } from "../utils/request-checker";
+
+const defaultThumbnailImage = process.env.DEFAULT_THUMBNAIL_IMAGE || "";
 
 // Get event infomation
 const getEventById = async (
@@ -31,19 +38,36 @@ const createNewEvent = async (
 ) => {
   try {
     const createdEvent = req.body.event;
+    const file = req.file as MulterFile;
+
+    const { userId } = getAuth(req);
+    if (!userId) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+    const loginUser = await clerkClient.users.getUser(userId);
+    const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
+
+    const user = await userModel.fetchUSerByEmail(loginEmail);
+    if (!user) {
+      throw new NotFoundError("User");
+    }
 
     createdEvent.startTime = new Date(createdEvent.startTime);
     createdEvent.endTime = new Date(createdEvent.endTime);
 
     const creates: Partial<Event> = createdEvent;
+    creates.hostId = user.id;
+    creates.noteForNecessities = "";
+    creates.noteForThingsToBuy = "";
+    creates.budget = 0;
 
-    const id = Number(req.params.event_id);
-    const event = await eventModel.fetchEventById(id);
-    if (!event) {
-      res.status(404).json({ error: "Event not found" });
-      return;
+    if (file) {
+      const thumbnail = await uploadImage.uploadImage(file.buffer, "thumbnail");
+      creates.thumbnailUrl = thumbnail;
     }
-    res.status(200).json({ event });
+
+    res.status(200).json({});
   } catch (err) {
     next(err);
   }
