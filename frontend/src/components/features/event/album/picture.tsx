@@ -57,7 +57,7 @@ export default function Picture({
           trigger={
             <Button
               variant="ghost"
-              className="absolute right-2 top-2 flex h-auto items-center justify-center rounded-full bg-text/50 p-1"
+              className="absolute right-2 top-2 flex h-auto items-center justify-center rounded-full bg-text/50 p-1 hover:bg-text/50"
             >
               <X size={12} className="h-3 w-3 text-white" />
             </Button>
