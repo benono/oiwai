@@ -13,6 +13,10 @@ type PostProps = {
   eventId: string;
 };
 
+const MAX_FILE_SIZE_MB = 8;
+const MAX_TOTAL_SIZE_MB = 70;
+const MAX_FILE_COUNT = 20;
+
 export default function Post({ eventId }: PostProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -68,7 +72,6 @@ export default function Post({ eventId }: PostProps) {
 
   const handlePost = async (e: React.MouseEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     let response;
 
     if (imageUrlsData.length === 0) {
@@ -77,7 +80,32 @@ export default function Post({ eventId }: PostProps) {
       return;
     }
 
+    // check size for one image
+    const oversizedFiles = imageUrlsData.filter(file => file.size > MAX_FILE_SIZE_MB * 1024 * 1024);
+    if (oversizedFiles.length > 0) {
+      showErrorToast(toast, "Each image must be under 8MB. Please resize and try again.");
+      setIsLoading(false);
+      return;
+    }
+
+    // check total number
+    if(imageUrlsData.length > MAX_FILE_COUNT) {
+      showErrorToast(toast, "You can upload up to 20 images at once.")
+      setIsLoading(false);
+      return;
+    }
+
+    // check total images size
+    const totalSize = imageUrlsData.reduce((acc, file) => acc + file.size, 0);
+    const totalSizeMB = totalSize / (1024 * 1024);
+    if (totalSizeMB > MAX_TOTAL_SIZE_MB) {
+      showErrorToast(toast, "The total file size exceeds 1MB. Please reduce the image size and try again.");
+      setIsLoading(false);
+      return;
+    }
+
     try {
+      setIsLoading(true);
       response = await addPictures(eventId, imageUrlsData);
 
       if (!response?.success) {
@@ -87,7 +115,7 @@ export default function Post({ eventId }: PostProps) {
       setImageUrls([]);
       setImageUrlsData([]);
       revokeObjectURL();
-      router.push(`/event/${eventId}/album`);
+      router.push(`/event/${eventId}/album/pictures`);
     } catch (err: unknown) {
       if (err instanceof Error) {
         showErrorToast(toast, err.message);
@@ -109,7 +137,7 @@ export default function Post({ eventId }: PostProps) {
       </Button>
       <ul className="grid grid-cols-3 gap-[2px]">
         <li
-          className="flex items-center justify-center hover:opacity-70"
+          className="flex cursor-pointer items-center justify-center hover:opacity-70"
           onClick={handleFileInputClick}
         >
           <input

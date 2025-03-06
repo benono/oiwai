@@ -42,8 +42,6 @@ export const addPictures = async (
       formData.append("pictures", file);
     });
 
-    console.log("formData", formData)
-
     const response = await axiosInstance.post(
       `events/${eventId}/album`,
       formData,
