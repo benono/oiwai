@@ -41,7 +41,7 @@ const getAlbumPictures = async (
     const isHost = user.id === event.hostId;
     const pictures = result.map((picture) => ({
       ...picture,
-      isDeletablet: isHost ? isHost : picture.userId === user.id,
+      isDeletable: isHost ? isHost : picture.userId === user.id,
     }));
     res.status(200).json({ data: { pictures } });
   } catch (err) {
@@ -136,7 +136,7 @@ const deleteAlbumPictures = async (
 
     res
       .status(200)
-      .json({ success: true, message: "Dleted pictures successfully!" });
+      .json({ success: true, message: "Deleted pictures successfully!" });
   } catch (err) {
     next(err);
   }

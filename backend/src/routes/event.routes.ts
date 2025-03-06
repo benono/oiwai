@@ -1,5 +1,5 @@
 import { Router } from "express";
-import albumComtroller from "../controllers/album.comtroller";
+import albumController from "../controllers/album.controller";
 import eventController from "../controllers/event.controller";
 import eventParticipantsController from "../controllers/eventParticipants.controller";
 import timelineController from "../controllers/timeline.controller";
@@ -60,17 +60,17 @@ eventRouter.patch(
 eventRouter.get(
   "/:event_id/album",
   isEventHostOrParticipant,
-  albumComtroller.getAlbumPictures,
+  albumController.getAlbumPictures,
 );
 eventRouter.post(
   "/:event_id/album",
   isEventHostOrParticipant,
-  upload.array("picture", 20),
-  albumComtroller.uploadAlbumPictures,
+  upload.array("pictures", 20),
+  albumController.uploadAlbumPictures,
 );
 eventRouter.delete(
   "/:event_id/album",
   isEventHostOrParticipant,
-  albumComtroller.deleteAlbumPictures,
+  albumController.deleteAlbumPictures,
 );
 export default eventRouter;
