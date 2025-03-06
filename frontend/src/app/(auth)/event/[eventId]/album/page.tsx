@@ -5,7 +5,7 @@ import {
   getAllPictures,
   // getPreviewPictureByTag,
 } from "@/lib/actions/event/album";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 export default async function page({
   params,
@@ -21,7 +21,7 @@ export default async function page({
     // facesData = await getPreviewPictureByTag(eventId);
 
     if (!albumData) {
-      throw new Error("Photo data is missing");
+      redirect("album/post")
     }
     // if (!facesData) {
     //   throw new Error("Faces of the event data is missing");
