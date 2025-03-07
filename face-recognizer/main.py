@@ -8,24 +8,24 @@ import numpy as np
 import cv2
 
 def preprocess_image(img_path):
-    """画像の前処理を行う"""
+    """Preprocess the image"""
     try:
-        # 画像を読み込み
+        # Load the image
         img = cv2.imread(img_path)
         if img is None:
             return None
             
-        # グレースケール変換
+        # Convert to grayscale
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
-        # コントラスト調整
+        # Adjust contrast
         clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
         gray = clahe.apply(gray)
         
-        # ノイズ除去
+        # Remove noise
         denoised = cv2.fastNlMeansDenoising(gray)
         
-        # 一時ファイルとして保存
+        # Save as temporary file
         temp_path = img_path.replace('.jpg', '_processed.jpg')
         cv2.imwrite(temp_path, denoised)
         
@@ -36,13 +36,13 @@ def preprocess_image(img_path):
         return None
 
 def download_image_from_url(url):
-    """URLから画像をダウンロードして一時ファイルに保存"""
+    """Download image from URL and save to temporary file"""
     try:
-        # 画像をダウンロード
+        # Download the image
         response = requests.get(url, stream=True)
         response.raise_for_status()
         
-        # 一時ファイルに保存
+        # Save to temporary file
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.jpg')
         for chunk in response.iter_content(chunk_size=8192):
             temp_file.write(chunk)
@@ -54,7 +54,7 @@ def download_image_from_url(url):
         return None
 
 def load_known_faces(known_faces_urls):
-    """URLから既知の顔画像を読み込み、エンコーディングを生成"""
+    """Load known face images from URLs and generate encodings"""
     known_encodings = {}
     
     for name, url in known_faces_urls.items():
@@ -70,7 +70,7 @@ def load_known_faces(known_faces_urls):
                     known_encodings[name] = encodings[0]
                 else:
                     print(f"Warning: No face found in {url}. Skipping.")
-                # 一時ファイルを削除
+                # Delete temporary file
                 os.unlink(temp_path)
             except Exception as e:
                 print(f"Error processing known face {name}: {str(e)}")
@@ -80,10 +80,10 @@ def load_known_faces(known_faces_urls):
     return known_encodings
 
 def recognize_faces_from_urls(image_urls, known_faces_urls, tolerance=0.5):
-    """URLの画像から顔を認識"""
+    """Recognize faces from URL images"""
     results = []
     
-    # 既知の顔のエンコーディングを読み込む
+    # Load encodings of known faces
     known_encodings = load_known_faces(known_faces_urls)
     
     if not known_encodings:
@@ -132,7 +132,7 @@ def recognize_faces_from_urls(image_urls, known_faces_urls, tolerance=0.5):
             
             results.append({"image": url, "faces": image_results})
             
-            # 一時ファイルを削除
+            # Delete temporary file
             os.unlink(temp_path)
             
         except Exception as e:
@@ -146,7 +146,7 @@ def recognize_faces_from_urls(image_urls, known_faces_urls, tolerance=0.5):
 
 @functions_framework.http
 def face_recognizer(request):
-    # CORSヘッダーを設定
+    # Set CORS headers
     if request.method == 'OPTIONS':
         headers = {
             'Access-Control-Allow-Origin': '*',
@@ -157,7 +157,7 @@ def face_recognizer(request):
         return ('', 204, headers)
     
     headers = {'Access-Control-Allow-Origin': '*'}
-    # POSTリクエストのみ処理
+    # Process only POST requests
     if request.method != 'POST':
         return (json.dumps({'error': 'Only POST requests are accepted'}), 405, headers)
     print("request", request)
@@ -167,14 +167,14 @@ def face_recognizer(request):
     print(f"Method: {request.method}")
     print(f"Headers: {dict(request.headers)}")
     
-    # リクエストボディの取得とログ出力
+    # Get request body and log output
     try:
         request_json = request.get_json(silent=True)
         print(f"Request body: {json.dumps(request_json, indent=2)}")
         if not request_json:
             return (json.dumps({'error': 'No JSON data provided'}), 400, headers)
         
-        # リクエストからパラメータを取得
+        # Get parameters from request
         image_urls = request_json.get('image_urls', [])
         known_faces_urls = request_json.get('known_faces_urls', {})
         tolerance = request_json.get('tolerance', 0.5)
@@ -185,8 +185,7 @@ def face_recognizer(request):
         if not known_faces_urls:
             return (json.dumps({'error': 'No known_faces_urls provided'}), 400, headers)
         
-        ## 顔認識を実行
-        #load_known_faces(known_faces_urls)
+        # Execute face recognition
         results = recognize_faces_from_urls(image_urls, known_faces_urls, tolerance)
 
         
