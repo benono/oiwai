@@ -8,6 +8,7 @@ import { PlusIcon, X } from "lucide-react";
 import Image from "next/image";
 import { notFound, useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
+import Loader from "./loader";
 
 type PostProps = {
   eventId: string;
@@ -75,23 +76,35 @@ export default function Post({ eventId }: PostProps) {
     let response;
 
     if (imageUrlsData.length === 0) {
-      showErrorToast(toast, "Please select at least one image.");
-      setIsLoading(false);
+      showErrorToast(
+        toast,
+        new Error("Upload error"),
+        "Please select at least one image.",
+      );
       return;
     }
 
     // check size for one image
-    const oversizedFiles = imageUrlsData.filter(file => file.size > MAX_FILE_SIZE_MB * 1024 * 1024);
+    const oversizedFiles = imageUrlsData.filter(
+      (file) => file.size > MAX_FILE_SIZE_MB * 1024 * 1024,
+    );
+
     if (oversizedFiles.length > 0) {
-      showErrorToast(toast, "Each image must be under 8MB. Please resize and try again.");
-      setIsLoading(false);
+      showErrorToast(
+        toast,
+        new Error("Upload error"),
+        "Each image must be under 8MB. Please resize and try again.",
+      );
       return;
     }
 
     // check total number
-    if(imageUrlsData.length > MAX_FILE_COUNT) {
-      showErrorToast(toast, "You can upload up to 20 images at once.")
-      setIsLoading(false);
+    if (imageUrlsData.length > MAX_FILE_COUNT) {
+      showErrorToast(
+        toast,
+        new Error("Upload error"),
+        "You can upload up to 20 images at once.",
+      );
       return;
     }
 
@@ -99,8 +112,11 @@ export default function Post({ eventId }: PostProps) {
     const totalSize = imageUrlsData.reduce((acc, file) => acc + file.size, 0);
     const totalSizeMB = totalSize / (1024 * 1024);
     if (totalSizeMB > MAX_TOTAL_SIZE_MB) {
-      showErrorToast(toast, "The total file size exceeds 1MB. Please reduce the image size and try again.");
-      setIsLoading(false);
+      showErrorToast(
+        toast,
+        new Error("Upload error"),
+        "The total file size exceeds 70MB. Please reduce the image size or remove some and try again.",
+      );
       return;
     }
 
@@ -131,9 +147,9 @@ export default function Post({ eventId }: PostProps) {
     <form className="grid gap-4">
       <Button
         onClick={handlePost}
-        className="h-auto w-fit justify-self-end rounded-full px-8 py-2"
+        className="h-[36px] w-fit justify-self-end rounded-full px-8 py-2"
       >
-        {isLoading ? "Loading..." : "Post"}
+        {isLoading ? <Loader /> : "Post"}
       </Button>
       <ul className="grid grid-cols-3 gap-[2px]">
         <li
@@ -143,6 +159,7 @@ export default function Post({ eventId }: PostProps) {
           <input
             type="file"
             name="images"
+            accept="image/*"
             multiple
             hidden
             ref={inputImageRef}

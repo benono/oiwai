@@ -20,15 +20,16 @@ export default async function page({
     albumData = await getAllPictures(eventId, 3);
     // facesData = await getPreviewPictureByTag(eventId);
 
-    if (!albumData) {
-      redirect("album/post")
-    }
     // if (!facesData) {
     //   throw new Error("Faces of the event data is missing");
     // }
   } catch (err) {
     console.error(err);
     notFound();
+  }
+
+  if (albumData.length === 0) {
+    redirect(`album/post`)
   }
 
   return (
