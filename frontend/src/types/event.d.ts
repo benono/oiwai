@@ -36,3 +36,18 @@ export type IconType =
   | "Buy"
   | "Guest list"
   | "RSVP";
+
+// Create invitation
+export type CreateEventType = {
+  title: string;
+  startTime: string;
+  endTime: string;
+  country: string;
+  postalCode: string;
+  province: string;
+  city: string;
+  address1: string;
+  address2: string;
+  isAskRestrictions: boolean;
+  theme: string;
+};

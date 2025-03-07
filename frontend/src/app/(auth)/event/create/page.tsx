@@ -23,25 +23,37 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { toast } from "@/hooks/use-toast";
+import { createInvitation } from "@/lib/actions/create-invitation/create-invitaion";
+import { showErrorToast } from "@/lib/toast/toast-utils";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
+import router from "next/router";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  image: z.custom<File[]>().optional(),
+  startTime: z.string(),
+  endTime: z.string(),
+  country: z.string(),
+  postalCode: z.string(),
+  province: z.string(),
+  city: z.string(),
+  address1: z.string(),
+  address2: z.string(),
+  thumbnail: z.custom<File[]>().optional(),
   date: z.date({
     required_error: "A date of an event is required.",
   }),
   eventType: z.string({
     required_error: "Please select an eventType to display.",
   }),
-  options: z.boolean({
+  isAskRestrictions: z.boolean({
     required_error: "Please select an options to display.",
   }),
   theme: z.string({
@@ -62,7 +74,7 @@ export default function CreateEventPage() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      form.setValue("image", [file]);
+      form.setValue("thumbnail", [file]);
       const imageUrl = URL.createObjectURL(file);
       setImagePreview(imageUrl);
     }
@@ -72,9 +84,34 @@ export default function CreateEventPage() {
     inputImageRef.current?.click();
   };
 
-  const onSubmit = (data: FormData) => {
-    console.log("Form submitted:", data);
-    alert("Event Created Successfully!");
+  const onSubmit = async (requestData: FormData) => {
+    let response;
+    try {
+      if (!requestData.thumbnail || requestData.thumbnail.length === 0) {
+        throw new Error("Please upload a thumbnail image.");
+      }
+
+      response = await createInvitation({
+        requestData: {
+          event: requestData,
+          thumbnail: requestData.thumbnail[0],
+        },
+      });
+
+      if (response?.success) {
+        router.push(`/event/created`);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        showErrorToast(toast, err, err.message);
+      } else {
+        showErrorToast(
+          toast,
+          err,
+          "An error occurred while processing your request. Please try again.",
+        );
+      }
+    }
   };
 
   return (
@@ -83,7 +120,7 @@ export default function CreateEventPage() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
             control={form.control}
-            name="image"
+            name="thumbnail"
             render={({ field }) => (
               <FormItem>
                 <div
@@ -214,7 +251,7 @@ export default function CreateEventPage() {
 
           <FormField
             control={form.control}
-            name="options"
+            name="isAskRestrictions"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2 shadow-sm">
                 <FormLabel>Ask allergies or dietary restrictions</FormLabel>
