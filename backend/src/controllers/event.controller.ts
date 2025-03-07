@@ -1,12 +1,12 @@
-import { clerkClient, getAuth } from "@clerk/express";
 import { NextFunction, Request, Response } from "express";
 import { NotFoundError, ValidationError } from "../errors";
 import eventModel from "../models/event.model";
-import userModel from "../models/user.model";
 import Event from "../types/event";
 import MulterFile from "../types/multerfile";
 import uploadImage from "../utils/cloudinary.util";
 import { checkIsRequestFromHost } from "../utils/request-checker";
+import { getAuth, clerkClient } from "@clerk/express";
+import userModel from "../models/user.model";
 
 const defaultThumbnailImage = process.env.DEFAULT_THUMBNAIL_IMAGE || "";
 
@@ -55,19 +55,29 @@ const createNewEvent = async (
 
     createdEvent.startTime = new Date(createdEvent.startTime);
     createdEvent.endTime = new Date(createdEvent.endTime);
+    createdEvent.hostId = user.id;
+    createdEvent.noteForNecessities = "";
+    createdEvent.noteForThingsToBuy = "";
+    createdEvent.budget = 0;
 
-    const creates: Partial<Event> = createdEvent;
-    creates.hostId = user.id;
-    creates.noteForNecessities = "";
-    creates.noteForThingsToBuy = "";
-    creates.budget = 0;
-
+    let newThumbnailUrl = defaultThumbnailImage;
     if (file) {
       const thumbnail = await uploadImage.uploadImage(file.buffer, "thumbnail");
-      creates.thumbnailUrl = thumbnail;
+      newThumbnailUrl = thumbnail.url;
     }
+    createdEvent.thumbnailUrl = newThumbnailUrl;
 
-    res.status(200).json({});
+    const creates: Omit<Event, "id"> = createdEvent;
+
+    const event = await eventModel.createEvent({
+      ...creates,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "created event successfully!",
+      data: { event },
+    });
   } catch (err) {
     next(err);
   }
