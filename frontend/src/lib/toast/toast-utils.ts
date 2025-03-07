@@ -9,7 +9,7 @@ export const showErrorToast = (
   if (error instanceof Error) {
     toast({
       variant: "destructive",
-      title: "Error",
+      title: error.message ?? "Error",
       description: message,
     });
   } else {

@@ -109,11 +109,18 @@ export default {
   				to: {
   					height: '0'
   				}
-  			}
+  			},
+        'l3': {
+          '20%': { backgroundPosition: '0%   0%, 50%  50%,100%  50%' },
+          '40%': { backgroundPosition: '0% 100%, 50%   0%,100%  50%' },
+          '60%': { backgroundPosition: '0%  50%, 50% 100%,100%   0%' },
+          '80%': { backgroundPosition: '0%  50%, 50%  50%,100% 100%' },
+        },
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out'
+  			'accordion-up': 'accordion-up 0.2s ease-out',
+        'l3': 'l3 1s infinite linear',
   		}
   	}
   },
