@@ -229,6 +229,28 @@ export default function CreateEventPage() {
             )}
           />
 
+          {/* <Tabs defaultValue="Current location" className="w-full">
+            <TabsList className="flex w-full bg-transparent">
+              <TabsTrigger
+                value="Current location"
+                className="w-full border-b-2 border-textBorderLight bg-transparent pb-2 font-bold data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-accentGreen data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-accentGreen data-[state=active]:shadow-none"
+              >
+                Current location
+              </TabsTrigger>
+              <TabsTrigger
+                value="Based on activities"
+                className="w-full border-b-2 border-textBorderLight bg-transparent pb-2 font-bold data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-accentGreen data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-accentGreen data-[state=active]:shadow-none"
+              >
+                Based on activities
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="Current location">
+              <MapFunction />
+            </TabsContent>
+            <TabsContent value="Based on activities">
+              <MapFunction />
+            </TabsContent>
+          </Tabs> */}
           <FormField
             control={form.control}
             name="theme"
