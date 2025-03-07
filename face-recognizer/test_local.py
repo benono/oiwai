@@ -6,14 +6,17 @@ def test_post():
     
     test_data = {
         "image_urls": [
-            "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741128689/amane_whosn9.jpg",
+            "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741385997/amane_e00x7e.png",
         ],
-        "known_faces_urls": {
-            "Biden": "https://raw.githubusercontent.com/ageitgey/face_recognition/master/examples/biden.jpg",
-            "Elmer": "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1731916167/qorws7mpkurpzdzlogs4.jpg",
-            "Amane": "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741128699/amane-1_bpyegy.jpg",
-            "Billy": "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741182571/Billie_Eilish_1_ngb1p5.jpg"
-        },
+        "event_id": "3",
+        "use_all_registered": True,
+        #"face_ids": ["Amane", "Billy"],
+        # "known_faces_urls": {
+        #     "Naomi": "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741386299/nao-mini_f5sp6z.jpg",
+        #     "Elmer": "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1731916167/qorws7mpkurpzdzlogs4.jpg",
+        #     "Amane": "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741385997/amane_e00x7e.png",
+        #     "Billy": "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741182571/Billie_Eilish_1_ngb1p5.jpg"
+        # },
         "tolerance": 0.6  
     }
     
