@@ -1,5 +1,6 @@
 "use client";
 
+import MapFunction from "@/components/features/create-invitation/MapWithMarkers";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -28,12 +29,13 @@ import { createInvitation } from "@/lib/actions/create-invitation/create-invitai
 import { showErrorToast } from "@/lib/toast/toast-utils";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { format } from "date-fns";
 import { CalendarIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import router from "next/router";
 import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -50,9 +52,6 @@ const formSchema = z.object({
   date: z.date({
     required_error: "A date of an event is required.",
   }),
-  eventType: z.string({
-    required_error: "Please select an eventType to display.",
-  }),
   isAskRestrictions: z.boolean({
     required_error: "Please select an options to display.",
   }),
@@ -66,9 +65,27 @@ type FormData = z.infer<typeof formSchema>;
 export default function CreateEventPage() {
   const inputImageRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [eventType, setEventType] = useState<string>("");
+  const handleEventTypeChange = (value: string) => {
+    setEventType(value);
+  };
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: "",
+      startTime: "",
+      endTime: "",
+      country: "",
+      postalCode: "",
+      province: "",
+      city: "",
+      address1: "",
+      address2: "",
+      isAskRestrictions: false,
+      theme: "",
+      thumbnail: [],
+    },
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,9 +108,24 @@ export default function CreateEventPage() {
         throw new Error("Please upload a thumbnail image.");
       }
 
+      const date = new Date(requestData.date);
+      const targetDate = date.toISOString().replace(/T.*Z$/, "");
+
+      const formattedStartTime = new Date(
+        `${targetDate}T${requestData.startTime}:00`,
+      ).toISOString();
+
+      const formattedEndTime = new Date(
+        `${targetDate}T${requestData.endTime}:00`,
+      ).toISOString();
+
       response = await createInvitation({
         requestData: {
-          event: requestData,
+          event: {
+            ...requestData,
+            startTime: formattedStartTime,
+            endTime: formattedEndTime,
+          },
           thumbnail: requestData.thumbnail[0],
         },
       });
@@ -223,31 +255,93 @@ export default function CreateEventPage() {
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="eventType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Event type</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl className="h-10">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select an event type" />
-                    </SelectTrigger>
+          <div className="flex gap-6">
+            <FormField
+              control={form.control}
+              name="startTime"
+              render={() => (
+                <FormItem className="flex w-full flex-col space-y-2">
+                  <FormLabel className="font-semibold">Start time</FormLabel>
+                  <FormControl>
+                    <Controller
+                      name="startTime"
+                      control={form.control}
+                      render={({ field }) => (
+                        <input
+                          type="time"
+                          id="start-time"
+                          {...field}
+                          className="h-10 rounded-md border border-border p-4 font-medium"
+                        />
+                      )}
+                    />
                   </FormControl>
-                  <SelectContent>
-                    <SelectItem value="m@example.com">Home party</SelectItem>
-                    <SelectItem value="m@google.com">Outside</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="endTime"
+              render={() => (
+                <FormItem className="flex w-full flex-col space-y-2">
+                  <FormLabel className="font-semibold">End time</FormLabel>
+                  <FormControl>
+                    <Controller
+                      name="endTime"
+                      control={form.control}
+                      render={({ field }) => (
+                        <input
+                          type="time"
+                          id="end-time"
+                          {...field}
+                          className="h-10 rounded-md border border-border p-4 font-medium"
+                        />
+                      )}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <Select onValueChange={handleEventTypeChange}>
+            <FormControl className="h-10">
+              <SelectTrigger>
+                <SelectValue placeholder="Select an event type" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              <SelectItem value="homeParty">Home party</SelectItem>
+              <SelectItem value="outside">Outside</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {eventType === "outside" && (
+            <Tabs defaultValue="Current location" className="w-full">
+              <TabsList className="flex w-full bg-transparent">
+                <TabsTrigger
+                  value="Current location"
+                  className="w-full border-b-2 border-textBorderLight bg-transparent pb-2 font-bold data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-accentGreen data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-accentGreen data-[state=active]:shadow-none"
+                >
+                  Current location
+                </TabsTrigger>
+                <TabsTrigger
+                  value="Based on activities"
+                  className="w-full border-b-2 border-textBorderLight bg-transparent pb-2 font-bold data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-accentGreen data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-accentGreen data-[state=active]:shadow-none"
+                >
+                  Based on activities
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="Current location">
+                <MapFunction />
+              </TabsContent>
+              <TabsContent value="Based on activities">
+                <MapFunction />
+              </TabsContent>
+            </Tabs>
+          )}
 
           <FormField
             control={form.control}
@@ -266,28 +360,6 @@ export default function CreateEventPage() {
             )}
           />
 
-          {/* <Tabs defaultValue="Current location" className="w-full">
-            <TabsList className="flex w-full bg-transparent">
-              <TabsTrigger
-                value="Current location"
-                className="w-full border-b-2 border-textBorderLight bg-transparent pb-2 font-bold data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-accentGreen data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-accentGreen data-[state=active]:shadow-none"
-              >
-                Current location
-              </TabsTrigger>
-              <TabsTrigger
-                value="Based on activities"
-                className="w-full border-b-2 border-textBorderLight bg-transparent pb-2 font-bold data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-accentGreen data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-accentGreen data-[state=active]:shadow-none"
-              >
-                Based on activities
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="Current location">
-              <MapFunction />
-            </TabsContent>
-            <TabsContent value="Based on activities">
-              <MapFunction />
-            </TabsContent>
-          </Tabs> */}
           <FormField
             control={form.control}
             name="theme"

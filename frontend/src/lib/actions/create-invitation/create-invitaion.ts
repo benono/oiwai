@@ -1,3 +1,5 @@
+"use server";
+
 import { getServerAxiosInstance } from "@/lib/api/axios-server";
 import { CreateEventType } from "@/types/event";
 
@@ -18,10 +20,25 @@ export const createInvitation = async ({
   message: string;
 }> => {
   try {
+    console.log(requestData);
+
+    const formData = new FormData();
+
+    // Append thumbnail if available
+    if (requestData.thumbnail) {
+      formData.append("thumbnail", requestData.thumbnail);
+    }
+
+    if (requestData.event) {
+      // const { date, ...eventWithoutDate } = requestData.event;
+      // formData.append("event", JSON.stringify(eventWithoutDate));
+    }
+
     const axiosInstance = await getServerAxiosInstance();
-    const response = await axiosInstance.post(`/events`, {
-      event: requestData.event,
-      thumbnail: requestData.thumbnail,
+    const response = await axiosInstance.post(`/events`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
 
     return response.data;
