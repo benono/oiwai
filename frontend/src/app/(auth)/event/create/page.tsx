@@ -145,6 +145,24 @@ export default function CreateEventPage() {
       }
     }
   };
+  const handleAddressSelect = (place: Place) => {
+    console.log("取得データ", place.address);
+    const addressParts = place.address
+      .split(",")
+      .map((part: string) => part.trim());
+
+    const streetAddress = addressParts[0] || "";
+    const city = addressParts[1] || "";
+    const province = addressParts[2] || "";
+    const postalCode = addressParts[3] || "";
+    const country = addressParts[4] || "";
+
+    form.setValue("address1", streetAddress);
+    form.setValue("city", city);
+    form.setValue("province", province);
+    form.setValue("postalCode", postalCode);
+    form.setValue("country", country);
+  };
 
   return (
     <section className="container mx-auto space-y-6 p-4">
@@ -318,7 +336,7 @@ export default function CreateEventPage() {
             </SelectContent>
           </Select>
 
-          {eventType === "outside" && (
+          {eventType === "outside" ? (
             <Tabs defaultValue="Current location" className="w-full">
               <TabsList className="flex w-full bg-transparent">
                 <TabsTrigger
@@ -335,12 +353,14 @@ export default function CreateEventPage() {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="Current location">
-                <MapFunction />
+                <MapFunction onPlaceSelect={handleAddressSelect} />
               </TabsContent>
               <TabsContent value="Based on activities">
-                <MapFunction />
+                <MapFunction onPlaceSelect={handleAddressSelect} />
               </TabsContent>
             </Tabs>
+          ) : (
+            <MapFunction onPlaceSelect={handleAddressSelect} />
           )}
 
           <FormField

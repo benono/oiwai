@@ -8,7 +8,12 @@ interface Place {
   address: string;
   type: string;
 }
-export default function MapFunction() {
+
+interface MapFunctionProps {
+  onPlaceSelect: (place: Place) => void;
+}
+
+export default function MapFunction({ onPlaceSelect }: MapFunctionProps) {
   const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
@@ -53,6 +58,7 @@ export default function MapFunction() {
         places={places}
         onPlaceSelect={(place) => setSelectedPlace(place)}
       />
+
       {selectedPlace && (
         <div className="mt-4 rounded border bg-green-50 p-4">
           <h2 className="mb-2 text-lg font-semibold">Selected Venue</h2>
@@ -65,6 +71,7 @@ export default function MapFunction() {
           <button
             className="mt-2 rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
             onClick={() => {
+              onPlaceSelect(selectedPlace);
               console.log("Selected place for event:", selectedPlace);
             }}
           >
