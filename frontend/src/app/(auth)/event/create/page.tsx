@@ -66,6 +66,8 @@ export default function CreateEventPage() {
   const inputImageRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState<string>("");
+  const [theme, setTheme] = useState<string>("#FF8549");
+
   const handleEventTypeChange = (value: string) => {
     setEventType(value);
   };
@@ -183,7 +185,7 @@ export default function CreateEventPage() {
                       alt="Preview"
                       width={500}
                       height={500}
-                      className="rounded object-cover"
+                      className="h-full w-full rounded object-cover"
                     />
                   ) : (
                     <div className="relative h-full w-full rounded-lg border-2 border-dashed border-gray-400 bg-background">
@@ -237,7 +239,7 @@ export default function CreateEventPage() {
             name="date"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Date and Time</FormLabel>
+                <FormLabel>Date</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl className="w-full bg-white">
@@ -263,7 +265,7 @@ export default function CreateEventPage() {
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
+                        date <= new Date(new Date().setHours(0, 0, 0, 0))
                       }
                       initialFocus
                     />
@@ -387,8 +389,11 @@ export default function CreateEventPage() {
               <FormItem>
                 <FormLabel>Invitation Theme</FormLabel>
                 <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  value={theme}
+                  onValueChange={(value) => {
+                    setTheme(value);
+                    field.onChange(value);
+                  }}
                 >
                   <FormControl className="h-16">
                     <SelectTrigger>
@@ -441,7 +446,15 @@ export default function CreateEventPage() {
 
           <Button
             type="submit"
-            className="h-12 w-full rounded-full text-base font-bold"
+            className={`h-12 w-full rounded-full text-base font-bold ${
+              theme === "#FF8549"
+                ? "bg-primary"
+                : theme === "#1A74A2"
+                  ? "bg-accentBlue"
+                  : theme === "#7E4F8F"
+                    ? "bg-accentPurple"
+                    : ""
+            }`}
           >
             Create invitation
           </Button>
