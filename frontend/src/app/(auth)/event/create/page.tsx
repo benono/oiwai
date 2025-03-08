@@ -110,6 +110,11 @@ export default function CreateEventPage() {
         throw new Error("Please upload a thumbnail image.");
       }
 
+      const { address1, city, province, postalCode, country } = requestData;
+      if (!address1 || !city || !province || !postalCode || !country) {
+        throw new Error("Please select a valid address.");
+      }
+
       const date = new Date(requestData.date);
       const targetDate = date.toISOString().replace(/T.*Z$/, "");
 
@@ -147,23 +152,19 @@ export default function CreateEventPage() {
       }
     }
   };
+
   const handleAddressSelect = (place: Place) => {
-    console.log("取得データ", place.address);
-    const addressParts = place.address
-      .split(",")
-      .map((part: string) => part.trim());
+    console.log(place);
 
-    const streetAddress = addressParts[0] || "";
-    const city = addressParts[1] || "";
-    const province = addressParts[2] || "";
-    const postalCode = addressParts[3] || "";
-    const country = addressParts[4] || "";
+    // latitude and longitude
+    // form.setValue("latitude", place.location.lat);
+    // form.setValue("longitude", place.location.lng);
 
-    form.setValue("address1", streetAddress);
-    form.setValue("city", city);
-    form.setValue("province", province);
-    form.setValue("postalCode", postalCode);
-    form.setValue("country", country);
+    form.setValue("address1", "978 Granville St");
+    form.setValue("city", "Vancouver");
+    form.setValue("province", "BC");
+    form.setValue("postalCode", "V6Z 1L2");
+    form.setValue("country", "Canada");
   };
 
   return (

@@ -70,7 +70,8 @@ export default function MapFunction({ onPlaceSelect }: MapFunctionProps) {
           </p>
           <button
             className="mt-2 rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
               onPlaceSelect(selectedPlace);
               console.log("Selected place for event:", selectedPlace);
             }}
