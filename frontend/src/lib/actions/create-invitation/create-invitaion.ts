@@ -31,9 +31,14 @@ export const createInvitation = async ({
 
     if (requestData.event) {
       // const { date, ...eventWithoutDate } = requestData.event;
-      // formData.append("event", JSON.stringify(eventWithoutDate));
-    }
 
+      // formData.append(
+      //   "event",
+      //   JSON.stringify({
+      //     ...eventWithoutDate,
+      //   }),
+      // );
+    }
     const axiosInstance = await getServerAxiosInstance();
     const response = await axiosInstance.post(`/events`, formData, {
       headers: {

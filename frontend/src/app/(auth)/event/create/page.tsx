@@ -48,7 +48,7 @@ const formSchema = z.object({
   city: z.string(),
   address1: z.string(),
   address2: z.string(),
-  thumbnail: z.custom<File[]>().optional(),
+  thumbnailUrl: z.custom<File[]>().optional(),
   date: z.date({
     required_error: "A date of an event is required.",
   }),
@@ -85,15 +85,15 @@ export default function CreateEventPage() {
       address1: "",
       address2: "",
       isAskRestrictions: false,
-      theme: "",
-      thumbnail: [],
+      theme: "#FF8549",
+      thumbnailUrl: [],
     },
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      form.setValue("thumbnail", [file]);
+      form.setValue("thumbnailUrl", [file]);
       const imageUrl = URL.createObjectURL(file);
       setImagePreview(imageUrl);
     }
@@ -106,7 +106,7 @@ export default function CreateEventPage() {
   const onSubmit = async (requestData: FormData) => {
     let response;
     try {
-      if (!requestData.thumbnail || requestData.thumbnail.length === 0) {
+      if (!requestData.thumbnailUrl || requestData.thumbnailUrl.length === 0) {
         throw new Error("Please upload a thumbnail image.");
       }
 
@@ -128,7 +128,7 @@ export default function CreateEventPage() {
             startTime: formattedStartTime,
             endTime: formattedEndTime,
           },
-          thumbnail: requestData.thumbnail[0],
+          thumbnail: requestData.thumbnailUrl[0],
         },
       });
 
@@ -172,7 +172,7 @@ export default function CreateEventPage() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
             control={form.control}
-            name="thumbnail"
+            name="thumbnailUrl"
             render={({ field }) => (
               <FormItem>
                 <div
