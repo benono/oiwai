@@ -390,15 +390,48 @@ export default function CreateEventPage() {
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
-                  <FormControl className="h-10">
+                  <FormControl className="h-16">
                     <SelectTrigger>
                       <SelectValue placeholder="Select an invitation theme" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="Orange">Orange</SelectItem>
-                    <SelectItem value="Blue">Blue</SelectItem>
-                    <SelectItem value="Simple">Simple</SelectItem>
+                    <SelectItem value="#FF8549">
+                      <div className="flex h-full w-full items-center gap-2">
+                        <Image
+                          src="/images/theme-orange.png"
+                          alt="Preview"
+                          width={500}
+                          height={500}
+                          className="h-10 w-[70px] rounded object-cover"
+                        />
+                        <p>Orange</p>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="#1A74A2">
+                      <div className="flex h-full w-full items-center gap-2">
+                        <Image
+                          src="/images/theme-blue.png"
+                          alt="Preview"
+                          width={500}
+                          height={500}
+                          className="h-10 w-[70px] rounded object-cover"
+                        />
+                        <p>Blue</p>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="#7E4F8F">
+                      <div className="flex h-full w-full items-center gap-2">
+                        <Image
+                          src="/images/theme-purple.png"
+                          alt="Preview"
+                          width={500}
+                          height={500}
+                          className="h-10 w-[70px] rounded object-cover"
+                        />
+                        <p>Purple</p>
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
