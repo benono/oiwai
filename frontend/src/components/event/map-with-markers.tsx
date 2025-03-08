@@ -30,7 +30,7 @@ export default function MapWithMarkers({
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [markers, setMarkers] = useState<google.maps.Marker[]>([]);
   const [place, setPlace] = useState<string>("");
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+  // const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
   // マップの初期化
   useEffect(() => {
@@ -52,8 +52,56 @@ export default function MapWithMarkers({
     });
   }, [apiKey, center, zoom]);
 
+  // 現在地を取得
+  const getCurrentLocation = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!map) return;
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const location = { lat, lng };
+
+          const geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ location }, (results, status) => {
+            if (status === google.maps.GeocoderStatus.OK && results) {
+              const result = results[0];
+              const selectedPlace: Place = {
+                id: "current-location",
+                name: result?.formatted_address || "Unknown Location",
+                location: {
+                  lat,
+                  lng,
+                },
+                address: result?.formatted_address || "No Address Found",
+                type: "Current Location",
+              };
+
+              onPlaceSelect?.(selectedPlace);
+              map.setCenter(location);
+              map.setZoom(15);
+            } else {
+              console.error(
+                "Geocode was not successful for the following reason: " +
+                  status,
+              );
+            }
+          });
+        },
+        (error) => {
+          console.error("Error getting current location:", error);
+        },
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  };
+
   // Tim Hortons店舗を検索する関数
-  const searchTimHortons = () => {
+  const searchTimHortons = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     if (!map) return;
 
     const service = new google.maps.places.PlacesService(map);
@@ -121,7 +169,7 @@ export default function MapWithMarkers({
                   map,
                 });
 
-                setSelectedPlace(place);
+                // setSelectedPlace(place);
                 onPlaceSelect?.(place);
               });
 
@@ -136,7 +184,8 @@ export default function MapWithMarkers({
   };
 
   // 場所を検索する関数
-  const searchPlace = () => {
+  const searchPlace = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!map || !place) return;
 
     const service = new google.maps.places.PlacesService(map);
@@ -163,7 +212,6 @@ export default function MapWithMarkers({
 
           // 最初の結果を選択
           if (searchResults.length > 0) {
-            setSelectedPlace(searchResults[0]);
             onPlaceSelect?.(searchResults[0]);
 
             // 地図の中心を移動
@@ -197,7 +245,7 @@ export default function MapWithMarkers({
                   map,
                 });
 
-                setSelectedPlace(place);
+                // setSelectedPlace(place);
                 onPlaceSelect?.(place);
               });
 
@@ -255,7 +303,7 @@ export default function MapWithMarkers({
         // 選択された場所を設定
         const selectedPlace = places.find((p) => p.name === marker.getTitle());
         if (selectedPlace) {
-          setSelectedPlace(selectedPlace);
+          // setSelectedPlace(selectedPlace);
           onPlaceSelect?.(selectedPlace);
         }
       });
@@ -292,7 +340,7 @@ export default function MapWithMarkers({
             placeholder="Enter a location"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                searchPlace();
+                searchPlace(e);
               }
             }}
           />
@@ -303,7 +351,12 @@ export default function MapWithMarkers({
             Search
           </button>
         </div>
-
+        <button
+          className="rounded bg-green-500 p-2 text-white"
+          onClick={getCurrentLocation}
+        >
+          Use Current Location
+        </button>
         <button
           className="rounded bg-red-500 p-2 text-white"
           onClick={searchTimHortons}
@@ -311,14 +364,6 @@ export default function MapWithMarkers({
           Show Tim Hortons
         </button>
       </div>
-
-      {selectedPlace && (
-        <div className="rounded border bg-gray-50 p-4">
-          <h3 className="mb-2 font-bold">{selectedPlace.name}</h3>
-          <p>{selectedPlace.address}</p>
-          <p className="text-sm text-gray-500">{selectedPlace.type}</p>
-        </div>
-      )}
     </div>
   );
 }

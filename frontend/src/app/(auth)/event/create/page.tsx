@@ -153,7 +153,11 @@ export default function CreateEventPage() {
     }
   };
 
-  const handleAddressSelect = (place: Place) => {
+  const handleAddressSelect = (place: {
+    latitude: number;
+    longitude: number;
+    address: string;
+  }) => {
     console.log(place);
 
     // latitude and longitude
