@@ -20,7 +20,7 @@ export const createInvitation = async ({
   message: string;
 }> => {
   try {
-    console.log(requestData);
+    console.log(requestData, "送信データ");
 
     const formData = new FormData();
 
