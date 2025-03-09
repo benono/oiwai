@@ -79,6 +79,32 @@ export default function MapWithMarkers({
                 type: "Current Location",
               };
 
+              // 現在地のマーカーを追加
+              const currentLocationMarker = new google.maps.Marker({
+                position: location,
+                map,
+                title: "Current Location",
+                animation: google.maps.Animation.DROP,
+              });
+
+              // 情報ウィンドウを作成
+              const infoWindow = new google.maps.InfoWindow({
+                content: `
+                <div>
+                  <h3 style="margin: 0; font-size: 16px;">Current Location</h3>
+                  <p style="margin: 5px 0 0;">${selectedPlace.address}</p>
+                </div>
+              `,
+              });
+
+              // マーカークリックイベント
+              currentLocationMarker.addListener("click", () => {
+                infoWindow.open({
+                  anchor: currentLocationMarker,
+                  map,
+                });
+              });
+
               onPlaceSelect?.(selectedPlace);
               map.setCenter(location);
               map.setZoom(15);
@@ -325,7 +351,7 @@ export default function MapWithMarkers({
     return () => {
       newMarkers.forEach((marker) => marker.setMap(null));
     };
-  }, [map, places, onPlaceSelect]);
+  }, [map, places, onPlaceSelect, markers]);
 
   return (
     <div className="flex flex-col gap-4">
