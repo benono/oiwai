@@ -251,7 +251,31 @@ export default function MapWithMarkers({
           </div>
           <input
             type="text"
-            onChange={(e) => setPlace(e.target.value)}
+            onChange={(e) => {
+              const newPlace = e.target.value;
+              setPlace(newPlace);
+
+              // The Google Maps Places API is triggered whenever the input field changes
+              if (newPlace && map) {
+                const service = new google.maps.places.PlacesService(map);
+                service.textSearch({ query: newPlace }, (results, status) => {
+                  if (
+                    status === google.maps.places.PlacesServiceStatus.OK &&
+                    results
+                  ) {
+                    const result = results[0];
+                    if (result) {
+                      const selectedPlace = {
+                        latitude: result.geometry?.location?.lat() || 0,
+                        longitude: result.geometry?.location?.lng() || 0,
+                        address: result.formatted_address || "",
+                      };
+                      onPlaceSelect(selectedPlace);
+                    }
+                  }
+                });
+              }
+            }}
             value={place}
             className="h-12 flex-1 rounded-md border p-2 pl-8 text-base shadow-sm placeholder:text-textSub"
             placeholder="Search address"
