@@ -37,7 +37,7 @@ const createNewEvent = async (
   next: NextFunction,
 ) => {
   try {
-    const createdEvent = req.body.event;
+    const createdEvent = JSON.parse(req.body.event);
     const file = req.file as MulterFile;
 
     const { userId } = getAuth(req);
