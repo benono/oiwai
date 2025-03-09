@@ -123,23 +123,26 @@ export default function CreateEventPage() {
         throw new Error("Please select a valid address.");
       }
 
-      const date = new Date(requestData.date);
-      const targetDate = date.toISOString().replace(/T.*Z$/, "");
+      const eventDate = new Date(requestData.date);
+      const targetDate = eventDate.toISOString().replace(/T.*Z$/, "");
 
-      const formattedStartTime = new Date(
+      const formattedStartDateTime = new Date(
         `${targetDate}T${requestData.startTime}:00`,
       ).toISOString();
 
-      const formattedEndTime = new Date(
+      const formattedEndDateTime = new Date(
         `${targetDate}T${requestData.endTime}:00`,
       ).toISOString();
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { date, ...eventDetails } = requestData;
 
       response = await createInvitation({
         requestData: {
           event: {
-            ...requestData,
-            startTime: formattedStartTime,
-            endTime: formattedEndTime,
+            ...eventDetails,
+            startTime: formattedStartDateTime,
+            endTime: formattedEndDateTime,
           },
           thumbnail: requestData.thumbnailUrl[0],
         },
