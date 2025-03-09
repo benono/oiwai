@@ -206,9 +206,9 @@ export default function CreateEventPage() {
                   ) : (
                     <div className="relative h-full w-full rounded-lg border border-dashed border-textBorder bg-background">
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <PlusIcon className="h-8 w-8 text-textSub" />
+                        <PlusIcon className="text-textSub" size={32} />
                       </div>
-                      <p className="absolute bottom-2 w-full text-center text-sm font-bold text-textSub">
+                      <p className="absolute bottom-4 w-full text-center text-sm font-bold text-textSub">
                         Add an image of the guest of honor!
                       </p>
                     </div>
@@ -261,7 +261,7 @@ export default function CreateEventPage() {
                     <FormControl className="w-full bg-white text-base hover:bg-white">
                       <Button
                         variant="outline"
-                        className="flex h-10 w-full justify-start pl-3 text-left"
+                        className="flex h-12 w-full justify-start pl-3 text-left"
                       >
                         <CalendarIcon size={16} className="text-textSub" />
                         {field.value ? (
@@ -321,7 +321,7 @@ export default function CreateEventPage() {
                             type="time"
                             id="start-time-input"
                             {...field}
-                            className="font-base h-10 w-full rounded-md border border-border p-4 pl-10"
+                            className="font-base h-12 w-full rounded-md border border-border p-4 pl-10"
                           />
                         )}
                       />
@@ -359,7 +359,7 @@ export default function CreateEventPage() {
                             type="time"
                             id="end-time-input"
                             {...field}
-                            className="font-base h-10 w-full rounded-md border border-border p-4 pl-10"
+                            className="font-base h-12 w-full rounded-md border border-border p-4 pl-10"
                           />
                         )}
                       />
@@ -378,7 +378,7 @@ export default function CreateEventPage() {
               value={eventType}
               onValueChange={handleEventTypeChange}
             >
-              <FormControl className="h-10">
+              <FormControl className="h-12">
                 <SelectTrigger
                   className={`${eventType ? "text-black" : "text-textSub"}`}
                 >
@@ -479,7 +479,7 @@ export default function CreateEventPage() {
                           alt="Preview"
                           width={500}
                           height={500}
-                          className="h-10 w-[70px] rounded object-cover"
+                          className="h-12 w-[70px] rounded object-cover"
                         />
                         <p className="text-base font-medium">Orange</p>
                       </div>
@@ -491,7 +491,7 @@ export default function CreateEventPage() {
                           alt="Preview"
                           width={500}
                           height={500}
-                          className="h-10 w-[70px] rounded object-cover"
+                          className="h-12 w-[70px] rounded object-cover"
                         />
                         <p className="text-base font-medium">Blue</p>
                       </div>
@@ -503,7 +503,7 @@ export default function CreateEventPage() {
                           alt="Preview"
                           width={500}
                           height={500}
-                          className="h-10 w-[70px] rounded object-cover"
+                          className="h-12 w-[70px] rounded object-cover"
                         />
                         <p className="text-base font-medium">Purple</p>
                       </div>

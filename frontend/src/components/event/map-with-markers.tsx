@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader } from "@googlemaps/js-api-loader";
+import { MapPin } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface Place {
@@ -355,27 +356,58 @@ export default function MapWithMarkers({
 
   return (
     <div className="flex flex-col gap-4">
-      <div ref={mapRef} className="h-[400px] w-full rounded border"></div>
       <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-2">
+          <p className="text-sm font-semibold">location</p>
+          <div className="relative flex items-center">
+            <div className="absolute left-2 text-gray-400">
+              <MapPin size={18} className="text-textSub" />
+            </div>
+            <input
+              type="text"
+              onChange={(e) => setPlace(e.target.value)}
+              value={place}
+              className="h-12 flex-1 rounded-md border p-2 pl-8 text-base shadow-sm placeholder:text-textSub"
+              placeholder="Search address"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  searchPlace(e);
+                }
+              }}
+            />
+          </div>
+          <button
+            className="self-end rounded-full border border-textSub px-4 py-1 text-sm font-bold text-textSub hover:bg-textSub/10"
+            onClick={getCurrentLocation}
+          >
+            Use Current Location
+          </button>
+        </div>
+        <button
+          className="rounded bg-red-500 p-2 text-white"
+          onClick={searchTimHortons}
+        >
+          Show Tim Hortons
+        </button>
+      </div>
+      <div ref={mapRef} className="h-[320px] w-full rounded border"></div>
+      {/* <div className="flex flex-col gap-2">
+        <div className="relative flex items-center">
+          <div className="absolute left-2 text-gray-400">
+            <MapPin size={18} className="text-textSub" />
+          </div>
           <input
             type="text"
             onChange={(e) => setPlace(e.target.value)}
             value={place}
-            className="flex-1 rounded border p-2"
-            placeholder="Enter a location"
+            className="h-10 flex-1 rounded border p-2 pl-8 placeholder:text-textSub"
+            placeholder="Search address"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 searchPlace(e);
               }
             }}
           />
-          <button
-            className="rounded bg-blue-500 p-2 text-white"
-            onClick={searchPlace}
-          >
-            Search
-          </button>
         </div>
         <button
           className="rounded bg-green-500 p-2 text-white"
@@ -389,7 +421,7 @@ export default function MapWithMarkers({
         >
           Show Tim Hortons
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
