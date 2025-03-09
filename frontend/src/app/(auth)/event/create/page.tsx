@@ -38,7 +38,7 @@ import {
   PlusIcon,
 } from "lucide-react";
 import Image from "next/image";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -73,6 +73,8 @@ export default function CreateEventPage() {
   const [eventType, setEventType] = useState<string>("homeParty");
 
   const [theme, setTheme] = useState<string>("#FF8549");
+
+  const router = useRouter();
 
   const handleEventTypeChange = (value: string) => {
     setEventType(value);
@@ -144,9 +146,7 @@ export default function CreateEventPage() {
       });
 
       if (response?.success) {
-        alert("成功！");
         router.push(`/event/created`);
-        return;
       }
     } catch (err) {
       if (err instanceof Error) {
