@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MapPin } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -17,21 +18,26 @@ interface MapWithMarkersProps {
   center?: { lat: number; lng: number };
   zoom?: number;
   places?: Place[];
-  onPlaceSelect?: (place: Place) => void;
+  // onPlaceSelect?: (place: Place) => void;
+  onPlaceSelect: (place: {
+    latitude: number;
+    longitude: number;
+    address: string;
+  }) => void;
 }
 
 export default function MapWithMarkers({
   apiKey,
   center = { lat: 35.6812, lng: 139.7671 }, // デフォルトは東京
   zoom = 14,
-  places = [],
   onPlaceSelect,
 }: MapWithMarkersProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [markers, setMarkers] = useState<google.maps.Marker[]>([]);
   const [place, setPlace] = useState<string>("");
-  // const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+  const [places, setPlaces] = useState<Place[]>([]);
+  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
   // マップの初期化
   useEffect(() => {
@@ -106,7 +112,14 @@ export default function MapWithMarkers({
                 });
               });
 
-              onPlaceSelect?.(selectedPlace);
+              setSelectedPlace(selectedPlace);
+
+              onPlaceSelect?.({
+                latitude: selectedPlace.location.lat,
+                longitude: selectedPlace.location.lng,
+                address: selectedPlace.address,
+              });
+
               map.setCenter(location);
               map.setZoom(15);
             } else {
@@ -197,7 +210,11 @@ export default function MapWithMarkers({
                 });
 
                 // setSelectedPlace(place);
-                onPlaceSelect?.(place);
+                onPlaceSelect?.({
+                  latitude: place.location.lat,
+                  longitude: place.location.lng,
+                  address: place.address,
+                });
               });
 
               return marker;
@@ -239,8 +256,12 @@ export default function MapWithMarkers({
 
           // 最初の結果を選択
           if (searchResults.length > 0) {
-            onPlaceSelect?.(searchResults[0]);
-
+            setSelectedPlace(searchResults[0]);
+            onPlaceSelect?.({
+              latitude: searchResults[0].location.lat,
+              longitude: searchResults[0].location.lng,
+              address: searchResults[0].address,
+            });
             // 地図の中心を移動
             map.setCenter(searchResults[0].location);
             map.setZoom(15);
@@ -272,8 +293,12 @@ export default function MapWithMarkers({
                   map,
                 });
 
-                // setSelectedPlace(place);
-                onPlaceSelect?.(place);
+                setSelectedPlace(place);
+                onPlaceSelect?.({
+                  latitude: place.location.lat,
+                  longitude: place.location.lng,
+                  address: place.address,
+                });
               });
 
               return marker;
@@ -330,8 +355,11 @@ export default function MapWithMarkers({
         // 選択された場所を設定
         const selectedPlace = places.find((p) => p.name === marker.getTitle());
         if (selectedPlace) {
-          // setSelectedPlace(selectedPlace);
-          onPlaceSelect?.(selectedPlace);
+          onPlaceSelect?.({
+            latitude: selectedPlace.location.lat,
+            longitude: selectedPlace.location.lng,
+            address: selectedPlace.address,
+          });
         }
       });
 
@@ -357,41 +385,6 @@ export default function MapWithMarkers({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-2">
-          <p className="text-sm font-semibold">location</p>
-          <div className="relative flex items-center">
-            <div className="absolute left-2 text-gray-400">
-              <MapPin size={18} className="text-textSub" />
-            </div>
-            <input
-              type="text"
-              onChange={(e) => setPlace(e.target.value)}
-              value={place}
-              className="h-12 flex-1 rounded-md border p-2 pl-8 text-base shadow-sm placeholder:text-textSub"
-              placeholder="Search address"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  searchPlace(e);
-                }
-              }}
-            />
-          </div>
-          <button
-            className="self-end rounded-full border border-textSub px-4 py-1 text-sm font-bold text-textSub hover:bg-textSub/10"
-            onClick={getCurrentLocation}
-          >
-            Use Current Location
-          </button>
-        </div>
-        <button
-          className="rounded bg-red-500 p-2 text-white"
-          onClick={searchTimHortons}
-        >
-          Show Tim Hortons
-        </button>
-      </div>
-      <div ref={mapRef} className="h-[320px] w-full rounded border"></div>
-      {/* <div className="flex flex-col gap-2">
         <div className="relative flex items-center">
           <div className="absolute left-2 text-gray-400">
             <MapPin size={18} className="text-textSub" />
@@ -400,7 +393,7 @@ export default function MapWithMarkers({
             type="text"
             onChange={(e) => setPlace(e.target.value)}
             value={place}
-            className="h-10 flex-1 rounded border p-2 pl-8 placeholder:text-textSub"
+            className="h-12 flex-1 rounded-md border p-2 pl-8 text-base shadow-sm placeholder:text-textSub"
             placeholder="Search address"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -410,18 +403,43 @@ export default function MapWithMarkers({
           />
         </div>
         <button
-          className="rounded bg-green-500 p-2 text-white"
+          className="self-end rounded-full border border-textSub px-4 py-1 text-sm font-bold text-textSub hover:bg-textSub/10"
           onClick={getCurrentLocation}
         >
           Use Current Location
         </button>
+
         <button
           className="rounded bg-red-500 p-2 text-white"
           onClick={searchTimHortons}
         >
           Show Tim Hortons
         </button>
-      </div> */}
+        {selectedPlace && (
+          <div className="mt-4 flex flex-col rounded border p-4">
+            <div>
+              <p className="font-semibold">Result:</p>
+              <p>{selectedPlace.address}</p>
+            </div>
+            <Button
+              className="ml-auto mt-2 h-auto w-1/2 rounded-full bg-accentGreen p-2 font-bold shadow-none hover:bg-accentGreen/70"
+              onClick={(e) => {
+                e.preventDefault();
+                if (onPlaceSelect) {
+                  onPlaceSelect({
+                    latitude: selectedPlace.location.lat,
+                    longitude: selectedPlace.location.lng,
+                    address: selectedPlace.address,
+                  });
+                }
+              }}
+            >
+              Use This Location
+            </Button>
+          </div>
+        )}
+      </div>
+      <div ref={mapRef} className="h-[320px] w-full rounded border"></div>
     </div>
   );
 }

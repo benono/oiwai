@@ -1,6 +1,6 @@
 "use client";
 
-import MapFunction from "@/components/features/create-invitation/MapWithMarkers";
+import MapWithMarkers from "@/components/event/map-with-markers";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -68,10 +68,11 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function CreateEventPage() {
+  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
+
   const inputImageRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState<string>("homeParty");
-
   const [theme, setTheme] = useState<string>("#FF8549");
 
   const router = useRouter();
@@ -402,32 +403,47 @@ export default function CreateEventPage() {
             </Select>
           </FormItem>
 
-          {eventType === "outside" ? (
-            <Tabs defaultValue="Current location" className="w-full">
-              <TabsList className="flex w-full bg-transparent">
-                <TabsTrigger
-                  value="Current location"
-                  className="w-full border-b-2 border-textBorderLight bg-transparent pb-2 font-bold data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-accentGreen data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-accentGreen data-[state=active]:shadow-none"
-                >
-                  Current location
-                </TabsTrigger>
-                <TabsTrigger
-                  value="Based on activities"
-                  className="w-full border-b-2 border-textBorderLight bg-transparent pb-2 font-bold data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-accentGreen data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-accentGreen data-[state=active]:shadow-none"
-                >
-                  Based on activities
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="Current location">
-                <MapFunction onPlaceSelect={handleAddressSelect} />
-              </TabsContent>
-              <TabsContent value="Based on activities">
-                <MapFunction onPlaceSelect={handleAddressSelect} />
-              </TabsContent>
-            </Tabs>
-          ) : (
-            <MapFunction onPlaceSelect={handleAddressSelect} />
-          )}
+          <div>
+            <p className="mb-2 text-sm font-semibold">location</p>
+            {eventType === "outside" ? (
+              <Tabs defaultValue="Current location" className="w-full">
+                <TabsList className="mb-2 flex w-full bg-transparent">
+                  <TabsTrigger
+                    value="Current location"
+                    className="w-full border-b-2 border-textBorderLight bg-transparent pb-2 font-bold data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-accentGreen data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-accentGreen data-[state=active]:shadow-none"
+                  >
+                    Current location
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="Based on activities"
+                    className="w-full border-b-2 border-textBorderLight bg-transparent pb-2 font-bold data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-accentGreen data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-accentGreen data-[state=active]:shadow-none"
+                  >
+                    Based on activities
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="Current location">
+                  <MapWithMarkers
+                    apiKey={googleMapsApiKey}
+                    center={{ lat: 35.6812, lng: 139.7671 }}
+                    onPlaceSelect={handleAddressSelect}
+                  />
+                </TabsContent>
+                <TabsContent value="Based on activities">
+                  <MapWithMarkers
+                    apiKey={googleMapsApiKey}
+                    center={{ lat: 35.6812, lng: 139.7671 }}
+                    onPlaceSelect={handleAddressSelect}
+                  />
+                </TabsContent>
+              </Tabs>
+            ) : (
+              <MapWithMarkers
+                apiKey={googleMapsApiKey}
+                center={{ lat: 35.6812, lng: 139.7671 }}
+                onPlaceSelect={handleAddressSelect}
+              />
+            )}
+          </div>
 
           <FormField
             control={form.control}
