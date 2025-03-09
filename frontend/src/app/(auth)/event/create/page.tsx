@@ -85,6 +85,7 @@ export default function CreateEventPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState<string>("homeParty");
   const [theme, setTheme] = useState<string>("#FF8549");
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -126,6 +127,8 @@ export default function CreateEventPage() {
   const onSubmit = async (requestData: FormData) => {
     let response;
     try {
+      setLoading(true);
+
       if (!requestData.thumbnailUrl || requestData.thumbnailUrl.length === 0) {
         throw new Error("Please upload a thumbnail image.");
       }
@@ -173,6 +176,8 @@ export default function CreateEventPage() {
           "An error occurred while processing your request. Please try again.",
         );
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -553,8 +558,9 @@ export default function CreateEventPage() {
                     ? "bg-accentPurple"
                     : ""
             }`}
+            disabled={loading}
           >
-            Create invitation
+            {loading ? <span>Loading...</span> : "Create invitation"}
           </Button>
         </form>
       </Form>
