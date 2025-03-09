@@ -1,6 +1,6 @@
 "use client";
 
-import MapWithMarkers from "@/components/event/map-with-markers";
+import MapWithMarkers from "@/components/features/create-invitation/map-with-markers";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
-import { createInvitation } from "@/lib/actions/create-invitation/create-invitaion";
+import { createInvitation } from "@/lib/actions/create-invitation/create-invitation";
 import { showErrorToast } from "@/lib/toast/toast-utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
@@ -43,27 +43,38 @@ import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-const formSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  startTime: z.string(),
-  endTime: z.string(),
-  country: z.string(),
-  postalCode: z.string(),
-  province: z.string(),
-  city: z.string(),
-  address1: z.string(),
-  address2: z.string(),
-  thumbnailUrl: z.custom<File[]>().optional(),
-  date: z.date({
-    required_error: "A date of an event is required.",
-  }),
-  isAskRestrictions: z.boolean({
-    required_error: "Please select an options to display.",
-  }),
-  theme: z.string({
-    required_error: "Please select a theme to display.",
-  }),
-});
+const formSchema = z
+  .object({
+    title: z.string().min(1, "Title is required"),
+    startTime: z.string(),
+    endTime: z.string(),
+    country: z.string(),
+    postalCode: z.string(),
+    province: z.string(),
+    city: z.string(),
+    address1: z.string(),
+    address2: z.string(),
+    thumbnailUrl: z.custom<File[]>().optional(),
+    date: z.date({
+      required_error: "A date of an event is required.",
+    }),
+    isAskRestrictions: z.boolean({
+      required_error: "Please select an options to display.",
+    }),
+    theme: z.string({
+      required_error: "Please select a theme to display.",
+    }),
+  })
+  .refine(
+    (data) => {
+      if (!data.startTime || !data.endTime) return true;
+      return data.startTime < data.endTime;
+    },
+    {
+      message: "End time must be after start time",
+      path: ["endTime"],
+    },
+  );
 
 type FormData = z.infer<typeof formSchema>;
 
@@ -424,14 +435,14 @@ export default function CreateEventPage() {
                 <TabsContent value="Current location">
                   <MapWithMarkers
                     apiKey={googleMapsApiKey}
-                    center={{ lat: 35.6812, lng: 139.7671 }}
+                    center={{ lat: 49.2827, lng: -123.1207 }}
                     onPlaceSelect={handleAddressSelect}
                   />
                 </TabsContent>
                 <TabsContent value="Based on activities">
                   <MapWithMarkers
                     apiKey={googleMapsApiKey}
-                    center={{ lat: 35.6812, lng: 139.7671 }}
+                    center={{ lat: 49.2827, lng: -123.1207 }}
                     onPlaceSelect={handleAddressSelect}
                   />
                 </TabsContent>
@@ -439,7 +450,7 @@ export default function CreateEventPage() {
             ) : (
               <MapWithMarkers
                 apiKey={googleMapsApiKey}
-                center={{ lat: 35.6812, lng: 139.7671 }}
+                center={{ lat: 49.2827, lng: -123.1207 }}
                 onPlaceSelect={handleAddressSelect}
               />
             )}

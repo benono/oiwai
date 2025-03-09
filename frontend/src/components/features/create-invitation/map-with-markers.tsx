@@ -17,7 +17,6 @@ interface MapWithMarkersProps {
   apiKey: string;
   center?: { lat: number; lng: number };
   zoom?: number;
-  places?: Place[];
   onPlaceSelect: (place: {
     latitude: number;
     longitude: number;
@@ -27,7 +26,7 @@ interface MapWithMarkersProps {
 
 export default function MapWithMarkers({
   apiKey,
-  center = { lat: 35.6812, lng: 139.7671 }, // デフォルトは東京
+  center = { lat: 49.2827, lng: -123.1207 }, // Vancouver City Hall
   zoom = 14,
   onPlaceSelect,
 }: MapWithMarkersProps) {
@@ -35,7 +34,6 @@ export default function MapWithMarkers({
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [markers, setMarkers] = useState<google.maps.Marker[]>([]);
   const [place, setPlace] = useState<string>("");
-  const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
   // マップの初期化
@@ -58,7 +56,56 @@ export default function MapWithMarkers({
     });
   }, [apiKey, center, zoom]);
 
-  // 現在地を取得
+  // マーカーをリセットする関数
+  const clearMarkers = () => {
+    markers.forEach((marker) => marker.setMap(null));
+    setMarkers([]);
+  };
+
+  // マーカーを追加する関数
+  const addMarkers = (newPlaces: Place[]) => {
+    const newMarkers = newPlaces.map((place) => {
+      const marker = new google.maps.Marker({
+        position: place.location,
+        map,
+        title: place.name,
+        animation: google.maps.Animation.DROP,
+      });
+
+      const infoWindow = new google.maps.InfoWindow({
+        content: `
+          <div>
+            <h3 style="margin: 0; font-size: 16px;">${place.name}</h3>
+            <p style="margin: 5px 0 0;">${place.address}</p>
+            <p style="margin: 5px 0 0; color: #666;">${place.type}</p>
+          </div>
+        `,
+      });
+
+      marker.addListener("click", () => {
+        infoWindow.open({ anchor: marker, map });
+        onPlaceSelect?.({
+          latitude: place.location.lat,
+          longitude: place.location.lng,
+          address: place.address,
+        });
+      });
+
+      return marker;
+    });
+
+    setMarkers(newMarkers);
+
+    if (newMarkers.length > 1) {
+      const bounds = new google.maps.LatLngBounds();
+      newPlaces.forEach((place) => bounds.extend(place.location));
+      if (map) {
+        map.fitBounds(bounds);
+      }
+    }
+  };
+
+  // 現在地を取得して地図に表示
   const getCurrentLocation = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!map) return;
@@ -77,15 +124,11 @@ export default function MapWithMarkers({
               const selectedPlace: Place = {
                 id: "current-location",
                 name: result?.formatted_address || "Unknown Location",
-                location: {
-                  lat,
-                  lng,
-                },
+                location: { lat, lng },
                 address: result?.formatted_address || "No Address Found",
                 type: "Current Location",
               };
 
-              // 現在地のマーカーを追加
               const currentLocationMarker = new google.maps.Marker({
                 position: location,
                 map,
@@ -93,17 +136,15 @@ export default function MapWithMarkers({
                 animation: google.maps.Animation.DROP,
               });
 
-              // 情報ウィンドウを作成
               const infoWindow = new google.maps.InfoWindow({
                 content: `
-                <div>
-                  <h3 style="margin: 0; font-size: 16px;">Current Location</h3>
-                  <p style="margin: 5px 0 0;">${selectedPlace.address}</p>
-                </div>
-              `,
+                  <div>
+                    <h3 style="margin: 0; font-size: 16px;">Current Location</h3>
+                    <p style="margin: 5px 0 0;">${selectedPlace.address}</p>
+                  </div>
+                `,
               });
 
-              // マーカークリックイベント
               currentLocationMarker.addListener("click", () => {
                 infoWindow.open({
                   anchor: currentLocationMarker,
@@ -112,28 +153,28 @@ export default function MapWithMarkers({
               });
 
               setSelectedPlace(selectedPlace);
-
               onPlaceSelect?.({
                 latitude: selectedPlace.location.lat,
                 longitude: selectedPlace.location.lng,
                 address: selectedPlace.address,
               });
+              addMarkers([selectedPlace]);
 
               map.setCenter(location);
               map.setZoom(15);
             } else {
-              console.error(
-                "Geocode was not successful for the following reason: " +
-                  status,
-              );
+              // TODO: show toast
+              console.error("Geocode failed due to: " + status);
             }
           });
         },
         (error) => {
+          // TODO: show toast
           console.error("Error getting current location:", error);
         },
       );
     } else {
+      // TODO: show toast
       console.error("Geolocation is not supported by this browser.");
     }
   };
@@ -144,86 +185,25 @@ export default function MapWithMarkers({
     if (!map) return;
 
     const service = new google.maps.places.PlacesService(map);
-    service.textSearch(
-      {
-        query: "Tim Hortons downtown",
-        // ダウンタウンエリアに限定するため、位置と半径を指定することもできます
-        // location: new google.maps.LatLng(center.lat, center.lng),
-        // radius: 5000, // 5km
-      },
-      (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-          // 既存のマーカーをクリア
-          markers.forEach((marker) => marker.setMap(null));
+    service.textSearch({ query: "Tim Hortons downtown" }, (results, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+        clearMarkers();
 
-          // 最大3件の結果を取得
-          const limitedResults = results.slice(0, 3);
+        const limitedResults = results.slice(0, 3);
+        const searchResults: Place[] = limitedResults.map((result, index) => ({
+          id: `timhortons-${index}`,
+          name: result.name || "",
+          location: {
+            lat: result.geometry?.location?.lat() || 0,
+            lng: result.geometry?.location?.lng() || 0,
+          },
+          address: result.formatted_address || "",
+          type: "Coffee Shop",
+        }));
 
-          // 検索結果から場所データを作成
-          const searchResults: Place[] = limitedResults.map(
-            (result, index) => ({
-              id: `timhortons-${index}`,
-              name: result.name || "",
-              location: {
-                lat: result.geometry?.location?.lat() || 0,
-                lng: result.geometry?.location?.lng() || 0,
-              },
-              address: result.formatted_address || "",
-              type: "Coffee Shop",
-            }),
-          );
-
-          // 地図の表示範囲を調整
-          if (searchResults.length > 0) {
-            const bounds = new google.maps.LatLngBounds();
-            searchResults.forEach((place) => {
-              bounds.extend(place.location);
-            });
-            map.fitBounds(bounds);
-
-            // 新しいマーカーを作成
-            const newMarkers = searchResults.map((place) => {
-              const marker = new google.maps.Marker({
-                position: place.location,
-                map,
-                title: place.name,
-                animation: google.maps.Animation.DROP,
-              });
-
-              // 情報ウィンドウを作成
-              const infoWindow = new google.maps.InfoWindow({
-                content: `
-                  <div>
-                    <h3 style="margin: 0; font-size: 16px;">${place.name}</h3>
-                    <p style="margin: 5px 0 0;">${place.address}</p>
-                    <p style="margin: 5px 0 0; color: #666;">Coffee Shop</p>
-                  </div>
-                `,
-              });
-
-              // マーカークリックイベント
-              marker.addListener("click", () => {
-                infoWindow.open({
-                  anchor: marker,
-                  map,
-                });
-
-                // setSelectedPlace(place);
-                onPlaceSelect?.({
-                  latitude: place.location.lat,
-                  longitude: place.location.lng,
-                  address: place.address,
-                });
-              });
-
-              return marker;
-            });
-
-            setMarkers(newMarkers);
-          }
-        }
-      },
-    );
+        addMarkers(searchResults);
+      }
+    });
   };
 
   // 場所を検索する関数
@@ -232,154 +212,35 @@ export default function MapWithMarkers({
     if (!map || !place) return;
 
     const service = new google.maps.places.PlacesService(map);
-    service.textSearch(
-      {
-        query: place,
-      },
-      (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-          // 既存のマーカーをクリア
-          markers.forEach((marker) => marker.setMap(null));
+    service.textSearch({ query: place }, (results, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+        clearMarkers();
 
-          // 検索結果から場所データを作成
-          const searchResults: Place[] = results.map((result, index) => ({
-            id: `search-${index}`,
-            name: result.name || "",
-            location: {
-              lat: result.geometry?.location?.lat() || 0,
-              lng: result.geometry?.location?.lng() || 0,
-            },
-            address: result.formatted_address || "",
-            type: result.types?.join(", ") || "",
-          }));
+        const searchResults: Place[] = results.map((result, index) => ({
+          id: `search-${index}`,
+          name: result.name || "",
+          location: {
+            lat: result.geometry?.location?.lat() || 0,
+            lng: result.geometry?.location?.lng() || 0,
+          },
+          address: result.formatted_address || "",
+          type: result.types?.join(", ") || "",
+        }));
 
-          // 最初の結果を選択
-          if (searchResults.length > 0) {
-            setSelectedPlace(searchResults[0]);
-            onPlaceSelect?.({
-              latitude: searchResults[0].location.lat,
-              longitude: searchResults[0].location.lng,
-              address: searchResults[0].address,
-            });
-            // 地図の中心を移動
-            map.setCenter(searchResults[0].location);
-            map.setZoom(15);
-
-            // 新しいマーカーを作成
-            const newMarkers = searchResults.map((place) => {
-              const marker = new google.maps.Marker({
-                position: place.location,
-                map,
-                title: place.name,
-                animation: google.maps.Animation.DROP,
-              });
-
-              // 情報ウィンドウを作成
-              const infoWindow = new google.maps.InfoWindow({
-                content: `
-                  <div>
-                    <h3 style="margin: 0; font-size: 16px;">${place.name}</h3>
-                    <p style="margin: 5px 0 0;">${place.address}</p>
-                    <p style="margin: 5px 0 0; color: #666;">${place.type}</p>
-                  </div>
-                `,
-              });
-
-              // マーカークリックイベント
-              marker.addListener("click", () => {
-                infoWindow.open({
-                  anchor: marker,
-                  map,
-                });
-
-                setSelectedPlace(place);
-                onPlaceSelect?.({
-                  latitude: place.location.lat,
-                  longitude: place.location.lng,
-                  address: place.address,
-                });
-              });
-
-              return marker;
-            });
-
-            setMarkers(newMarkers);
-          }
-        }
-      },
-    );
-  };
-
-  // マーカーの設定
-  useEffect(() => {
-    if (!map || !places.length) return;
-
-    // 既存のマーカーをクリア
-    markers.forEach((marker) => marker.setMap(null));
-
-    // 新しいマーカーを作成
-    const newMarkers = places.map((place) => {
-      const marker = new google.maps.Marker({
-        position: place.location,
-        map,
-        title: place.name,
-        animation: google.maps.Animation.DROP,
-      });
-
-      // 情報ウィンドウを作成
-      const infoWindow = new google.maps.InfoWindow({
-        content: `
-          <div>
-            <h3 style="margin: 0; font-size: 16px;">${place.name}</h3>
-            <p style="margin: 5px 0 0;">${place.address}</p>
-            <p style="margin: 5px 0 0; color: #666;">${place.type}</p>
-          </div>
-        `,
-      });
-
-      // マーカークリックイベント
-      marker.addListener("click", () => {
-        // 他の情報ウィンドウを閉じる
-        markers.forEach((m) => {
-          if (m.getTitle() !== marker.getTitle()) {
-            google.maps.event.trigger(m, "closeclick");
-          }
-        });
-
-        infoWindow.open({
-          anchor: marker,
-          map,
-        });
-
-        // 選択された場所を設定
-        const selectedPlace = places.find((p) => p.name === marker.getTitle());
-        if (selectedPlace) {
+        if (searchResults.length > 0) {
+          setSelectedPlace(searchResults[0]);
           onPlaceSelect?.({
-            latitude: selectedPlace.location.lat,
-            longitude: selectedPlace.location.lng,
-            address: selectedPlace.address,
+            latitude: searchResults[0].location.lat,
+            longitude: searchResults[0].location.lng,
+            address: searchResults[0].address,
           });
+          map.setCenter(searchResults[0].location);
+          map.setZoom(15);
+          addMarkers(searchResults);
         }
-      });
-
-      return marker;
+      }
     });
-
-    setMarkers(newMarkers);
-
-    // マップの表示範囲を調整
-    if (newMarkers.length > 1) {
-      const bounds = new google.maps.LatLngBounds();
-      places.forEach((place) => {
-        bounds.extend(place.location);
-      });
-      map.fitBounds(bounds);
-    }
-
-    return () => {
-      newMarkers.forEach((marker) => marker.setMap(null));
-    };
-  }, [map, places, onPlaceSelect, markers]);
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -407,7 +268,6 @@ export default function MapWithMarkers({
         >
           Use Current Location
         </button>
-
         <button
           className="rounded bg-red-500 p-2 text-white"
           onClick={searchTimHortons}
