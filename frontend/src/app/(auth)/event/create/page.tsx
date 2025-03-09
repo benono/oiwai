@@ -27,11 +27,16 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import { createInvitation } from "@/lib/actions/create-invitation/create-invitaion";
 import { showErrorToast } from "@/lib/toast/toast-utils";
-import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { format } from "date-fns";
-import { CalendarIcon, PlusIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  Clock,
+  FerrisWheel,
+  House,
+  PlusIcon,
+} from "lucide-react";
 import Image from "next/image";
 import router from "next/router";
 import { useRef, useState } from "react";
@@ -65,7 +70,8 @@ type FormData = z.infer<typeof formSchema>;
 export default function CreateEventPage() {
   const inputImageRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [eventType, setEventType] = useState<string>("");
+  const [eventType, setEventType] = useState<string>("homeParty");
+
   const [theme, setTheme] = useState<string>("#FF8549");
 
   const handleEventTypeChange = (value: string) => {
@@ -138,7 +144,9 @@ export default function CreateEventPage() {
       });
 
       if (response?.success) {
+        alert("成功！");
         router.push(`/event/created`);
+        return;
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -193,7 +201,7 @@ export default function CreateEventPage() {
                       className="h-full w-full rounded object-cover"
                     />
                   ) : (
-                    <div className="relative h-full w-full rounded-lg border-2 border-dashed border-gray-400 bg-background">
+                    <div className="relative h-full w-full rounded-lg border border-dashed border-textBorder bg-background">
                       <div className="absolute inset-0 flex items-center justify-center">
                         <PlusIcon className="h-8 w-8 text-textSub" />
                       </div>
@@ -231,7 +239,7 @@ export default function CreateEventPage() {
                   <input
                     type="text"
                     placeholder="Add Event Title"
-                    className="w-full border-gray-300 py-4 text-2xl font-bold outline-none placeholder:text-textBorder focus:border-black"
+                    className="w-full py-4 text-2xl font-bold outline-none placeholder:text-textBorder"
                     {...field}
                   />
                 </FormControl>
@@ -244,23 +252,22 @@ export default function CreateEventPage() {
             name="date"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Date</FormLabel>
+                <FormLabel className="font-semibold">Date</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <FormControl className="w-full bg-white">
+                    <FormControl className="w-full bg-white text-base hover:bg-white">
                       <Button
-                        variant={"outline"}
-                        className={cn(
-                          "h-10 w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground",
-                        )}
+                        variant="outline"
+                        className="flex h-10 w-full justify-start pl-3 text-left"
                       >
+                        <CalendarIcon size={16} className="text-textSub" />
                         {field.value ? (
-                          format(field.value, "PPP")
+                          <span className="font-normal">
+                            {format(field.value, "PPP")}
+                          </span>
                         ) : (
-                          <span>Pick a date</span>
+                          <span className="text-textSub">Pick a date</span>
                         )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
@@ -273,6 +280,7 @@ export default function CreateEventPage() {
                         date <= new Date(new Date().setHours(0, 0, 0, 0))
                       }
                       initialFocus
+                      className="font-bold"
                     />
                   </PopoverContent>
                 </Popover>
@@ -280,7 +288,8 @@ export default function CreateEventPage() {
               </FormItem>
             )}
           />
-          <div className="flex gap-6">
+
+          <div className="flex w-full gap-6">
             <FormField
               control={form.control}
               name="startTime"
@@ -288,18 +297,32 @@ export default function CreateEventPage() {
                 <FormItem className="flex w-full flex-col space-y-2">
                   <FormLabel className="font-semibold">Start time</FormLabel>
                   <FormControl>
-                    <Controller
-                      name="startTime"
-                      control={form.control}
-                      render={({ field }) => (
-                        <input
-                          type="time"
-                          id="start-time"
-                          {...field}
-                          className="h-10 rounded-md border border-border p-4 font-medium"
-                        />
-                      )}
-                    />
+                    <div className="relative">
+                      <button
+                        type="button"
+                        className="absolute left-3 top-1/2 z-10 -translate-y-1/2 cursor-pointer"
+                        onClick={() => {
+                          const startTimeInput = document.getElementById(
+                            "start-time-input",
+                          ) as HTMLInputElement;
+                          startTimeInput?.showPicker();
+                        }}
+                      >
+                        <Clock size={16} className="text-textSub" />
+                      </button>
+                      <Controller
+                        name="startTime"
+                        control={form.control}
+                        render={({ field }) => (
+                          <input
+                            type="time"
+                            id="start-time-input"
+                            {...field}
+                            className="font-base h-10 w-full rounded-md border border-border p-4 pl-10"
+                          />
+                        )}
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -312,18 +335,32 @@ export default function CreateEventPage() {
                 <FormItem className="flex w-full flex-col space-y-2">
                   <FormLabel className="font-semibold">End time</FormLabel>
                   <FormControl>
-                    <Controller
-                      name="endTime"
-                      control={form.control}
-                      render={({ field }) => (
-                        <input
-                          type="time"
-                          id="end-time"
-                          {...field}
-                          className="h-10 rounded-md border border-border p-4 font-medium"
-                        />
-                      )}
-                    />
+                    <div className="relative flex">
+                      <button
+                        type="button"
+                        className="absolute left-3 top-1/2 z-10 -translate-y-1/2 cursor-pointer"
+                        onClick={() => {
+                          const startTimeInput = document.getElementById(
+                            "end-time-input",
+                          ) as HTMLInputElement;
+                          startTimeInput?.showPicker();
+                        }}
+                      >
+                        <Clock size={16} className="text-textSub" />
+                      </button>
+                      <Controller
+                        name="endTime"
+                        control={form.control}
+                        render={({ field }) => (
+                          <input
+                            type="time"
+                            id="end-time-input"
+                            {...field}
+                            className="font-base h-10 w-full rounded-md border border-border p-4 pl-10"
+                          />
+                        )}
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -331,17 +368,36 @@ export default function CreateEventPage() {
             />
           </div>
 
-          <Select onValueChange={handleEventTypeChange}>
-            <FormControl className="h-10">
-              <SelectTrigger>
-                <SelectValue placeholder="Select an event type" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectItem value="homeParty">Home party</SelectItem>
-              <SelectItem value="outside">Outside</SelectItem>
-            </SelectContent>
-          </Select>
+          <FormItem className="flex flex-col">
+            <FormLabel className="font-semibold">Event type</FormLabel>
+            <Select
+              defaultValue="homeParty"
+              value={eventType}
+              onValueChange={handleEventTypeChange}
+            >
+              <FormControl className="h-10">
+                <SelectTrigger
+                  className={`${eventType ? "text-black" : "text-textSub"}`}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="homeParty">
+                  <div className="flex h-6 items-center gap-2 text-base">
+                    <House size={16} className="text-textSub" />
+                    Home party
+                  </div>
+                </SelectItem>
+                <SelectItem value="outside">
+                  <div className="flex h-6 items-center gap-2 text-base">
+                    <FerrisWheel size={16} className="text-textSub" />
+                    Outside
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </FormItem>
 
           {eventType === "outside" ? (
             <Tabs defaultValue="Current location" className="w-full">
@@ -374,15 +430,20 @@ export default function CreateEventPage() {
             control={form.control}
             name="isAskRestrictions"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2 shadow-sm">
-                <FormLabel>Ask allergies or dietary restrictions</FormLabel>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    className="m-0 p-0"
-                  />
-                </FormControl>
+              <FormItem className="flex flex-col">
+                <FormLabel className="text-sm font-semibold">Options</FormLabel>
+                <FormItem className="flex h-12 flex-row items-center justify-between rounded-lg border px-4 shadow-sm">
+                  <FormLabel className="text-sm">
+                    Ask allergies or dietary restrictions
+                  </FormLabel>
+                  <FormControl style={{ margin: 0 }}>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      className="bg-accentGreen data-[state=checked]:bg-accentGreen"
+                    />
+                  </FormControl>
+                </FormItem>
               </FormItem>
             )}
           />
@@ -392,7 +453,9 @@ export default function CreateEventPage() {
             name="theme"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Invitation Theme</FormLabel>
+                <FormLabel className="text-sm font-semibold">
+                  Invitation Theme
+                </FormLabel>
                 <Select
                   value={theme}
                   onValueChange={(value) => {
@@ -415,7 +478,7 @@ export default function CreateEventPage() {
                           height={500}
                           className="h-10 w-[70px] rounded object-cover"
                         />
-                        <p>Orange</p>
+                        <p className="text-base font-medium">Orange</p>
                       </div>
                     </SelectItem>
                     <SelectItem value="#1A74A2">
@@ -427,7 +490,7 @@ export default function CreateEventPage() {
                           height={500}
                           className="h-10 w-[70px] rounded object-cover"
                         />
-                        <p>Blue</p>
+                        <p className="text-base font-medium">Blue</p>
                       </div>
                     </SelectItem>
                     <SelectItem value="#7E4F8F">
@@ -439,7 +502,7 @@ export default function CreateEventPage() {
                           height={500}
                           className="h-10 w-[70px] rounded object-cover"
                         />
-                        <p>Purple</p>
+                        <p className="text-base font-medium">Purple</p>
                       </div>
                     </SelectItem>
                   </SelectContent>
