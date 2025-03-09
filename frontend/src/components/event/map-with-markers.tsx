@@ -18,7 +18,6 @@ interface MapWithMarkersProps {
   center?: { lat: number; lng: number };
   zoom?: number;
   places?: Place[];
-  // onPlaceSelect?: (place: Place) => void;
   onPlaceSelect: (place: {
     latitude: number;
     longitude: number;
@@ -432,6 +431,8 @@ export default function MapWithMarkers({
                     address: selectedPlace.address,
                   });
                 }
+                setPlace(selectedPlace.address);
+                setSelectedPlace(null);
               }}
             >
               Use This Location
