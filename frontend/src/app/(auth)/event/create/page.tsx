@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { THEME_CONFIG } from "@/constants/theme-colors";
 import { toast } from "@/hooks/use-toast";
 import { createInvitation } from "@/lib/actions/create-invitation/create-invitation";
 import { showErrorToast } from "@/lib/toast/toast-utils";
@@ -84,14 +85,10 @@ export default function CreateEventPage() {
   const inputImageRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [eventType, setEventType] = useState<string>("homeParty");
-  const [theme, setTheme] = useState<string>("#FF8549");
   const [loading, setLoading] = useState(false);
+  const [theme, setTheme] = useState<keyof typeof THEME_CONFIG>("orange");
 
   const router = useRouter();
-
-  const handleEventTypeChange = (value: string) => {
-    setEventType(value);
-  };
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -106,10 +103,14 @@ export default function CreateEventPage() {
       address1: "",
       address2: "",
       isAskRestrictions: false,
-      theme: "#FF8549",
+      theme: THEME_CONFIG.orange.color,
       thumbnailUrl: [],
     },
   });
+
+  const handleEventTypeChange = (value: string) => {
+    setEventType(value);
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -128,10 +129,6 @@ export default function CreateEventPage() {
     let response;
     try {
       setLoading(true);
-
-      if (!requestData.thumbnailUrl || requestData.thumbnailUrl.length === 0) {
-        throw new Error("Please upload a thumbnail image.");
-      }
 
       const { address1, city, province, postalCode, country } = requestData;
       if (!address1 || !city || !province || !postalCode || !country) {
@@ -159,7 +156,12 @@ export default function CreateEventPage() {
             startTime: formattedStartDateTime,
             endTime: formattedEndDateTime,
           },
-          thumbnail: requestData.thumbnailUrl[0],
+
+          thumbnail:
+            requestData.thumbnailUrl &&
+            requestData.thumbnailUrl[0] instanceof File
+              ? requestData.thumbnailUrl[0]
+              : new File([], ""),
         },
       });
 
@@ -198,6 +200,31 @@ export default function CreateEventPage() {
     form.setValue("postalCode", "V6Z 1L2");
     form.setValue("country", "Canada");
   };
+
+  const ThemeOption = ({
+    value,
+    src,
+    alt,
+    label,
+  }: {
+    value: string;
+    src: string;
+    alt: string;
+    label: string;
+  }) => (
+    <SelectItem value={value}>
+      <div className="flex h-full w-full items-center gap-2">
+        <Image
+          src={src}
+          alt={alt}
+          width={500}
+          height={500}
+          className="h-12 w-[70px] rounded object-cover"
+        />
+        <p className="text-base font-medium">{label}</p>
+      </div>
+    </SelectItem>
+  );
 
   return (
     <section className="container mx-auto space-y-6 p-4">
@@ -486,16 +513,19 @@ export default function CreateEventPage() {
           <FormField
             control={form.control}
             name="theme"
-            render={({ field }) => (
+            render={() => (
               <FormItem>
                 <FormLabel className="text-sm font-semibold">
                   Invitation Theme
                 </FormLabel>
                 <Select
-                  value={theme}
+                  value={theme as string}
                   onValueChange={(value) => {
-                    setTheme(value);
-                    field.onChange(value);
+                    setTheme(value as keyof typeof THEME_CONFIG);
+                    form.setValue(
+                      "theme",
+                      THEME_CONFIG[value as keyof typeof THEME_CONFIG].color,
+                    );
                   }}
                 >
                   <FormControl className="h-16">
@@ -504,42 +534,15 @@ export default function CreateEventPage() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="#FF8549">
-                      <div className="flex h-full w-full items-center gap-2">
-                        <Image
-                          src="/images/theme-orange.png"
-                          alt="Preview"
-                          width={500}
-                          height={500}
-                          className="h-12 w-[70px] rounded object-cover"
-                        />
-                        <p className="text-base font-medium">Orange</p>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="#1A74A2">
-                      <div className="flex h-full w-full items-center gap-2">
-                        <Image
-                          src="/images/theme-blue.png"
-                          alt="Preview"
-                          width={500}
-                          height={500}
-                          className="h-12 w-[70px] rounded object-cover"
-                        />
-                        <p className="text-base font-medium">Blue</p>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="#7E4F8F">
-                      <div className="flex h-full w-full items-center gap-2">
-                        <Image
-                          src="/images/theme-purple.png"
-                          alt="Preview"
-                          width={500}
-                          height={500}
-                          className="h-12 w-[70px] rounded object-cover"
-                        />
-                        <p className="text-base font-medium">Purple</p>
-                      </div>
-                    </SelectItem>
+                    {Object.keys(THEME_CONFIG).map((key) => (
+                      <ThemeOption
+                        key={key}
+                        value={key}
+                        src={`/images/theme-${key}.png`}
+                        alt={`${key} theme`}
+                        label={key.charAt(0).toUpperCase() + key.slice(1)}
+                      />
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -549,15 +552,8 @@ export default function CreateEventPage() {
 
           <Button
             type="submit"
-            className={`h-12 w-full rounded-full text-base font-bold ${
-              theme === "#FF8549"
-                ? "bg-primary"
-                : theme === "#1A74A2"
-                  ? "bg-accentBlue"
-                  : theme === "#7E4F8F"
-                    ? "bg-accentPurple"
-                    : ""
-            }`}
+            className="h-12 w-full rounded-full text-base font-bold"
+            style={{ backgroundColor: THEME_CONFIG[theme].color }}
             disabled={loading}
           >
             {loading ? <span>Loading...</span> : "Create invitation"}
