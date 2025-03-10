@@ -10,7 +10,7 @@ interface Place {
   name: string;
   location: { lat: number; lng: number };
   address: string;
-  type: string; // 例: "park", "restaurant" など
+  type: string;
 }
 
 interface MapWithMarkersProps {
@@ -35,8 +35,9 @@ export default function MapWithMarkers({
   const [markers, setMarkers] = useState<google.maps.Marker[]>([]);
   const [place, setPlace] = useState<string>("");
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
 
-  // マップの初期化
+  // Initialize the map
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -56,13 +57,11 @@ export default function MapWithMarkers({
     });
   }, [apiKey, center, zoom]);
 
-  // マーカーをリセットする関数
   const clearMarkers = () => {
     markers.forEach((marker) => marker.setMap(null));
     setMarkers([]);
   };
 
-  // マーカーを追加する関数
   const addMarkers = (newPlaces: Place[]) => {
     const newMarkers = newPlaces.map((place) => {
       const marker = new google.maps.Marker({
@@ -105,10 +104,14 @@ export default function MapWithMarkers({
     }
   };
 
-  // 現在地を取得して地図に表示
   const getCurrentLocation = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!map) return;
+
+    clearMarkers();
+    setIsSearching(true);
+    setPlace("");
+    setSelectedPlace(null);
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -116,6 +119,19 @@ export default function MapWithMarkers({
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           const location = { lat, lng };
+
+          addMarkers([
+            {
+              id: "current",
+              name: "Current Location",
+              location,
+              address: "Current Location",
+              type: "Current Location",
+            },
+          ]);
+
+          map.setCenter(location);
+          map.setZoom(15);
 
           const geocoder = new google.maps.Geocoder();
           geocoder.geocode({ location }, (results, status) => {
@@ -129,39 +145,7 @@ export default function MapWithMarkers({
                 type: "Current Location",
               };
 
-              const currentLocationMarker = new google.maps.Marker({
-                position: location,
-                map,
-                title: "Current Location",
-                animation: google.maps.Animation.DROP,
-              });
-
-              const infoWindow = new google.maps.InfoWindow({
-                content: `
-                  <div>
-                    <h3 style="margin: 0; font-size: 16px;">Current Location</h3>
-                    <p style="margin: 5px 0 0;">${selectedPlace.address}</p>
-                  </div>
-                `,
-              });
-
-              currentLocationMarker.addListener("click", () => {
-                infoWindow.open({
-                  anchor: currentLocationMarker,
-                  map,
-                });
-              });
-
               setSelectedPlace(selectedPlace);
-              onPlaceSelect?.({
-                latitude: selectedPlace.location.lat,
-                longitude: selectedPlace.location.lng,
-                address: selectedPlace.address,
-              });
-              addMarkers([selectedPlace]);
-
-              map.setCenter(location);
-              map.setZoom(15);
             } else {
               // TODO: show toast
               console.error("Geocode failed due to: " + status);
@@ -179,34 +163,33 @@ export default function MapWithMarkers({
     }
   };
 
-  // Tim Hortons店舗を検索する関数
-  const searchTimHortons = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (!map) return;
+  // Test code for suggesting multiple places↓
+  // const searchTimHortons = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
+  //   if (!map) return;
 
-    const service = new google.maps.places.PlacesService(map);
-    service.textSearch({ query: "Tim Hortons downtown" }, (results, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-        clearMarkers();
+  //   const service = new google.maps.places.PlacesService(map);
+  //   service.textSearch({ query: "Tim Hortons downtown" }, (results, status) => {
+  //     if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+  //       clearMarkers();
 
-        const limitedResults = results.slice(0, 3);
-        const searchResults: Place[] = limitedResults.map((result, index) => ({
-          id: `timhortons-${index}`,
-          name: result.name || "",
-          location: {
-            lat: result.geometry?.location?.lat() || 0,
-            lng: result.geometry?.location?.lng() || 0,
-          },
-          address: result.formatted_address || "",
-          type: "Coffee Shop",
-        }));
+  //       const limitedResults = results.slice(0, 3);
+  //       const searchResults: Place[] = limitedResults.map((result, index) => ({
+  //         id: `timhortons-${index}`,
+  //         name: result.name || "",
+  //         location: {
+  //           lat: result.geometry?.location?.lat() || 0,
+  //           lng: result.geometry?.location?.lng() || 0,
+  //         },
+  //         address: result.formatted_address || "",
+  //         type: "Coffee Shop",
+  //       }));
 
-        addMarkers(searchResults);
-      }
-    });
-  };
+  //       addMarkers(searchResults);
+  //     }
+  //   });
+  // };
 
-  // 場所を検索する関数
   const searchPlace = (e: React.FormEvent) => {
     e.preventDefault();
     if (!map || !place) return;
@@ -229,11 +212,6 @@ export default function MapWithMarkers({
 
         if (searchResults.length > 0) {
           setSelectedPlace(searchResults[0]);
-          onPlaceSelect?.({
-            latitude: searchResults[0].location.lat,
-            longitude: searchResults[0].location.lng,
-            address: searchResults[0].address,
-          });
           map.setCenter(searchResults[0].location);
           map.setZoom(15);
           addMarkers(searchResults);
@@ -253,28 +231,8 @@ export default function MapWithMarkers({
             type="text"
             onChange={(e) => {
               const newPlace = e.target.value;
+              clearMarkers();
               setPlace(newPlace);
-
-              // The Google Maps Places API is triggered whenever the input field changes
-              if (newPlace && map) {
-                const service = new google.maps.places.PlacesService(map);
-                service.textSearch({ query: newPlace }, (results, status) => {
-                  if (
-                    status === google.maps.places.PlacesServiceStatus.OK &&
-                    results
-                  ) {
-                    const result = results[0];
-                    if (result) {
-                      const selectedPlace = {
-                        latitude: result.geometry?.location?.lat() || 0,
-                        longitude: result.geometry?.location?.lng() || 0,
-                        address: result.formatted_address || "",
-                      };
-                      onPlaceSelect(selectedPlace);
-                    }
-                  }
-                });
-              }
             }}
             value={place}
             className="h-12 flex-1 rounded-md border p-2 pl-8 text-base shadow-sm placeholder:text-textSub"
@@ -282,26 +240,15 @@ export default function MapWithMarkers({
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 searchPlace(e);
+                setIsSearching(true);
               }
             }}
           />
         </div>
-        <button
-          className="self-end rounded-full border border-textSub px-4 py-1 text-sm font-bold text-textSub hover:bg-textSub/10"
-          onClick={getCurrentLocation}
-        >
-          Use Current Location
-        </button>
-        <button
-          className="rounded bg-red-500 p-2 text-white"
-          onClick={searchTimHortons}
-        >
-          Show Tim Hortons
-        </button>
         {selectedPlace && (
-          <div className="mt-4 flex flex-col rounded border p-4">
-            <div>
-              <p className="font-semibold">Result:</p>
+          <div className="flex flex-col rounded-md border px-2 py-3">
+            <div className="space-y-2">
+              <p className="font-semibold">Address Search Results:</p>
               <p>{selectedPlace.address}</p>
             </div>
             <Button
@@ -317,12 +264,29 @@ export default function MapWithMarkers({
                 }
                 setPlace(selectedPlace.address);
                 setSelectedPlace(null);
+                setIsSearching(false);
               }}
             >
               Use This Location
             </Button>
           </div>
         )}
+        {!isSearching && (
+          <button
+            className="self-end rounded-full border border-textSub px-4 py-1 text-sm font-bold text-textSub hover:bg-textSub/10"
+            onClick={getCurrentLocation}
+          >
+            Use Current Location
+          </button>
+        )}
+
+        {/* Test code for suggesting multiple places↓ */}
+        {/* <button
+          className="rounded bg-red-500 p-2 text-white"
+          onClick={searchTimHortons}
+        >
+          Show Tim Hortons
+        </button> */}
       </div>
       <div ref={mapRef} className="h-[320px] w-full rounded border"></div>
     </div>
