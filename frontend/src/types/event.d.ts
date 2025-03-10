@@ -50,4 +50,7 @@ export type CreateEventType = {
   address2: string;
   isAskRestrictions: boolean;
   theme: string;
+  // latitude: string;
+  // longitude: string;
+  // address: string;
 };

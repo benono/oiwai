@@ -65,9 +65,9 @@ const formSchema = z
     theme: z.string({
       required_error: "Please select a theme to display.",
     }),
-    latitude: z.string(),
-    longitude: z.string(),
-    address: z.string(),
+    // latitude: z.string(),
+    // longitude: z.string(),
+    // address: z.string(),
   })
   .refine(
     (data) => {
@@ -108,9 +108,9 @@ export default function CreateEventPage() {
       isAskRestrictions: false,
       theme: THEME_CONFIG.orange.color,
       thumbnailUrl: [],
-      latitude: "",
-      longitude: "",
-      address: "",
+      // latitude: "",
+      // longitude: "",
+      // address: "",
     },
   });
 
@@ -141,10 +141,10 @@ export default function CreateEventPage() {
         throw new Error("Please select a valid address.");
       }
 
-      const { latitude, longitude, address } = requestData;
-      if (!latitude || !longitude || !address) {
-        throw new Error("Please select a valid address.");
-      }
+      // const { latitude, longitude, address } = requestData;
+      // if (!latitude || !longitude || !address) {
+      //   throw new Error("Please select a valid address.");
+      // }
 
       const eventDate = new Date(requestData.date);
       const targetDate = eventDate.toISOString().replace(/T.*Z$/, "");
