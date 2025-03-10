@@ -1,12 +1,13 @@
+import { PrismaClient } from "@prisma/client";
 import { Picture } from "../types/picture";
 import { ImageRecognitionService } from "./imageRecognition.service";
 
 export class FaceRecognitionService {
-  //private prisma: PrismaClient;
+  private prisma: PrismaClient;
   private imageRecognition: ImageRecognitionService;
 
   constructor() {
-    //this.prisma = new PrismaClient();
+    this.prisma = new PrismaClient();
     this.imageRecognition = new ImageRecognitionService();
   }
 
@@ -34,19 +35,12 @@ export class FaceRecognitionService {
       const tags = await this.imageRecognition.getImageTags(request);
       console.log(JSON.stringify(tags));
       // Save face tags to DB
-      // await this.prisma.albumImage.update({
-      //   where: {
-      //     albumId_imageUrl: {
-      //       albumId,
-      //       imageUrl: url,
-      //     },
-      //   },
-      //   data: {
-      //     tags: {
-      //       set: tags,
-      //     },
-      //   },
-      // });
+      await this.prisma.facePictures.createMany({
+        data: tags.map((tag) => ({
+          pictureId: Number(tag.id),
+          tag: tag.faces[0].name,
+        })),
+      });
     } catch (error) {
       console.error("Error in tag processing:", error);
       // エラー監視システムへの通知などを追加可能

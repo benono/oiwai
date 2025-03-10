@@ -82,9 +82,7 @@ const uploadAlbumPictures = async (
 
     const pictures = await albumModel.addNewPicture(eventId, user.id, files);
 
-    // 画像のURLを取得
-
-    // 非同期で顔認識処理を開始
+    // Start face recognition processing asynchronously
     const faceRecognitionService = new FaceRecognitionService();
     faceRecognitionService.processImageTagsAsync(eventId.toString(), pictures);
 

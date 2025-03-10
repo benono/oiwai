@@ -15,6 +15,7 @@ interface Face {
 }
 
 interface ImageRecognitionResponse {
+  id: string;
   image: string;
   faces: Face[];
 }
