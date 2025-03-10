@@ -13,6 +13,13 @@ python3 test_local.py
 
 ### build
 ```
+# base image
+docker build -t gcr.io/leangcp-317022/face-recognizer-base:latest -f Dockerfile.base .
+
+# push base image to Google Container Registry
+docker push gcr.io/leangcp-317022/face-recognizer-base:latest
+
+# build image
 gcloud builds submit --config=cloudbuild.yaml .
 ```
 
