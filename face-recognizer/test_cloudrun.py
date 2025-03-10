@@ -5,13 +5,21 @@ def test_post():
     # Cloud FunctionsのトリガーURLに変更
     url = "https://face-recognizer-189967247128.us-west1.run.app"
 
-    # 既存のテストデータ
+    # 新しい形式のテストデータ
     test_data = {
-        "image_urls": [
-            #"https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741385997/amane_e00x7e.png",
-            "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741385997/amane_e00x7e.png",
-            "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741636889/aman-ie_tyxx7x.jpg",
-            "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741636889/amane-snowman_xnfvnk.jpg"
+        "pictures": [
+            {
+                "id": "image1",
+                "image_url": "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741385997/amane_e00x7e.png"
+            },
+            {
+                "id": "image2",
+                "image_url": "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741636889/aman-ie_tyxx7x.jpg"
+            },
+            {
+                "id": "image3",
+                "image_url": "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741636889/amane-snowman_xnfvnk.jpg"
+            }
         ],
         "event_id": "3",
         "use_all_registered": True,

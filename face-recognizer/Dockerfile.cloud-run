@@ -1,12 +1,38 @@
 # Dockerfile.cloud-run
-FROM gcr.io/leangcp-317022/face-recognizer-base:latest
+FROM python:3.10-slim
+
+# システム依存関係のインストール
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Pythonのパッケージマネージャーをアップグレード
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
+# face_recognitionとその依存関係をインストール
+ENV MAKEFLAGS="-j1"
+RUN pip install --no-cache-dir face_recognition==1.3.0
+
+# Pythonの依存関係をインストール
+COPY requirements.txt /tmp/
+RUN grep -v "dlib\|face_recognition" /tmp/requirements.txt > /tmp/requirements_no_face.txt && \
+    pip install --no-cache-dir -r /tmp/requirements_no_face.txt
+
+# functions-frameworkをインストール
+RUN pip install --no-cache-dir functions-framework
+
+# 非rootユーザーを作成
+RUN groupadd -r appuser && useradd -r -g appuser appuser
 
 # workdir
 WORKDIR /app
 
-# copy
-COPY main.py .
-COPY generate_cache.py .
+# 必要なファイルをコピー
+COPY main.py ./
 
 # create cache dir
 ENV CACHE_DIR=/app/face_cache
@@ -15,11 +41,21 @@ RUN mkdir -p ${CACHE_DIR}
 # copy cache files
 COPY face_cache/ ${CACHE_DIR}/
 
-# expose port
-EXPOSE 8080
+# 権限を設定
+RUN chown -R appuser:appuser /app
+
+# 非rootユーザーに切り替え
+USER appuser
 
 # 環境変数の設定
 ENV PORT=8080
+
+# expose port
+EXPOSE ${PORT}
+
+# ヘルスチェックを設定
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost:${PORT}/ || exit 1
 
 # サーバー起動コマンド
 CMD exec functions-framework --target=face_recognizer --port=${PORT}

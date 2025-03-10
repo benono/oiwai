@@ -5,12 +5,19 @@ def test_post():
     url = "http://localhost:8888"
 
     test_data = {
-        "image_urls": [
-            "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741385997/amane_e00x7e.png",
-            #"https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741636889/aman-ie_tyxx7x.jpg",
-            #"https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741636889/amane-snowman_xnfvnk.jpg"
-            "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741636416/nao-mori-small_lc2wpv.jpg",
-            "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741636416/nao-bee-sm_aqsre2.jpg"
+        "pictures": [
+            {
+                "id": "image1",
+                "image_url": "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741385997/amane_e00x7e.png"
+            },
+            {
+                "id": "image2",
+                "image_url": "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741636416/nao-mori-small_lc2wpv.jpg"
+            },
+            {
+                "id": "image3",
+                "image_url": "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741636416/nao-bee-sm_aqsre2.jpg"
+            }
         ],
         "event_id": "3",
         "use_all_registered": True,

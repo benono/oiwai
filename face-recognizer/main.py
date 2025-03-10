@@ -233,10 +233,20 @@ def load_known_faces(known_faces_urls=None, face_ids=None, event_id=None, use_ca
     
     return known_encodings
 
-def recognize_faces_from_urls(image_urls, known_encodings, tolerance=0.5):
+def recognize_faces_from_urls(pictures, known_encodings, tolerance=0.5):
     """Recognize faces from URL images using pre-loaded encodings with timing logs"""
     results = []
     total_start_time = time.time()  # 全体の処理開始時間
+    
+    # pictures から image_urls を抽出
+    if isinstance(pictures, list):
+        # 新しい形式: pictures=[{"id": "1", "image_url": "https://..."}]
+        image_urls = [pic["image_url"] for pic in pictures if "image_url" in pic]
+        image_ids = {pic["image_url"]: pic.get("id", "") for pic in pictures if "image_url" in pic}
+    else:
+        # 後方互換性のため、従来の形式もサポート
+        image_urls = pictures if isinstance(pictures, list) else []
+        image_ids = {url: "" for url in image_urls}
     
     print(f"[TIMING] Starting face recognition for {len(image_urls)} images")
     
@@ -246,7 +256,8 @@ def recognize_faces_from_urls(image_urls, known_encodings, tolerance=0.5):
     
     for i, url in enumerate(image_urls):
         image_start_time = time.time()  # 画像ごとの処理開始時間
-        print(f"[TIMING] Processing image {i+1}/{len(image_urls)}: {url}")
+        image_id = image_ids.get(url, "")
+        print(f"[TIMING] Processing image {i+1}/{len(image_urls)}: {url} (ID: {image_id})")
         
         # 画像ダウンロード時間の計測
         download_start_time = time.time()
@@ -255,7 +266,11 @@ def recognize_faces_from_urls(image_urls, known_encodings, tolerance=0.5):
         print(f"[TIMING] Image download took {download_time:.3f} seconds")
         
         if not temp_path:
-            results.append({"image": url, "error": "Failed to download image"})
+            results.append({
+                "image": url,
+                "id": image_id,
+                "error": "Failed to download image"
+            })
             continue
         
         try:
@@ -274,7 +289,12 @@ def recognize_faces_from_urls(image_urls, known_encodings, tolerance=0.5):
             print(f"[TIMING] Found {len(face_encodings)} faces in image")
             
             if not face_encodings:
-                results.append({"image": url, "name": "No face detected", "coordinates": None})
+                results.append({
+                    "image": url,
+                    "id": image_id,
+                    "name": "No face detected",
+                    "coordinates": None
+                })
                 os.unlink(temp_path)
                 continue
             
@@ -319,7 +339,11 @@ def recognize_faces_from_urls(image_urls, known_encodings, tolerance=0.5):
             matching_time = time.time() - matching_start_time
             print(f"[TIMING] Face matching took {matching_time:.3f} seconds total")
             
-            results.append({"image": url, "faces": image_results})
+            results.append({
+                "image": url,
+                "id": image_id,
+                "faces": image_results
+            })
             
             # 一時ファイル削除
             os.unlink(temp_path)
@@ -329,7 +353,11 @@ def recognize_faces_from_urls(image_urls, known_encodings, tolerance=0.5):
             
         except Exception as e:
             print(f"[TIMING] Error processing image: {str(e)}")
-            results.append({"image": url, "error": str(e)})
+            results.append({
+                "image": url,
+                "id": image_id,
+                "error": str(e)
+            })
             if os.path.exists(temp_path):
                 os.unlink(temp_path)
     
@@ -369,7 +397,12 @@ def face_recognizer(request):
             return (json.dumps({'error': 'No JSON data provided'}), 400, headers)
         
         # パラメータ取得
-        image_urls = request_json.get('image_urls', [])
+        pictures = request_json.get('pictures', [])
+        image_urls = request_json.get('image_urls', [])  # 後方互換性のため
+        
+        # pictures または image_urls のどちらかを使用
+        input_images = pictures if pictures else image_urls
+        
         known_faces_urls = request_json.get('known_faces_urls', None)
         face_ids = request_json.get('face_ids', None)
         use_all_registered = request_json.get('use_all_registered', False)
@@ -378,7 +411,8 @@ def face_recognizer(request):
         use_cache = request_json.get('use_cache', True)
         
         print(f"[TIMING] Request parameters:")
-        print(f"[TIMING] - Images: {len(image_urls)}")
+        print(f"[TIMING] - Pictures: {len(pictures)}")
+        print(f"[TIMING] - Legacy image_urls: {len(image_urls)}")
         print(f"[TIMING] - Event ID: {event_id}")
         print(f"[TIMING] - Use all registered: {use_all_registered}")
         print(f"[TIMING] - Face IDs: {face_ids}")
@@ -386,8 +420,8 @@ def face_recognizer(request):
         print(f"[TIMING] - Tolerance: {tolerance}")
         print(f"[TIMING] - Use cache: {use_cache}")
         
-        if not image_urls:
-            return (json.dumps({'error': 'No image_urls provided'}), 400, headers)
+        if not input_images:
+            return (json.dumps({'error': 'No images provided. Use either pictures or image_urls parameter.'}), 400, headers)
         
         # use_all_registeredの処理
         if use_all_registered:
@@ -409,7 +443,7 @@ def face_recognizer(request):
         
         # 顔認識実行時間の計測
         recognition_start_time = time.time()
-        results = recognize_faces_from_urls(image_urls, known_encodings, tolerance)
+        results = recognize_faces_from_urls(input_images, known_encodings, tolerance)
         recognition_time = time.time() - recognition_start_time
         print(f"[TIMING] Face recognition took {recognition_time:.3f}s")
         
