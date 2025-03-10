@@ -346,7 +346,6 @@ export default function CreateEventPage() {
               </FormItem>
             )}
           />
-
           <div className="flex w-full gap-6">
             <FormField
               control={form.control}
@@ -377,6 +376,12 @@ export default function CreateEventPage() {
                             id="start-time-input"
                             {...field}
                             className="font-base h-12 w-full rounded-md border border-border p-4 pl-10"
+                            onClick={() => {
+                              const startTimeInput = document.getElementById(
+                                "start-time-input",
+                              ) as HTMLInputElement;
+                              startTimeInput?.showPicker();
+                            }}
                           />
                         )}
                       />
@@ -398,10 +403,10 @@ export default function CreateEventPage() {
                         type="button"
                         className="absolute left-3 top-1/2 z-10 -translate-y-1/2 cursor-pointer"
                         onClick={() => {
-                          const startTimeInput = document.getElementById(
+                          const endTimeInput = document.getElementById(
                             "end-time-input",
                           ) as HTMLInputElement;
-                          startTimeInput?.showPicker();
+                          endTimeInput?.showPicker();
                         }}
                       >
                         <Clock size={16} className="text-textSub" />
@@ -415,6 +420,12 @@ export default function CreateEventPage() {
                             id="end-time-input"
                             {...field}
                             className="font-base h-12 w-full rounded-md border border-border p-4 pl-10"
+                            onClick={() => {
+                              const endTimeInput = document.getElementById(
+                                "end-time-input",
+                              ) as HTMLInputElement;
+                              endTimeInput?.showPicker();
+                            }}
                           />
                         )}
                       />
