@@ -20,13 +20,13 @@ export const createInvitation = async ({
   message: string;
 }> => {
   try {
-    console.log(requestData, "送信データ");
-
     const formData = new FormData();
 
     // Append thumbnail if available
-    if (requestData.thumbnail) {
+    if (requestData.thumbnail && requestData.thumbnail.size !== 0) {
       formData.append("thumbnail", requestData.thumbnail);
+    } else {
+      formData.append("thumbnail", "");
     }
 
     if (requestData.event) {
