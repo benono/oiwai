@@ -1,4 +1,5 @@
 import { Router } from "express";
+import albumController from "../controllers/album.controller";
 import eventController from "../controllers/event.controller";
 import eventParticipantsController from "../controllers/eventParticipants.controller";
 import necessitiesModel from "../controllers/necessities.controller";
@@ -11,7 +12,6 @@ import {
   isEventHostOrParticipant,
 } from "../middleware/event.auth";
 import upload from "../middleware/uploadMiddleware";
-
 const eventRouter = Router();
 
 // Routes
@@ -71,6 +71,7 @@ eventRouter.get(
 eventRouter.post(
   "/:event_id/timelines",
   isEventHost,
+  upload.single("profileImage"),
   timelineController.createTimeline,
 );
 eventRouter.put(
@@ -176,4 +177,21 @@ eventRouter.delete(
   thingsToBuyController.deleteThingsToBuy,
 );
 
+//Album
+eventRouter.get(
+  "/:event_id/album",
+  isEventHostOrParticipant,
+  albumController.getAlbumPictures,
+);
+eventRouter.post(
+  "/:event_id/album",
+  isEventHostOrParticipant,
+  upload.array("pictures", 20),
+  albumController.uploadAlbumPictures,
+);
+eventRouter.delete(
+  "/:event_id/album",
+  isEventHostOrParticipant,
+  albumController.deleteAlbumPictures,
+);
 export default eventRouter;
