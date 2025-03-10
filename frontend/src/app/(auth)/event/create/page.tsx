@@ -40,7 +40,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -114,6 +114,14 @@ export default function CreateEventPage() {
     },
   });
 
+  useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
+
   const handleEventTypeChange = (value: string) => {
     setEventType(value);
   };
@@ -122,6 +130,11 @@ export default function CreateEventPage() {
     const file = e.target.files?.[0];
     if (file) {
       form.setValue("thumbnailUrl", [file]);
+
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+
       const imageUrl = URL.createObjectURL(file);
       setImagePreview(imageUrl);
     }
