@@ -4,6 +4,7 @@ import eventController from "../controllers/event.controller";
 import eventParticipantsController from "../controllers/eventParticipants.controller";
 import necessitiesModel from "../controllers/necessities.controller";
 import participantNecessitiesModel from "../controllers/participantNecessities.controller";
+import reviewsController from "../controllers/review.controller";
 import timelineController from "../controllers/timeline.controller";
 import thingsToBuyController from "../controllers/tningsToBuy.controller";
 import requireAuthMiddleware from "../middleware/auth";
@@ -188,4 +189,17 @@ eventRouter.delete(
   isEventHostOrParticipant,
   albumController.deleteAlbumPictures,
 );
+
+//Review
+eventRouter.get(
+  "/:event_id/review",
+  isEventHostOrParticipant,
+  reviewsController.getReviewTexts,
+);
+eventRouter.get(
+  "/:event_id/review-images",
+  isEventHostOrParticipant,
+  reviewsController.getReviewImages,
+);
+
 export default eventRouter;
