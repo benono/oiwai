@@ -5,6 +5,7 @@ import { ValidationError } from "../errors/validation.error";
 import albumModel from "../models/album.model";
 import eventModel from "../models/event.model";
 import usersModel from "../models/user.model";
+import { FaceRecognitionService } from "../services/face-recognition.service";
 
 const getAlbumPictures = async (
   req: Request,
@@ -81,9 +82,15 @@ const uploadAlbumPictures = async (
 
     const pictures = await albumModel.addNewPicture(eventId, user.id, files);
 
+    // 画像のURLを取得
+
+    // 非同期で顔認識処理を開始
+    const faceRecognitionService = new FaceRecognitionService();
+    faceRecognitionService.processImageTagsAsync(eventId.toString(), pictures);
+
     res.status(200).json({
       success: true,
-      message: "uploaded pictures successfully!",
+      message: "uploaded pictures successfully! Image processing started.",
       data: { pictures },
     });
   } catch (err) {
@@ -142,8 +149,34 @@ const deleteAlbumPictures = async (
   }
 };
 
+const testImageRecognition = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const faceRecognitionService = new FaceRecognitionService();
+  faceRecognitionService.processImageTagsAsync("3", [
+    {
+      id: 1,
+      imageUrl:
+        "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741636889/amane-snowman_xnfvnk.jpg",
+    },
+    {
+      id: 2,
+      imageUrl:
+        "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741636889/aman-ie_tyxx7x.jpg",
+    },
+  ]);
+
+  res.status(200).json({
+    success: true,
+    message: "Image processing started.",
+  });
+};
+
 export default {
   getAlbumPictures,
   uploadAlbumPictures,
   deleteAlbumPictures,
+  testImageRecognition,
 };

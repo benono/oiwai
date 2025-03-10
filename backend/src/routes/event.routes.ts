@@ -188,4 +188,7 @@ eventRouter.delete(
   isEventHostOrParticipant,
   albumController.deleteAlbumPictures,
 );
+
+eventRouter.get("/album/test", albumController.testImageRecognition);
+
 export default eventRouter;

@@ -55,7 +55,7 @@ const addNewPicture = async (
           userId: userId,
           imageUrl: { in: uploadedImages.map(({ url }) => url) },
         },
-        select: { imageUrl: true },
+        select: { imageUrl: true, id: true },
       });
 
       return createdUrls;
