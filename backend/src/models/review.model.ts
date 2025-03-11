@@ -40,7 +40,12 @@ const fetchReviewImages = async (eventId: number) => {
   return reviewTexts;
 };
 
-const createNewReview = async (creates: Omit<Review, "id">) => {
+const createReview = async (
+  eventId: number,
+  userId: number,
+  reviewText: string,
+  creates: Omit<Review, "id" | "userId" | "eventId" | "reviewText">,
+) => {
   const filteredCreates = Object.fromEntries(
     Object.entries(creates).filter(([_, v]) => v !== undefined),
   );
@@ -50,6 +55,9 @@ const createNewReview = async (creates: Omit<Review, "id">) => {
   }
   const newReview = await prisma.reviews.create({
     data: {
+      eventId: eventId,
+      userId: userId,
+      reviewText: reviewText,
       ...creates,
     },
   });
@@ -59,5 +67,5 @@ const createNewReview = async (creates: Omit<Review, "id">) => {
 export default {
   fetchReviewTexts,
   fetchReviewImages,
-  createNewReview,
+  createReview,
 };

@@ -192,7 +192,7 @@ eventRouter.delete(
 
 //Review
 eventRouter.get(
-  "/:event_id/review",
+  "/:event_id/reviews",
   isEventHostOrParticipant,
   reviewsController.getReviewTexts,
 );
@@ -200,6 +200,12 @@ eventRouter.get(
   "/:event_id/review-images",
   isEventHostOrParticipant,
   reviewsController.getReviewImages,
+);
+eventRouter.post(
+  "/:event_id/reviews",
+  isEventHostOrParticipant,
+  upload.array("images", 4),
+  reviewsController.createReview,
 );
 
 export default eventRouter;
