@@ -36,6 +36,7 @@ export default function MapWithMarkers({
   const [place, setPlace] = useState<string>("");
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Initialize the map
   useEffect(() => {
@@ -112,6 +113,7 @@ export default function MapWithMarkers({
     setIsSearching(true);
     setPlace("");
     setSelectedPlace(null);
+    setIsLoading(true);
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -151,15 +153,18 @@ export default function MapWithMarkers({
               console.error("Geocode failed due to: " + status);
             }
           });
+          setIsLoading(false);
         },
         (error) => {
           // TODO: show toast
           console.error("Error getting current location:", error);
+          setIsLoading(false);
         },
       );
     } else {
       // TODO: show toast
       console.error("Geolocation is not supported by this browser.");
+      setIsLoading(false);
     }
   };
 
@@ -271,7 +276,7 @@ export default function MapWithMarkers({
             </Button>
           </div>
         )}
-        {!isSearching && (
+        {!isSearching && !isLoading && (
           <button
             className="self-end rounded-full border border-textSub px-4 py-1 text-sm font-bold text-textSub hover:bg-textSub/10"
             onClick={getCurrentLocation}
@@ -279,7 +284,12 @@ export default function MapWithMarkers({
             Use Current Location
           </button>
         )}
-
+        {isLoading && (
+          <div className="flex animate-pulse items-center justify-center gap-2 text-accentGreen">
+            <div className="h-4 w-4 animate-spin rounded-full border-4 border-accentGreen border-t-transparent"></div>
+            <span className="text-sm font-bold">Searching...</span>
+          </div>
+        )}
         {/* Test code for suggesting multiple places↓ */}
         {/* <button
           className="rounded bg-red-500 p-2 text-white"
