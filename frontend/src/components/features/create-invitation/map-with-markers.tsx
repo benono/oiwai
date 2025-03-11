@@ -45,21 +45,33 @@ export default function MapWithMarkers({
   useEffect(() => {
     if (!mapRef.current) return;
 
-    const loader = new Loader({
-      apiKey,
-      version: "weekly",
-      libraries: ["places"],
-    });
+    async function initMap() {
+      try {
+        if (!window.google) {
+          const loader = new Loader({
+            apiKey,
+            version: "weekly",
+          });
 
-    loader.load().then(() => {
-      const mapInstance = new google.maps.Map(mapRef.current!, {
-        center,
-        zoom,
-        mapTypeControl: false,
-      });
-      setMap(mapInstance);
-    });
-  }, [apiKey, center, zoom]);
+          await loader.importLibrary("maps");
+        }
+
+        await google.maps.importLibrary("places");
+
+        const mapInstance = new google.maps.Map(mapRef.current!, {
+          center,
+          zoom,
+          mapTypeControl: false,
+        });
+
+        setMap(mapInstance);
+      } catch (error) {
+        showErrorToast(toast, error, "Failed to load the map.");
+      }
+    }
+
+    initMap();
+  }, [apiKey, center, zoom, toast]);
 
   const clearMarkers = () => {
     markers.forEach((marker) => marker.setMap(null));
@@ -292,7 +304,6 @@ export default function MapWithMarkers({
             Use Current Location
           </button>
         )}
-
         {isLoading && (
           <div className="flex animate-pulse items-center justify-center gap-2 text-accentGreen">
             <div className="h-4 w-4 animate-spin rounded-full border-4 border-accentGreen border-t-transparent"></div>
