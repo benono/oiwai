@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { showErrorToast } from "@/lib/toast/toast-utils";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MapPin } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -38,6 +40,7 @@ export default function MapWithMarkers({
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const { toast } = useToast();
   // Initialize the map
   useEffect(() => {
     if (!mapRef.current) return;
@@ -149,21 +152,26 @@ export default function MapWithMarkers({
 
               setSelectedPlace(selectedPlace);
             } else {
-              // TODO: show toast
-              console.error("Geocode failed due to: " + status);
+              showErrorToast(
+                toast,
+                new Error("Map functionality error"),
+                "Failed to get the current location.",
+              );
             }
           });
           setIsLoading(false);
         },
         (error) => {
-          // TODO: show toast
-          console.error("Error getting current location:", error);
+          showErrorToast(toast, error, "Failed to get the current location.");
           setIsLoading(false);
         },
       );
     } else {
-      // TODO: show toast
-      console.error("Geolocation is not supported by this browser.");
+      showErrorToast(
+        toast,
+        new Error("Map functionality error"),
+        "The map feature is not supported by this browser.",
+      );
       setIsLoading(false);
     }
   };
@@ -284,6 +292,7 @@ export default function MapWithMarkers({
             Use Current Location
           </button>
         )}
+
         {isLoading && (
           <div className="flex animate-pulse items-center justify-center gap-2 text-accentGreen">
             <div className="h-4 w-4 animate-spin rounded-full border-4 border-accentGreen border-t-transparent"></div>
