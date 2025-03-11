@@ -23,9 +23,25 @@ const getReviewTexts = async (
       throw new NotFoundError("Event");
     }
 
+    const { userId } = getAuth(req);
+    if (!userId) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+    const loginUser = await clerkClient.users.getUser(userId);
+    const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
+
+    const user = await usersModel.fetchUSerByEmail(loginEmail);
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
     const reviews = await reviewModel.fetchReviewTexts(eventId);
 
-    res.status(200).json({ data: { reviews } });
+    const hasPostedReview = reviews.some((review) => review.userId === user.id);
+
+    res.status(200).json({ data: { reviews }, hasPostedReview });
   } catch (err) {
     next(err);
   }
