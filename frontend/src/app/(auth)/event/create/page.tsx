@@ -579,7 +579,7 @@ export default function CreateEventPage() {
                       <ThemeOption
                         key={key}
                         value={key}
-                        src={`/images/theme-${key}.png`}
+                        src={`/images/theme-${key}.svg`}
                         alt={`${key} theme`}
                         label={key.charAt(0).toUpperCase() + key.slice(1)}
                       />
