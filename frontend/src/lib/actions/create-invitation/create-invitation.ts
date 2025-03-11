@@ -1,7 +1,7 @@
 "use server";
 
 import { getServerAxiosInstance } from "@/lib/api/axios-server";
-import { CreateEventType } from "@/types/event";
+import { CreateEventType, EventType } from "@/types/event";
 
 import { AxiosError } from "axios";
 
@@ -18,6 +18,7 @@ export const createInvitation = async ({
 }): Promise<{
   success: boolean;
   message: string;
+  data: { event: EventType };
 }> => {
   try {
     const formData = new FormData();

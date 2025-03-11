@@ -190,7 +190,9 @@ export default function CreateEventPage() {
       });
 
       if (response?.success) {
-        router.push(`/event/created`);
+        router.push(
+          `/event/created?eventId=${response.data.event.id}&title=${response.data.event.title}&thumbnailUrl=${response.data.event.thumbnailUrl}`,
+        );
       }
     } catch (err) {
       if (err instanceof Error) {
