@@ -111,20 +111,22 @@ Retrieves one preview picture from each face-recognition tags.
 
 ```json
 {
-  [
-    {
-        "tag": 1,
-        "previewImageUrl": "https://example.com/image.jpg",
-    },
-    {
-        "tag": 2,
-        "previewImageUrl": "https://example.com/image.jpg",
-    },
-    {
-        "tag": 3,
-        "previewImageUrl": "https://example.com/image.jpg",
-    },
-  ]
+  "data": {
+    "tags": [
+      {
+        "tag": "Amane",
+        "previewImageUrl": "https://example.com/image.jpg"
+      },
+      {
+        "tag": "Naomi",
+        "previewImageUrl": "https://example.com/image.jpg"
+      },
+      {
+        "tag": "UserA",
+        "previewImageUrl": "https://example.com/image.jpg"
+      }
+    ]
+  }
 }
 ```
 
@@ -142,10 +144,26 @@ Retrieves pictures organize by face-recognition tag.
 
 ```json
 {
-  [
-    "imageUrl": "https://example.com/image.jpg",
-    "imageUrl": "https://example.com/image.jpg",
-  ]
+  "data": {
+    "pictures": [
+      "https://example.com/image.jpg",
+      "https://example.com/image.jpg"
+    ]
+  }
 }
-
 ```
+
+## Status Codes
+
+| Status Code | Description           |
+| ----------- | --------------------- |
+| 200         | Success               |
+| 400         | Bad Request           |
+| 401         | Unauthorized          |
+| 403         | Forbidden             |
+| 404         | Not Found             |
+| 500         | Internal Server Error |
+
+## Notes
+
+- All API responses are returned in JSON format
