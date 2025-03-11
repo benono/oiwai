@@ -1,23 +1,27 @@
 import { clerkClient, getAuth } from "@clerk/express";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import usersModel from "../models/user.model";
 import { EmailService } from "../utils/email";
 
-const getUserById = async (req: Request, res: Response) => {
-  const { userId } = getAuth(req);
-  if (!userId) {
-    res.status(401).json({ error: "Unauthorized" });
-    return;
-  }
-  const loginUser = await clerkClient.users.getUser(userId);
-  const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
+const getUserById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = getAuth(req);
+    if (!userId) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+    const loginUser = await clerkClient.users.getUser(userId);
+    const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
 
-  const user = await usersModel.fetchUSerByEmail(loginEmail);
-  if (!user) {
-    res.status(404).json({ error: "User not found" });
-    return;
+    const user = await usersModel.fetchUSerByEmail(loginEmail);
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+    res.status(200).json({ user });
+  } catch (err) {
+    next(err);
   }
-  res.status(200).json({ user });
 };
 
 const emailTest = async (req: Request, res: Response) => {
