@@ -12,13 +12,14 @@ type EventCreatedProps = {
   };
 };
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+const getEventUrl = (eventId: string) => `${baseUrl}/rsvp/${eventId}`;
+
 export async function generateMetadata({
   searchParams,
 }: EventCreatedProps): Promise<Metadata> {
   const { eventId, title, thumbnailUrl } = searchParams;
-
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const eventUrl = `${baseUrl}/rsvp/${eventId}`;
+  const eventUrl = getEventUrl(eventId);
 
   return {
     title,
@@ -38,7 +39,7 @@ export default async function EventCreated({
   searchParams,
 }: EventCreatedProps) {
   const { eventId, title, thumbnailUrl } = searchParams;
-  const eventUrl = `https://example.com/rsvp/${eventId}`;
+  const eventUrl = getEventUrl(eventId);
 
   return (
     <section>

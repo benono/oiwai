@@ -597,7 +597,11 @@ export default function CreateEventPage() {
             style={{ backgroundColor: THEME_CONFIG[theme].color }}
             disabled={loading}
           >
-            {loading ? <span>Loading...</span> : "Create invitation"}
+            {loading ? (
+              <span>Creating invitation...</span>
+            ) : (
+              "Create invitation"
+            )}
           </Button>
         </form>
       </Form>
