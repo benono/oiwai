@@ -1,6 +1,5 @@
 import { ShareLinks } from "@/components/features/rsvp/ShareLinks";
 import { Button } from "@/components/ui/button";
-import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -14,26 +13,6 @@ type EventCreatedProps = {
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 const getEventUrl = (eventId: string) => `${baseUrl}/rsvp/${eventId}`;
-
-export async function generateMetadata({
-  searchParams,
-}: EventCreatedProps): Promise<Metadata> {
-  const { eventId, title, thumbnailUrl } = searchParams;
-  const eventUrl = getEventUrl(eventId);
-
-  return {
-    title,
-    description: `Join us for a fun event: ${title}!`,
-    openGraph: {
-      title,
-      description: `A special event "${title}" is happening soon. We'd love to see you there!`,
-      images: [thumbnailUrl],
-      url: eventUrl,
-      type: "website",
-      siteName: "Oiwai",
-    },
-  };
-}
 
 export default async function EventCreated({
   searchParams,
