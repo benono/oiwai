@@ -1,11 +1,19 @@
 "use client";
 
+import { useThemeStore } from "@/store/use-theme-store";
 import { RsvpResponseType } from "@/types/rsvp-response";
 import { useState } from "react";
 import GuestInformationForm from "./guest-information-form";
 import RsvpButton from "./rsvp-button";
 
-const RsvpForm = () => {
+type RSVPFormProps = {
+  theme: string;
+};
+
+const RsvpForm = ({ theme }: RSVPFormProps) => {
+  const { setThemeColor } = useThemeStore();
+  setThemeColor(theme);
+
   const [selection, setSelection] =
     useState<RsvpResponseType["status"]>("ACCEPT");
 

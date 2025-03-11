@@ -21,7 +21,7 @@ const RSVP = async ({ params }: { params: Promise<{ eventId: string }> }) => {
       style={{ backgroundColor: eventData.theme }}
     >
       <EventInformation event={eventData} />
-      <RsvpForm />
+      <RsvpForm theme={eventData.theme} />
     </section>
   );
 };
