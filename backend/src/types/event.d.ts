@@ -5,12 +5,9 @@ interface Event {
   thumbnailUrl: string;
   startTime: Date;
   endTime: Date;
-  country: string;
-  postalCode: string;
-  province: string;
-  city: string;
-  address1: string;
-  address2: string;
+  address: string;
+  latitude: number;
+  longitude: number;
   isAskRestrictions: boolean;
   theme: string;
   noteForThingsToBuy: string;

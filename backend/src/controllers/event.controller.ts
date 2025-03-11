@@ -1,12 +1,12 @@
+import { clerkClient, getAuth } from "@clerk/express";
 import { NextFunction, Request, Response } from "express";
 import { NotFoundError, ValidationError } from "../errors";
 import eventModel from "../models/event.model";
+import userModel from "../models/user.model";
 import Event from "../types/event";
 import MulterFile from "../types/multerfile";
 import uploadImage from "../utils/cloudinary.util";
 import { checkIsRequestFromHost } from "../utils/request-checker";
-import { getAuth, clerkClient } from "@clerk/express";
-import userModel from "../models/user.model";
 
 const defaultThumbnailImage = process.env.DEFAULT_THUMBNAIL_IMAGE || "";
 
@@ -37,8 +37,17 @@ const createNewEvent = async (
   next: NextFunction,
 ) => {
   try {
-    const createdEvent = JSON.parse(req.body.event);
+    const createdEvent = req.body.event;
     const file = req.file as MulterFile;
+
+    if (
+      !createdEvent.latitude ||
+      !createdEvent.longitude ||
+      isNaN(createdEvent.latitude) ||
+      isNaN(createdEvent.longitude)
+    ) {
+      throw new ValidationError("Invalid latitude or longitude");
+    }
 
     const { userId } = getAuth(req);
     if (!userId) {
