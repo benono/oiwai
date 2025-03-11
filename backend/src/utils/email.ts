@@ -12,16 +12,18 @@ export class EmailService {
 
   constructor() {
     this.resend = new Resend(process.env.RESEND_API_KEY);
-    this.from = "oiwai@resend.dev";
+    this.from = "oiwaii@benono.dev";
   }
 
   async sendGuestAttending({
+    to,
     eventName,
     eventDate,
     eventLocation,
     eventId,
     eventImage,
   }: {
+    to: string;
     eventName: string;
     eventDate: string;
     eventLocation: string;
@@ -41,7 +43,7 @@ export class EmailService {
       );
       return await this.resend.emails.send({
         from: this.from,
-        to: "memimei0306@gmail.com",
+        to: to,
         subject: `You're in! ${eventName} details inside 🚀`,
         html,
       });
@@ -52,12 +54,14 @@ export class EmailService {
   }
 
   async sendOneDayBeforeReminder({
+    to,
     eventName,
     eventDate,
     eventId,
     eventImage,
     eventLocation,
   }: {
+    to: string;
     eventName: string;
     eventDate: string;
     eventId: string;
@@ -77,7 +81,7 @@ export class EmailService {
       );
       return await this.resend.emails.send({
         from: this.from,
-        to: "memimei0306@gmail.com",
+        to: to,
         subject: `Reminder for ${eventName}! (1 day before)`,
         html,
       });
@@ -88,6 +92,7 @@ export class EmailService {
   }
 
   async sendDayOfReminder({
+    to,
     eventName,
     eventDate,
     eventId,
@@ -95,6 +100,7 @@ export class EmailService {
     eventLocation,
     eventStartTime,
   }: {
+    to: string;
     eventName: string;
     eventDate: string;
     eventId: string;
@@ -115,7 +121,7 @@ export class EmailService {
       );
       return await this.resend.emails.send({
         from: this.from,
-        to: "memimei0306@gmail.com",
+        to: to,
         subject: `Reminder for ${eventName}! (Today)`,
         html,
       });
@@ -126,9 +132,11 @@ export class EmailService {
   }
 
   async sendAfterEvent({
+    to,
     eventName,
     eventId,
   }: {
+    to: string;
     eventName: string;
     eventId: string;
   }) {
@@ -141,7 +149,7 @@ export class EmailService {
       );
       return await this.resend.emails.send({
         from: this.from,
-        to: "memimei0306@gmail.com",
+        to: to,
         subject: `✨ Thanks for joining ${eventName}! ✨`,
         html,
       });
@@ -152,6 +160,7 @@ export class EmailService {
   }
 
   async sendAnnouncement({
+    to,
     eventName,
     inviterName,
     eventDate,
@@ -161,6 +170,7 @@ export class EmailService {
     inviterImage,
     announcement,
   }: {
+    to: string;
     eventName: string;
     inviterName: string;
     eventDate: string;
@@ -185,7 +195,7 @@ export class EmailService {
       );
       return await this.resend.emails.send({
         from: this.from,
-        to: "memimei0306@gmail.com",
+        to: to,
         subject: `【${eventName}】New Message from the host 📣`,
         html,
       });
