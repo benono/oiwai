@@ -39,6 +39,7 @@ const createNewEvent = async (
   try {
     const createdEvent = req.body.event;
     const file = req.file as MulterFile;
+    delete createdEvent.thumbnail;
 
     if (
       !createdEvent.latitude ||
