@@ -111,23 +111,58 @@ const deletePicture = async (
 };
 
 const fetchPreviewPictures = async (eventId: number) => {
-  const pictures = await prisma.pictures.findMany({
-    where: { eventId: eventId },
-    orderBy: {
-      id: "asc",
+  const facePicturePreview = await prisma.facePictures.groupBy({
+    by: ["tag"],
+    where: {
+      picture: {
+        eventId: eventId,
+      },
+    },
+    _count: {
+      _all: true,
+    },
+    _min: {
+      pictureId: true,
     },
   });
-  return pictures;
+
+  // fetch picture by id
+  const previewWithUrls = await Promise.all(
+    facePicturePreview.map(async (preview) => {
+      const picture = await prisma.pictures.findUnique({
+        where: { id: preview._min.pictureId! },
+        select: { imageUrl: true },
+      });
+
+      return {
+        tag: preview.tag,
+        previewImageUrl: picture?.imageUrl,
+      };
+    }),
+  );
+  return previewWithUrls;
 };
 
 const fetchPicturesByTag = async (eventId: number, tag: string) => {
-  const pictures = await prisma.pictures.findMany({
-    where: { eventId: eventId },
+  const pictures = await prisma.facePictures.findMany({
+    where: {
+      picture: {
+        eventId: eventId,
+      },
+      tag: tag,
+    },
     orderBy: {
       id: "asc",
     },
+    select: {
+      picture: {
+        select: {
+          imageUrl: true,
+        },
+      },
+    },
   });
-  return pictures;
+  return pictures.map((picture) => picture.picture.imageUrl);
 };
 
 export default {

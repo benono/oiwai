@@ -172,11 +172,7 @@ eventRouter.delete(
 );
 
 //Album
-eventRouter.get(
-  "/:event_id/album",
-  isEventHostOrParticipant,
-  albumController.getAlbumPictures,
-);
+eventRouter.get("/:event_id/album", albumController.getAlbumPictures);
 eventRouter.post(
   "/:event_id/album",
   isEventHostOrParticipant,
@@ -189,6 +185,16 @@ eventRouter.delete(
   albumController.deleteAlbumPictures,
 );
 
-eventRouter.get("/album/test", albumController.testImageRecognition);
+eventRouter.get(
+  "/:event_id/album/tags",
+  isEventHostOrParticipant,
+  albumController.getEventFacePicturePreview,
+);
+
+eventRouter.get(
+  "/:event_id/album/tags/:tag",
+  isEventHostOrParticipant,
+  albumController.getPicturesByTag,
+);
 
 export default eventRouter;

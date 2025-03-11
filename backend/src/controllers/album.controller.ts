@@ -147,34 +147,50 @@ const deleteAlbumPictures = async (
   }
 };
 
-const testImageRecognition = async (
+const getEventFacePicturePreview = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  const faceRecognitionService = new FaceRecognitionService();
-  faceRecognitionService.processImageTagsAsync("3", [
-    {
-      id: 1,
-      imageUrl:
-        "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741636889/amane-snowman_xnfvnk.jpg",
-    },
-    {
-      id: 2,
-      imageUrl:
-        "https://res.cloudinary.com/dh0ywk4cn/image/upload/v1741636889/aman-ie_tyxx7x.jpg",
-    },
-  ]);
+  try {
+    const eventId = Number(req.params.event_id);
+    // Validate ID
+    if (isNaN(eventId)) {
+      throw new ValidationError("Invalid event ID");
+    }
+    const result = await albumModel.fetchPreviewPictures(eventId);
+    res.status(200).json({ data: { tags: result } });
+  } catch (err) {
+    next(err);
+  }
+};
 
-  res.status(200).json({
-    success: true,
-    message: "Image processing started.",
-  });
+const getPicturesByTag = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const eventId = Number(req.params.event_id);
+    // Validate ID
+    if (isNaN(eventId)) {
+      throw new ValidationError("Invalid event ID");
+    }
+    const tag = req.params.tag;
+    if (!tag) {
+      throw new ValidationError("Invalid tag");
+    }
+    const result = await albumModel.fetchPicturesByTag(eventId, tag);
+    res.status(200).json({ data: { pictures: result } });
+  } catch (err) {
+    next(err);
+  }
 };
 
 export default {
   getAlbumPictures,
   uploadAlbumPictures,
   deleteAlbumPictures,
-  testImageRecognition,
+  getEventFacePicturePreview,
+  getPicturesByTag,
 };
