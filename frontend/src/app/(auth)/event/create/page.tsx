@@ -40,7 +40,13 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -81,6 +87,8 @@ const formSchema = z
   );
 
 type FormData = z.infer<typeof formSchema>;
+
+const MemoizedMapComponent = React.memo(MapWithMarkers);
 
 export default function CreateEventPage() {
   const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
@@ -209,23 +217,22 @@ export default function CreateEventPage() {
     }
   };
 
-  const handleAddressSelect = (place: {
-    latitude: number;
-    longitude: number;
-    address: string;
-  }) => {
-    console.log(place);
+  const handleAddressSelect = useCallback(
+    (place: { latitude: number; longitude: number; address: string }) => {
+      console.log(place);
 
-    // latitude and longitude
-    // form.setValue("latitude", place.location.lat);
-    // form.setValue("longitude", place.location.lng);
+      // latitude and longitude
+      // form.setValue("latitude", place.location.lat);
+      // form.setValue("longitude", place.location.lng);
 
-    form.setValue("address1", "978 Granville St");
-    form.setValue("city", "Vancouver");
-    form.setValue("province", "BC");
-    form.setValue("postalCode", "V6Z 1L2");
-    form.setValue("country", "Canada");
-  };
+      form.setValue("address1", "978 Granville St");
+      form.setValue("city", "Vancouver");
+      form.setValue("province", "BC");
+      form.setValue("postalCode", "V6Z 1L2");
+      form.setValue("country", "Canada");
+    },
+    [form],
+  );
 
   const ThemeOption = ({
     value,
@@ -250,6 +257,15 @@ export default function CreateEventPage() {
         <p className="text-base font-medium">{label}</p>
       </div>
     </SelectItem>
+  );
+
+  const memoizedMapProps = useMemo(
+    () => ({
+      apiKey: googleMapsApiKey,
+      center: { lat: 49.2827, lng: -123.1207 },
+      onPlaceSelect: handleAddressSelect,
+    }),
+    [googleMapsApiKey, handleAddressSelect],
   );
 
   return (
@@ -502,26 +518,14 @@ export default function CreateEventPage() {
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="Current location">
-                  <MapWithMarkers
-                    apiKey={googleMapsApiKey}
-                    center={{ lat: 49.2827, lng: -123.1207 }}
-                    onPlaceSelect={handleAddressSelect}
-                  />
+                  <MemoizedMapComponent {...memoizedMapProps} />
                 </TabsContent>
                 <TabsContent value="Based on activities">
-                  <MapWithMarkers
-                    apiKey={googleMapsApiKey}
-                    center={{ lat: 49.2827, lng: -123.1207 }}
-                    onPlaceSelect={handleAddressSelect}
-                  />
+                  <MemoizedMapComponent {...memoizedMapProps} />
                 </TabsContent>
               </Tabs>
             ) : (
-              <MapWithMarkers
-                apiKey={googleMapsApiKey}
-                center={{ lat: 49.2827, lng: -123.1207 }}
-                onPlaceSelect={handleAddressSelect}
-              />
+              <MemoizedMapComponent {...memoizedMapProps} />
             )}
           </div>
 
