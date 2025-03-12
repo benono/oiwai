@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 interface ThemeState {
   themeColor: string;
-  setThemeColor: (theme: string | null) => void;
+  setThemeColor: (theme: string) => void;
 }
 
 export const useThemeStore = create<ThemeState>((set) => ({
