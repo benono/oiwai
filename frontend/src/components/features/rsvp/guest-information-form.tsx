@@ -62,6 +62,7 @@ type GuestInformationFormProps = {
 };
 
 const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
+  const defaultColor = "#FF8549";
   const { themeColor } = useThemeStore();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -423,18 +424,18 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                     }}
                     className="ml-auto flex items-center gap-2 rounded-full border bg-white px-4 py-2 text-sm font-bold text-primary hover:opacity-70"
                     style={{
-                      borderColor: themeColor || "#FF8549",
+                      borderColor: themeColor || defaultColor,
                     }}
                   >
                     <Plus
                       size={16}
                       style={{
-                        color: themeColor || "#FF8549",
+                        color: themeColor || defaultColor,
                       }}
                     />
                     <span
                       style={{
-                        color: themeColor || "#FF8549",
+                        color: themeColor || defaultColor,
                       }}
                     >
                       Add person
@@ -535,7 +536,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
             type="submit"
             className="w-full rounded-[40px] py-8 text-lg font-bold hover:opacity-70"
             style={{
-              backgroundColor: themeColor || "#FF8549",
+              backgroundColor: themeColor || defaultColor,
             }}
           >
             Submit
