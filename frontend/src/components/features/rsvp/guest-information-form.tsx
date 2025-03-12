@@ -22,6 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthAxios } from "@/lib/api/axios-client";
 import { showErrorToast } from "@/lib/toast/toast-utils";
+import { useThemeStore } from "@/store/use-theme-store";
 import { RsvpResponseType } from "@/types/rsvp-response";
 import { UserType } from "@/types/user";
 import { useAuth } from "@clerk/clerk-react";
@@ -61,6 +62,7 @@ type GuestInformationFormProps = {
 };
 
 const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
+  const { themeColor } = useThemeStore();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -419,10 +421,24 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                     onClick={() => {
                       setIsAddingPerson(true);
                     }}
-                    className="ml-auto flex items-center gap-2 rounded-full border border-primary bg-white px-4 py-2 text-sm font-bold text-primary hover:opacity-70"
+                    className="ml-auto flex items-center gap-2 rounded-full border bg-white px-4 py-2 text-sm font-bold text-primary hover:opacity-70"
+                    style={{
+                      borderColor: themeColor || "#FF8549",
+                    }}
                   >
-                    <Plus size={16} />
-                    <span>Add person</span>
+                    <Plus
+                      size={16}
+                      style={{
+                        color: themeColor || "#FF8549",
+                      }}
+                    />
+                    <span
+                      style={{
+                        color: themeColor || "#FF8549",
+                      }}
+                    >
+                      Add person
+                    </span>
                   </button>
                 )}
               </div>
@@ -518,6 +534,9 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
           <Button
             type="submit"
             className="w-full rounded-[40px] py-8 text-lg font-bold hover:opacity-70"
+            style={{
+              backgroundColor: themeColor || "#FF8549",
+            }}
           >
             Submit
           </Button>

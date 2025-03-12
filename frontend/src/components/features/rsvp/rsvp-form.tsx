@@ -2,7 +2,7 @@
 
 import { useThemeStore } from "@/store/use-theme-store";
 import { RsvpResponseType } from "@/types/rsvp-response";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GuestInformationForm from "./guest-information-form";
 import RsvpButton from "./rsvp-button";
 
@@ -12,7 +12,10 @@ type RSVPFormProps = {
 
 const RsvpForm = ({ theme }: RSVPFormProps) => {
   const { setThemeColor } = useThemeStore();
-  setThemeColor(theme);
+
+  useEffect(() => {
+    setThemeColor(theme);
+  }, [setThemeColor, theme]);
 
   const [selection, setSelection] =
     useState<RsvpResponseType["status"]>("ACCEPT");
