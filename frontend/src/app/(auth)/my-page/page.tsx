@@ -11,8 +11,7 @@ export default async function MyPage() {
       <section className="grid gap-4">
         <div className="flex items-center justify-between text-text">
           <h2 className="text-base font-bold">Your events</h2>
-          {/* TODO: modify the actual path after implementing the event creation page */}
-          <Link href="/">
+          <Link href="/event/create">
             <Button className="h-auto rounded-full py-1 font-bold shadow-none">
               <PlusIcon />
               Create event

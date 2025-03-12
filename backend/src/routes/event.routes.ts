@@ -15,6 +15,12 @@ import upload from "../middleware/uploadMiddleware";
 const eventRouter = Router();
 
 // Routes
+eventRouter.post(
+  "/",
+  requireAuthMiddleware,
+  upload.single("thumbnail"),
+  eventController.createNewEvent,
+);
 eventRouter.get(
   "/:event_id",
   isEventHostOrParticipant,
