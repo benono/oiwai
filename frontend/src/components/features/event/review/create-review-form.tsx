@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthAxios } from "@/lib/api/axios-client";
 import { showErrorToast } from "@/lib/toast/toast-utils";
-import { ReviewType } from "@/types/review";
+import { CreateReviewResponseType } from "@/types/review";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon, X } from "lucide-react";
 import Image from "next/image";
@@ -28,11 +28,11 @@ const MAX_TOTAL_SIZE_MB = 15;
 const MAX_FILE_COUNT = 4;
 
 type CreateReviewFormProps = {
-  initialReviewData?: ReviewType;
+  initialReviewData?: CreateReviewResponseType;
 };
 
 const reviewSchema = z.object({
-  reviewMessage: z.string().min(1, { message: "Review cannot be empty." }),
+  reviewText: z.string().min(1, { message: "Review cannot be empty." }),
   images: z
     .array(z.instanceof(File))
     // .array(z.any())
@@ -57,7 +57,7 @@ export default function CreateReviewForm({
   const form = useForm<ReviewFormValues>({
     resolver: zodResolver(reviewSchema),
     defaultValues: {
-      reviewMessage: initialReviewData?.message || "",
+      reviewText: initialReviewData?.reviewText || "",
       images: [],
     },
   });
@@ -149,7 +149,7 @@ export default function CreateReviewForm({
       showErrorToast(
         toast,
         new Error("Upload Error"),
-        "Each image must be under 8MB. Please resize and try again.",
+        "Each image must be under 3MB. Please resize and try again.",
       );
       return;
     }
@@ -168,7 +168,7 @@ export default function CreateReviewForm({
     try {
       setIsLoading(true);
       const formData = new FormData();
-      formData.append("reviewMessage", data.reviewMessage);
+      formData.append("reviewText", data.reviewText);
 
       imageFilesData.forEach((file) => {
         formData.append("images", file);
@@ -183,7 +183,7 @@ export default function CreateReviewForm({
       //   })
       // }
 
-      const response = await axios.post(`/event/${eventId}`, formData);
+      const response = await axios.post(`/events/${eventId}/reviews`, formData);
 
       if (response.status !== 200) {
         throw new Error();
@@ -202,7 +202,7 @@ export default function CreateReviewForm({
       <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
         <FormField
           control={control}
-          name="reviewMessage"
+          name="reviewText"
           render={({ field }) => (
             <FormItem className="grid gap-2">
               <FormLabel className="text-sm font-bold">
