@@ -1,5 +1,6 @@
 import { ShareLinks } from "@/components/features/rsvp/ShareLinks";
 import { Button } from "@/components/ui/button";
+import { getInvitationUrl } from "@/lib/helpers/url-utils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,14 +12,11 @@ type EventCreatedProps = {
   };
 };
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-const getEventUrl = (eventId: string) => `${baseUrl}/rsvp/${eventId}`;
-
 export default async function EventCreated({
   searchParams,
 }: EventCreatedProps) {
   const { eventId, title, thumbnailUrl } = await searchParams;
-  const eventUrl = getEventUrl(eventId);
+  const eventUrl = getInvitationUrl(eventId);
 
   return (
     <section>

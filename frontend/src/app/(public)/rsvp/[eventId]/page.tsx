@@ -1,6 +1,7 @@
 import EventInformation from "@/components/features/rsvp/event-information";
 import RsvpForm from "@/components/features/rsvp/rsvp-form";
 import { getEventInformation } from "@/lib/api/event";
+import { getInvitationUrl } from "@/lib/helpers/url-utils";
 import { notFound } from "next/navigation";
 
 export async function generateMetadata({
@@ -9,9 +10,6 @@ export async function generateMetadata({
   params: Promise<{ eventId: string }>;
 }) {
   const { eventId } = await params;
-
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const getEventUrl = (eventId: string) => `${baseUrl}/rsvp/${eventId}`;
 
   const response = await getEventInformation(eventId);
 
@@ -22,7 +20,7 @@ export async function generateMetadata({
       title: response.event.title,
       description: `A special event "${response.event.title}" is happening soon. We'd love to see you there!`,
       images: [{ url: response.event.thumbnailUrl, alt: "Oiwai" }],
-      url: getEventUrl(eventId),
+      url: getInvitationUrl(eventId),
       type: "website",
       siteName: "Oiwai",
     },
