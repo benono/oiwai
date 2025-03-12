@@ -1,12 +1,12 @@
-import { clerkClient, getAuth } from "@clerk/express";
 import { NextFunction, Request, Response } from "express";
 import { NotFoundError, ValidationError } from "../errors";
 import eventModel from "../models/event.model";
-import userModel from "../models/user.model";
 import Event from "../types/event";
 import MulterFile from "../types/multerfile";
 import uploadImage from "../utils/cloudinary.util";
 import { checkIsRequestFromHost } from "../utils/request-checker";
+import { getAuth, clerkClient } from "@clerk/express";
+import userModel from "../models/user.model";
 
 const defaultThumbnailImage = process.env.DEFAULT_THUMBNAIL_IMAGE || "";
 
@@ -37,18 +37,23 @@ const createNewEvent = async (
   next: NextFunction,
 ) => {
   try {
-    const createdEvent = req.body.event;
+    const createdEvent = req.body;
     const file = req.file as MulterFile;
     delete createdEvent.thumbnail;
 
     if (
-      !createdEvent.latitude ||
-      !createdEvent.longitude ||
-      isNaN(createdEvent.latitude) ||
-      isNaN(createdEvent.longitude)
+      createdEvent.latitude == null ||
+      createdEvent.longitude == null ||
+      createdEvent.latitude === "" ||
+      createdEvent.longitude === "" ||
+      isNaN(Number(createdEvent.latitude)) ||
+      isNaN(Number(createdEvent.longitude))
     ) {
       throw new ValidationError("Invalid latitude or longitude");
     }
+
+    createdEvent.latitude = Number(createdEvent.latitude);
+    createdEvent.longitude = Number(createdEvent.longitude);
 
     const { userId } = getAuth(req);
     if (!userId) {
