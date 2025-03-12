@@ -20,15 +20,19 @@ export const createInvitation = async ({
     Object.keys(requestData).forEach((key) => {
       const value = requestData[key as keyof CreateEventType];
 
-      if (key === "thumbnail" && value instanceof File) {
-        if (value && value.size !== 0) {
-          formData.append("thumbnail", value);
-        } else {
-          formData.append("thumbnail", "");
-        }
-      } else if (value !== undefined && value !== null) {
-        formData.append(key, String(value));
+      if (value === undefined || value === null) {
+        return;
       }
+
+      if (key === "thumbnail") {
+        if (value instanceof File) {
+          formData.append(key, value.size !== 0 ? value : "");
+        }
+
+        return;
+      }
+
+      formData.append(key, String(value));
     });
 
     const axiosInstance = await getServerAxiosInstance();

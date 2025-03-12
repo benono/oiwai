@@ -38,5 +38,5 @@ export type CreateEventType = Omit<
   BaseEventType,
   "id" | "hostId" | "noteForNecessities" | "noteForThingsToBuy"
 > & {
-  thumbnail: File | string;
+  thumbnail: File;
 };
