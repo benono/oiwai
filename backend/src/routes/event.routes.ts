@@ -21,11 +21,7 @@ eventRouter.post(
   upload.single("thumbnail"),
   eventController.createNewEvent,
 );
-eventRouter.get(
-  "/:event_id",
-  isEventHostOrParticipant,
-  eventController.getEventById,
-);
+eventRouter.get("/:event_id", eventController.getEventById);
 eventRouter.get(
   "/:event_id/is-host",
   isEventHostOrParticipant,
