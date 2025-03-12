@@ -40,9 +40,8 @@ const RSVP = async ({ params }: { params: Promise<{ eventId: string }> }) => {
     notFound();
   }
 
-  const getBackgroundColor = (theme: string): string => {
-    return THEME_BACKGROUND_COLORS[theme] || THEME_BACKGROUND_COLORS.default;
-  };
+  const getBackgroundColor = (theme: string): string =>
+    THEME_BACKGROUND_COLORS[theme] ?? "#FFFBF2";
 
   return (
     <section
