@@ -17,7 +17,7 @@ const getEventUrl = (eventId: string) => `${baseUrl}/rsvp/${eventId}`;
 export default async function EventCreated({
   searchParams,
 }: EventCreatedProps) {
-  const { eventId, title, thumbnailUrl } = searchParams;
+  const { eventId, title, thumbnailUrl } = await searchParams;
   const eventUrl = getEventUrl(eventId);
 
   return (

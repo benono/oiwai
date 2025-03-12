@@ -3,14 +3,11 @@ export type EventType = {
   hostId: string;
   title: string;
   thumbnailUrl: string;
-  startTime: datetime;
-  endTime: datetime;
-  country: string;
-  postalCode: string;
-  province: string;
-  city: string;
-  address1: string;
-  address2: string;
+  startTime: Date;
+  endTime: Date;
+  latitude: number;
+  longitude: number;
+  address: string;
   isAskRestriction: boolean;
   theme: string;
   noteForNecessities: string;
@@ -37,20 +34,9 @@ export type IconType =
   | "Guest list"
   | "RSVP";
 
-// Create invitation
-export type CreateEventType = {
-  title: string;
-  startTime: string;
-  endTime: string;
-  country: string;
-  postalCode: string;
-  province: string;
-  city: string;
-  address1: string;
-  address2: string;
-  isAskRestrictions: boolean;
-  theme: string;
-  // latitude: string;
-  // longitude: string;
-  // address: string;
+export type CreateEventType = Omit<
+  BaseEventType,
+  "id" | "hostId" | "noteForNecessities" | "noteForThingsToBuy"
+> & {
+  thumbnail: File | string;
 };

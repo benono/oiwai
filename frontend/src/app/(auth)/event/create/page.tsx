@@ -107,18 +107,12 @@ export default function CreateEventPage() {
       title: "",
       startTime: "",
       endTime: "",
-      country: "",
-      postalCode: "",
-      province: "",
-      city: "",
-      address1: "",
-      address2: "",
       isAskRestrictions: false,
       theme: THEME_CONFIG.orange.color,
-      thumbnailUrl: [],
-      // latitude: "",
-      // longitude: "",
-      // address: "",
+      thumbnail: [],
+      latitude: 0,
+      longitude: 0,
+      address: "",
     },
   });
 
@@ -137,7 +131,7 @@ export default function CreateEventPage() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      form.setValue("thumbnailUrl", [file]);
+      form.setValue("thumbnail", [file]);
 
       if (imagePreview) {
         URL.revokeObjectURL(imagePreview);
@@ -157,15 +151,10 @@ export default function CreateEventPage() {
     try {
       setLoading(true);
 
-      const { address1, city, province, postalCode, country } = requestData;
-      if (!address1 || !city || !province || !postalCode || !country) {
+      const { address } = requestData;
+      if (!address) {
         throw new Error("Please select a valid address.");
       }
-
-      // const { latitude, longitude, address } = requestData;
-      // if (!latitude || !longitude || !address) {
-      //   throw new Error("Please select a valid address.");
-      // }
 
       const eventDate = new Date(requestData.date);
       const targetDate = eventDate.toISOString().replace(/T.*Z$/, "");
@@ -183,16 +172,12 @@ export default function CreateEventPage() {
 
       response = await createInvitation({
         requestData: {
-          event: {
-            ...eventDetails,
-            startTime: formattedStartDateTime,
-            endTime: formattedEndDateTime,
-          },
-
+          ...eventDetails,
+          startTime: formattedStartDateTime,
+          endTime: formattedEndDateTime,
           thumbnail:
-            requestData.thumbnailUrl &&
-            requestData.thumbnailUrl[0] instanceof File
-              ? requestData.thumbnailUrl[0]
+            requestData.thumbnail && requestData.thumbnail[0] instanceof File
+              ? requestData.thumbnail[0]
               : new File([], ""),
         },
       });
@@ -219,17 +204,9 @@ export default function CreateEventPage() {
 
   const handleAddressSelect = useCallback(
     (place: { latitude: number; longitude: number; address: string }) => {
-      console.log(place);
-
-      // latitude and longitude
-      // form.setValue("latitude", place.location.lat);
-      // form.setValue("longitude", place.location.lng);
-
-      form.setValue("address1", "978 Granville St");
-      form.setValue("city", "Vancouver");
-      form.setValue("province", "BC");
-      form.setValue("postalCode", "V6Z 1L2");
-      form.setValue("country", "Canada");
+      form.setValue("latitude", place.latitude);
+      form.setValue("longitude", place.longitude);
+      form.setValue("address", place.address);
     },
     [form],
   );
@@ -274,7 +251,7 @@ export default function CreateEventPage() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
             control={form.control}
-            name="thumbnailUrl"
+            name="thumbnail"
             render={({ field }) => (
               <FormItem>
                 <div

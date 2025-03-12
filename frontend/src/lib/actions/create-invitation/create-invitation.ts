@@ -2,19 +2,13 @@
 
 import { getServerAxiosInstance } from "@/lib/api/axios-server";
 import { CreateEventType, EventType } from "@/types/event";
-
 import { AxiosError } from "axios";
-
-type CreateEventRequestType = {
-  event: CreateEventType;
-  thumbnail: File;
-};
 
 // Create invitation
 export const createInvitation = async ({
   requestData,
 }: {
-  requestData: CreateEventRequestType;
+  requestData: CreateEventType;
 }): Promise<{
   success: boolean;
   message: string;
@@ -23,21 +17,19 @@ export const createInvitation = async ({
   try {
     const formData = new FormData();
 
-    // Append thumbnail if available
-    if (requestData.thumbnail && requestData.thumbnail.size !== 0) {
-      formData.append("thumbnail", requestData.thumbnail);
-    } else {
-      formData.append("thumbnail", "");
-    }
+    Object.keys(requestData).forEach((key) => {
+      const value = requestData[key as keyof CreateEventType];
 
-    if (requestData.event) {
-      formData.append(
-        "event",
-        JSON.stringify({
-          ...requestData.event,
-        }),
-      );
-    }
+      if (key === "thumbnail" && value instanceof File) {
+        if (value && value.size !== 0) {
+          formData.append("thumbnail", value);
+        } else {
+          formData.append("thumbnail", "");
+        }
+      } else if (value !== undefined && value !== null) {
+        formData.append(key, String(value));
+      }
+    });
 
     const axiosInstance = await getServerAxiosInstance();
     const response = await axiosInstance.post(`/events`, formData, {
