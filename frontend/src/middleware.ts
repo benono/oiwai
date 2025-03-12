@@ -3,11 +3,17 @@ import { NextResponse } from "next/server";
 
 const isProtectedRoute = createRouteMatcher(["/event(.*)", "/my-page(.*)"]);
 
-const isPublicRoute = createRouteMatcher(["/", "/rsvp(.*)", "/sign-in(.*)"]);
+const isPublicRoute = createRouteMatcher(["/", "/sign-in(.*)"]);
+
+const allowPublicRoutes = createRouteMatcher(["/rsvp(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
   const currentPath = req.nextUrl.pathname;
+
+  if (allowPublicRoutes(req)) {
+    return NextResponse.next();
+  }
 
   if (userId && isPublicRoute(req) && currentPath !== "/my-page") {
     return NextResponse.redirect(new URL("/my-page", req.url));
