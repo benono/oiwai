@@ -52,16 +52,14 @@ import { z } from "zod";
 
 const formSchema = z
   .object({
-    title: z.string().min(1, "Title is required"),
-    startTime: z.string(),
-    endTime: z.string(),
-    country: z.string(),
-    postalCode: z.string(),
-    province: z.string(),
-    city: z.string(),
-    address1: z.string(),
-    address2: z.string(),
-    thumbnailUrl: z.custom<File[]>().optional(),
+    title: z.string().min(1, "Title is required."),
+    startTime: z.string().min(1, {
+      message: "Please select the start time.",
+    }),
+    endTime: z.string().min(1, {
+      message: "Please select the end time.",
+    }),
+    thumbnail: z.custom<File[]>().optional(),
     date: z.date({
       required_error: "A date of an event is required.",
     }),
@@ -71,9 +69,9 @@ const formSchema = z
     theme: z.string({
       required_error: "Please select a theme to display.",
     }),
-    // latitude: z.string(),
-    // longitude: z.string(),
-    // address: z.string(),
+    latitude: z.number(),
+    longitude: z.number(),
+    address: z.string(),
   })
   .refine(
     (data) => {
