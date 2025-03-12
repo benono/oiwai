@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
 interface ThemeState {
-  themeColor: string | null;
+  themeColor: string;
   setThemeColor: (theme: string | null) => void;
 }
 
 export const useThemeStore = create<ThemeState>((set) => ({
-  themeColor: null,
+  themeColor: "",
   setThemeColor: (themeColor) => set({ themeColor }),
 }));
