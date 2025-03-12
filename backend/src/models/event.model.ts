@@ -17,6 +17,24 @@ const fetchEventById = async (id: number) => {
   return event;
 };
 
+const createEvent = async (creates: Omit<Event, "id">) => {
+  const filteredCreates = Object.fromEntries(
+    Object.entries(creates).filter(([_, v]) => v !== undefined),
+  );
+
+  if (Object.keys(filteredCreates).length === 0) {
+    throw new Error("no valid update fields");
+  }
+
+  const event = await prisma.events.create({
+    data: {
+      ...creates,
+    },
+  });
+
+  return event;
+};
+
 const checkIsEventHostOrParticipant = async (
   email: string,
   eventId: number,
@@ -220,6 +238,7 @@ const updateNewNecessities = async (
 
 export default {
   fetchEventById,
+  createEvent,
   updateEvent,
   updateEventWithoutTransaction,
   createNewNecessitiesInfo,

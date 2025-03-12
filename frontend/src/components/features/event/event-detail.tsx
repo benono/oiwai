@@ -47,10 +47,7 @@ export default function EventDetail({ eventData, isHost }: eventDataProps) {
         </div>
         <div className="flex items-center gap-3 px-3">
           <MapPin size={24} />
-          <p className="text-sm font-semibold">
-            {eventData.address1},{eventData.address2}{eventData.city},
-            {eventData.province},{eventData.postalCode},{eventData.country}
-          </p>
+          <p className="text-sm font-semibold">{eventData.address}</p>
         </div>
       </div>
     </section>
