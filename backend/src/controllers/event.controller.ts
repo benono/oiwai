@@ -55,6 +55,12 @@ const createNewEvent = async (
     createdEvent.latitude = Number(createdEvent.latitude);
     createdEvent.longitude = Number(createdEvent.longitude);
 
+    let isAskRestrictions: Boolean = false;
+    if (createdEvent.isAskRestrictions === "true") {
+      isAskRestrictions = true;
+    }
+    createdEvent.isAskRestrictions = isAskRestrictions;
+
     const { userId } = getAuth(req);
     if (!userId) {
       res.status(401).json({ error: "Unauthorized" });
