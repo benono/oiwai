@@ -144,52 +144,85 @@ export default function Post({ eventId }: PostProps) {
   };
 
   return (
-    <form className="grid gap-4">
-      <Button
-        onClick={handlePost}
-        className="h-[36px] w-fit justify-self-end rounded-full px-8 py-2"
-      >
-        {isLoading ? <Loader /> : "Post"}
-      </Button>
-      <ul className="grid grid-cols-3 gap-[2px]">
-        <li
-          className="flex cursor-pointer items-center justify-center hover:opacity-70"
-          onClick={handleFileInputClick}
-        >
-          <input
-            type="file"
-            name="images"
-            accept="image/*"
-            multiple
-            hidden
-            ref={inputImageRef}
-            onChange={handleFileChange}
-          />
-          <PlusIcon size={24} className="text-primary" />
-        </li>
-        {imageUrls.map((image, index) => (
-          <li className="h-[100px] hover:opacity-70" key={index}>
-            <button
-              className="relative h-auto w-full"
-              onClick={(e) => {
-                e.preventDefault();
-                handleDelete(index, image);
-              }}
+    <>
+      <form>
+        {imageUrls.length === 0 && (
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <h1 className="text-lg font-bold">
+                Share cherished moments with everyone
+              </h1>
+              <p className="text-sm font-medium text-textSub">
+                Upload your photos and relive the moments from the event!
+              </p>
+            </div>
+            <li
+              className="flex h-60 w-full cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-textBorderLight bg-background hover:opacity-70"
+              onClick={handleFileInputClick}
             >
-              <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-text/50">
-                <X size={14} className="text-white" />
-              </div>
-              <Image
-                src={image}
-                alt="test"
-                width={124}
-                height={100}
-                className="h-[100px] object-cover"
+              <input
+                type="file"
+                name="images"
+                accept="image/*"
+                multiple
+                hidden
+                ref={inputImageRef}
+                onChange={handleFileChange}
               />
-            </button>
-          </li>
-        ))}
-      </ul>
-    </form>
+              <PlusIcon size={32} className="text-textSub" />
+            </li>
+          </div>
+        )}
+        {imageUrls.length > 0 && (
+          <div className="grid gap-4">
+            <Button
+              onClick={handlePost}
+              className="h-[36px] w-fit justify-self-end rounded-full px-8 py-2"
+            >
+              {isLoading ? <Loader /> : "Post"}
+            </Button>
+            <ul className="grid grid-cols-3 gap-[2px]">
+              <li
+                className="flex cursor-pointer items-center justify-center hover:opacity-70"
+                onClick={handleFileInputClick}
+              >
+                <input
+                  type="file"
+                  name="images"
+                  accept="image/*"
+                  multiple
+                  hidden
+                  ref={inputImageRef}
+                  onChange={handleFileChange}
+                />
+                <PlusIcon size={24} className="text-primary" />
+              </li>
+              {imageUrls.map((image, index) => (
+                <li className="h-[100px] hover:opacity-70" key={index}>
+                  <button
+                    className="relative h-auto w-full"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDelete(index, image);
+                    }}
+                  >
+                    <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-text/50">
+                      <X size={14} className="text-white" />
+                    </div>
+                    <Image
+                      src={image}
+                      alt="test"
+                      width={124}
+                      height={100}
+                      className="h-[100px] w-full object-cover"
+                    />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </form>
+    </>
   );
 }

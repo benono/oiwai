@@ -75,7 +75,7 @@ export default function Picture({
         alt="test"
         width={124}
         height={100}
-        className="h-[100px] object-cover"
+        className="h-[100px] w-full object-cover"
       />
     </li>
   );
