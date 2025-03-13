@@ -6,6 +6,6 @@ export type BasePictureType = {
 };
 
 export type PreviewPictureType = {
-  tag: number;
+  tag: string;
   previewImageUrl: string;
 };

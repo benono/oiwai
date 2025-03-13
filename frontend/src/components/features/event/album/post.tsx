@@ -9,6 +9,7 @@ import Image from "next/image";
 import { notFound, useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import Loader from "./loader";
+import PostGuideline from "./post-guideline";
 
 type PostProps = {
   eventId: string;
@@ -156,7 +157,8 @@ export default function Post({ eventId }: PostProps) {
                 Upload your photos and relive the moments from the event!
               </p>
             </div>
-            <li
+            <PostGuideline />
+            <div
               className="flex h-60 w-full cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-textBorderLight bg-background hover:opacity-70"
               onClick={handleFileInputClick}
             >
@@ -170,7 +172,7 @@ export default function Post({ eventId }: PostProps) {
                 onChange={handleFileChange}
               />
               <PlusIcon size={32} className="text-textSub" />
-            </li>
+            </div>
           </div>
         )}
         {imageUrls.length > 0 && (
@@ -181,6 +183,7 @@ export default function Post({ eventId }: PostProps) {
             >
               {isLoading ? <Loader /> : "Post"}
             </Button>
+            <PostGuideline />
             <ul className="grid grid-cols-3 gap-[2px]">
               <li
                 className="flex cursor-pointer items-center justify-center hover:opacity-70"
