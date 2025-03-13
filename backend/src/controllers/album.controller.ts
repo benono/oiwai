@@ -5,6 +5,7 @@ import { ValidationError } from "../errors/validation.error";
 import albumModel from "../models/album.model";
 import eventModel from "../models/event.model";
 import usersModel from "../models/user.model";
+import { FaceRecognitionService } from "../services/face-recognition.service";
 
 const getAlbumPictures = async (
   req: Request,
@@ -81,9 +82,13 @@ const uploadAlbumPictures = async (
 
     const pictures = await albumModel.addNewPicture(eventId, user.id, files);
 
+    // Start face recognition processing asynchronously
+    const faceRecognitionService = new FaceRecognitionService();
+    faceRecognitionService.processImageTagsAsync(eventId.toString(), pictures);
+
     res.status(200).json({
       success: true,
-      message: "uploaded pictures successfully!",
+      message: "uploaded pictures successfully! Image processing started.",
       data: { pictures },
     });
   } catch (err) {
@@ -142,8 +147,50 @@ const deleteAlbumPictures = async (
   }
 };
 
+const getEventFacePicturePreview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const eventId = Number(req.params.event_id);
+    // Validate ID
+    if (isNaN(eventId)) {
+      throw new ValidationError("Invalid event ID");
+    }
+    const result = await albumModel.fetchPreviewPictures(eventId);
+    res.status(200).json({ data: { tags: result } });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getPicturesByTag = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const eventId = Number(req.params.event_id);
+    // Validate ID
+    if (isNaN(eventId)) {
+      throw new ValidationError("Invalid event ID");
+    }
+    const tag = req.params.tag;
+    if (!tag) {
+      throw new ValidationError("Invalid tag");
+    }
+    const result = await albumModel.fetchPicturesByTag(eventId, tag);
+    res.status(200).json({ data: { pictures: result } });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export default {
   getAlbumPictures,
   uploadAlbumPictures,
   deleteAlbumPictures,
+  getEventFacePicturePreview,
+  getPicturesByTag,
 };

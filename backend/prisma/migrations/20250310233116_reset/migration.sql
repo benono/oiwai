@@ -38,6 +38,7 @@ CREATE TABLE "events" (
     "theme" TEXT NOT NULL,
     "note_for_things_to_buy" TEXT NOT NULL,
     "note_for_necessities" TEXT NOT NULL,
+    "budget" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "events_pkey" PRIMARY KEY ("id")
 );
@@ -87,6 +88,8 @@ CREATE TABLE "things_to_buy" (
     "id" SERIAL NOT NULL,
     "event_id" INTEGER NOT NULL,
     "item" TEXT NOT NULL,
+    "price" INTEGER NOT NULL,
+    "quantity" INTEGER NOT NULL,
     "is_purchase" BOOLEAN NOT NULL,
 
     CONSTRAINT "things_to_buy_pkey" PRIMARY KEY ("id")
@@ -96,7 +99,7 @@ CREATE TABLE "things_to_buy" (
 CREATE TABLE "timelines" (
     "id" SERIAL NOT NULL,
     "event_id" INTEGER NOT NULL,
-    "schedule_item" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "start_time" TIMESTAMP(3) NOT NULL,
     "end_time" TIMESTAMP(3) NOT NULL,
@@ -112,6 +115,27 @@ CREATE TABLE "medias" (
     "image_url" TEXT NOT NULL,
 
     CONSTRAINT "medias_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "pictures" (
+    "id" SERIAL NOT NULL,
+    "event_id" INTEGER NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "image_url" TEXT NOT NULL,
+    "image_public_url" TEXT NOT NULL,
+
+    CONSTRAINT "pictures_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "face_pictures" (
+    "id" SERIAL NOT NULL,
+    "picture_id" INTEGER NOT NULL,
+    "tag" TEXT NOT NULL,
+    "confidence" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+
+    CONSTRAINT "face_pictures_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -158,3 +182,12 @@ ALTER TABLE "timelines" ADD CONSTRAINT "timelines_event_id_fkey" FOREIGN KEY ("e
 
 -- AddForeignKey
 ALTER TABLE "medias" ADD CONSTRAINT "medias_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "pictures" ADD CONSTRAINT "pictures_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "pictures" ADD CONSTRAINT "pictures_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "face_pictures" ADD CONSTRAINT "face_pictures_picture_id_fkey" FOREIGN KEY ("picture_id") REFERENCES "pictures"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -85,6 +85,9 @@ body {
   body {
     @apply bg-slate-200 text-text;
   }
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    display: none;
+  }
 }
 
 .slick-prev {

@@ -1,7 +1,31 @@
 import EventInformation from "@/components/features/rsvp/event-information";
 import RsvpForm from "@/components/features/rsvp/rsvp-form";
 import { getEventInformation } from "@/lib/api/event";
+import { getInvitationUrl } from "@/lib/helpers/url-utils";
 import { notFound } from "next/navigation";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ eventId: string }>;
+}) {
+  const { eventId } = await params;
+
+  const response = await getEventInformation(eventId);
+
+  return {
+    title: response.event.title,
+    description: `Join us for a fun event: ${response.event.title}!`,
+    openGraph: {
+      title: response.event.title,
+      description: `A special event "${response.event.title}" is happening soon. We'd love to see you there!`,
+      images: [{ url: response.event.thumbnailUrl, alt: "Oiwai" }],
+      url: getInvitationUrl(eventId),
+      type: "website",
+      siteName: "Oiwai",
+    },
+  };
+}
 
 const RSVP = async ({ params }: { params: Promise<{ eventId: string }> }) => {
   let eventData = null;

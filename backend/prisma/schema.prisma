@@ -51,12 +51,9 @@ model Events {
   thumbnailUrl String  @map("thumbnail_url")
   startTime DateTime  @map("start_time")
   endTime DateTime  @map("end_time")
-  country String
-  postalCode String  @map("postal_code")
-  province String
-  city String
-  address1 String
-  address2 String
+  address String
+  latitude Float
+  longitude Float
   isAskRestrictions Boolean  @map("is_ask_restrictions")
   theme String
   noteForThingsToBuy String  @map("note_for_things_to_buy")

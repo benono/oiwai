@@ -16,6 +16,12 @@ import upload from "../middleware/uploadMiddleware";
 const eventRouter = Router();
 
 // Routes
+eventRouter.post(
+  "/",
+  requireAuthMiddleware,
+  upload.single("thumbnail"),
+  eventController.createNewEvent,
+);
 eventRouter.get(
   "/:event_id",
   isEventHostOrParticipant,
@@ -173,11 +179,7 @@ eventRouter.delete(
 );
 
 //Album
-eventRouter.get(
-  "/:event_id/album",
-  isEventHostOrParticipant,
-  albumController.getAlbumPictures,
-);
+eventRouter.get("/:event_id/album", albumController.getAlbumPictures);
 eventRouter.post(
   "/:event_id/album",
   isEventHostOrParticipant,
@@ -206,6 +208,17 @@ eventRouter.post(
   isEventHostOrParticipant,
   upload.array("images", 4),
   reviewsController.createReview,
+  
+eventRouter.get(
+  "/:event_id/album/tags",
+  isEventHostOrParticipant,
+  albumController.getEventFacePicturePreview,
+);
+
+eventRouter.get(
+  "/:event_id/album/tags/:tag",
+  isEventHostOrParticipant,
+  albumController.getPicturesByTag,
 );
 
 export default eventRouter;
