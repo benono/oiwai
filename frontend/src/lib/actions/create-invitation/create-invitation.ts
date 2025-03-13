@@ -1,7 +1,12 @@
 "use server";
 
 import { getServerAxiosInstance } from "@/lib/api/axios-server";
-import { CreateEventType, EventType } from "@/types/event";
+import {
+  ActivityLocationRequest,
+  ActivityPlaceType,
+  CreateEventType,
+  EventType,
+} from "@/types/event";
 import { AxiosError } from "axios";
 
 // Create invitation
@@ -50,6 +55,29 @@ export const createInvitation = async ({
       throw new Error(
         "Failed to create the event invitation. Please try again.",
       );
+    }
+  }
+};
+
+// Fetch locations based on activities
+export const getActivityLocations = async ({
+  requestData,
+}: {
+  requestData: ActivityLocationRequest;
+}): Promise<{
+  success: boolean;
+  data: ActivityPlaceType;
+}> => {
+  try {
+    const axiosInstance = await getServerAxiosInstance();
+    const response = await axiosInstance.post(`suggestion/venue`, requestData);
+
+    return response.data;
+  } catch (err) {
+    if (err instanceof AxiosError) {
+      throw new AxiosError(err.response?.data.message);
+    } else {
+      throw new AxiosError("Failed to find the locations. Please try again.");
     }
   }
 };
