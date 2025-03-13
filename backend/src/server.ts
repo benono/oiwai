@@ -6,6 +6,7 @@ import { errorHandler } from "./middleware/error.handler";
 import { requestLogger } from "./middleware/logger";
 import eventsRouter from "./routes/event.routes";
 import rsvpRouter from "./routes/rsvp.routes";
+import suggestionRouter from "./routes/suggestion.route";
 import usersRouter from "./routes/user.routes";
 
 dotenv.config();
@@ -34,7 +35,7 @@ app.use("/api/v1/me", usersRouter);
 app.unsubscribe("/api/events");
 app.use("/api/v1/event", rsvpRouter);
 app.use("/api/v1/events", eventsRouter);
-
+app.use("/api/v1/suggestion", suggestionRouter);
 // Error handling middleware (register last)
 app.use(errorHandler);
 
