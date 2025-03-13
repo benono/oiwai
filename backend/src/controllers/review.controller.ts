@@ -1,7 +1,6 @@
 import { clerkClient, getAuth } from "@clerk/express";
 import { NextFunction, Request, Response } from "express";
-import { NotFoundError, ValidationError } from "../errors";
-import eventModel from "../models/event.model";
+import { NotFoundError, UnauthorizedError, ValidationError } from "../errors";
 import reviewModel from "../models/review.model";
 import usersModel from "../models/user.model";
 import cloudinaryUtil from "../utils/cloudinary.util";
@@ -18,23 +17,16 @@ const getReviewTexts = async (
       throw new ValidationError("Invalid event ID");
     }
 
-    const event = await eventModel.fetchEventById(eventId);
-    if (!event) {
-      throw new NotFoundError("Event");
-    }
-
     const { userId } = getAuth(req);
     if (!userId) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
+      throw new UnauthorizedError();
     }
     const loginUser = await clerkClient.users.getUser(userId);
     const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
 
     const user = await usersModel.fetchUSerByEmail(loginEmail);
     if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
+      throw new NotFoundError("User");
     }
 
     const reviews = await reviewModel.fetchReviewTexts(eventId);
@@ -57,11 +49,6 @@ const getReviewImages = async (
     // Validate ID
     if (isNaN(eventId)) {
       throw new ValidationError("Invalid event ID");
-    }
-
-    const event = await eventModel.fetchEventById(eventId);
-    if (!event) {
-      throw new NotFoundError("Event");
     }
 
     const reslut = await reviewModel.fetchReviewImages(eventId);
@@ -87,23 +74,16 @@ const createReview = async (
       throw new ValidationError("Invalid event ID");
     }
 
-    const event = await eventModel.fetchEventById(eventId);
-    if (!event) {
-      throw new NotFoundError("Event");
-    }
-
     const { userId } = getAuth(req);
     if (!userId) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
+      throw new UnauthorizedError();
     }
     const loginUser = await clerkClient.users.getUser(userId);
     const loginEmail = loginUser.emailAddresses[0]?.emailAddress;
 
     const user = await usersModel.fetchUSerByEmail(loginEmail);
     if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
+      throw new NotFoundError("User");
     }
 
     const folder = `Album${eventId}`;

@@ -208,7 +208,8 @@ eventRouter.post(
   isEventHostOrParticipant,
   upload.array("images", 4),
   reviewsController.createReview,
-  
+);
+
 eventRouter.get(
   "/:event_id/album/tags",
   isEventHostOrParticipant,
