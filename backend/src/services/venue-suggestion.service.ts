@@ -25,10 +25,8 @@ class VenueSuggestionService {
     const keywords = this.mapActivityToKeywords(params.activityType);
     const type = this.mapActivityToPlaceType(params.activityType);
 
-    console.log("Mapped keywords and type:", { keywords, type });
-
-    // 検索範囲を広げる（最大50kmまで）
-    const radius = Math.min(50000, params.radius);
+    // radius: up to 10km
+    const radius = Math.min(10000, params.radius);
 
     const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
     const queryParams = new URLSearchParams({
@@ -39,9 +37,6 @@ class VenueSuggestionService {
       type: type,
     });
 
-    console.log("Request URL:", url);
-    console.log("Request params:", queryParams.toString());
-
     const response = await fetch(`${url}?${queryParams.toString()}`, {
       method: "GET",
       headers: {
@@ -50,19 +45,14 @@ class VenueSuggestionService {
     });
 
     if (response.status !== 200) {
-      console.error("Google Places API error:", response);
       throw new Error(`Google Places API error: ${response.status}`);
     }
 
     let data = (await response.json()) as GooglePlacesResponse;
-    console.log("Google Places API response status:", data.status);
-    console.log("Google Places API results count:", data.results.length);
 
     if (data.results.length === 0) {
-      console.log("No results found. Try adjusting search parameters.");
       // Retry without type parametertry without type parameter
       if (type) {
-        console.log("Trying search without type parameter...");
         queryParams.delete("type");
         const retryResponse = await fetch(`${url}?${queryParams.toString()}`, {
           method: "GET",
@@ -74,7 +64,6 @@ class VenueSuggestionService {
         if (retryResponse.status === 200) {
           const retryData =
             (await retryResponse.json()) as GooglePlacesResponse;
-          console.log("Retry results count:", retryData.results.length);
           data = retryData;
         }
       }
@@ -104,8 +93,6 @@ class VenueSuggestionService {
         fields: "website,formatted_phone_number,opening_hours,price_level",
       });
 
-      console.log("Details request URL:", `${url}?${queryParams.toString()}`);
-
       const response = await fetch(`${url}?${queryParams.toString()}`, {
         method: "GET",
         headers: {
@@ -114,12 +101,10 @@ class VenueSuggestionService {
       });
 
       if (response.status !== 200) {
-        console.log("Details API error status:", response.status);
         return venue;
       }
 
       const details = (await response.json()) as GooglePlaceDetails;
-      console.log("Details API response:", details);
 
       return {
         ...venue,
@@ -129,7 +114,6 @@ class VenueSuggestionService {
         priceLevel: this.formatPriceLevel(details.result?.price_level),
       };
     } catch (error) {
-      console.error("Error fetching place details:", error);
       return venue;
     }
   }

@@ -35,8 +35,6 @@ const getVenueSuggestions = async (
       limit: 3,
     });
 
-    console.log("Received suggestions:", suggestions);
-
     res.status(200).json({
       success: true,
       data: suggestions,
