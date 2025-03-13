@@ -14,7 +14,7 @@ const EventInformation = async ({ event }: { event: EventType }) => {
         width={200}
         height={200}
         alt="thumbnail"
-        className="w-full"
+        className="h-64 w-full object-cover"
         priority
       />
       <div className="space-y-2 px-6">

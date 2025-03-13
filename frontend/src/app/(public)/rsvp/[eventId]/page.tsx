@@ -1,5 +1,6 @@
 import EventInformation from "@/components/features/rsvp/event-information";
 import RsvpForm from "@/components/features/rsvp/rsvp-form";
+import { THEME_BACKGROUND_COLORS } from "@/constants/theme-colors";
 import { getEventInformation } from "@/lib/api/event";
 import { getInvitationUrl } from "@/lib/helpers/url-utils";
 import { notFound } from "next/navigation";
@@ -39,13 +40,16 @@ const RSVP = async ({ params }: { params: Promise<{ eventId: string }> }) => {
     notFound();
   }
 
+  const getBackgroundColor = (theme: string): string =>
+    THEME_BACKGROUND_COLORS[theme] ?? "#FFFBF2";
+
   return (
     <section
       className="max-w-md pb-3 md:mx-auto"
-      style={{ backgroundColor: eventData.theme }}
+      style={{ backgroundColor: getBackgroundColor(eventData.theme) }}
     >
       <EventInformation event={eventData} />
-      <RsvpForm />
+      <RsvpForm theme={eventData.theme} />
     </section>
   );
 };
