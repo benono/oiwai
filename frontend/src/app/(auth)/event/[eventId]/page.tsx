@@ -24,37 +24,39 @@ export default async function EventHome({
   let reviewsData;
 
   const { eventId } = await params;
+
+  try {
+    const [
+      eventResponse,
+      hostStatus,
+      guestList,
+      reviewImagesResult,
+      reviewsResult,
+    ] = await Promise.all([
+      getEventInformation(eventId),
+      checkIsHost(eventId),
+      getWhoIsComing(eventId),
+      getReviewImages(eventId),
+      getAllReviews(eventId),
+    ]);
+
+    eventData = eventResponse.event;
+    isHost = hostStatus;
+    guests = guestList;
+    reviewImages = reviewImagesResult;
+    reviewsData = reviewsResult.data.reviews;
+    hasPostedReview = reviewsResult.hasPostedReview;
+  } catch (err) {
+    console.error(`Error fetching data for event ${eventId}:`, err);
+    notFound();
+  }
+
   const now = new Date();
 
-  try {
-    const response = await getEventInformation(eventId);
-    eventData = response.event;
-
-    isHost = await checkIsHost(eventId);
-
-    // Fetch guest list
-    guests = await getWhoIsComing(eventId);
-  } catch (err) {
-    console.error(err);
-    notFound();
-  }
-
-  const eventStartTime = new Date(eventData.startTime);
-  const reviewStartTime = new Date(eventStartTime);
+  const reviewStartTime = new Date(eventData.startTime);
   reviewStartTime.setHours(reviewStartTime.getHours() + 1);
 
-  const isReviewTime = now >= reviewStartTime;
-
-  try {
-    reviewImages = await getReviewImages(eventId);
-    const reviews = await getAllReviews(eventId);
-    reviewsData = reviews.data.reviews;
-    hasPostedReview = reviews.hasPostedReview;
-    console.log("reviews", reviews)
-  } catch (err) {
-    console.error(err);
-    notFound();
-  }
+  const hasEventStartedOneHourAgo = now >= reviewStartTime;
 
   return (
     <section className="space-y-8">
@@ -69,7 +71,7 @@ export default async function EventHome({
           <MenuIcon key={menu.path} iconDetail={menu} eventId={eventId} />
         ))}
       </section>
-      {!isHost && isReviewTime && !hasPostedReview && (
+      {!isHost && hasEventStartedOneHourAgo && !hasPostedReview && (
         <div className="grid gap-2 rounded-lg border border-textSub bg-background p-4">
           <h2 className="flex items-center gap-2 text-lg font-bold">
             <ThumbsUpIcon size={32} className="text-accentGreen" />
@@ -80,7 +82,7 @@ export default async function EventHome({
           </p>
           <Link
             href={`/event/${eventId}/review/create`}
-            className="justify-self-end rounded-full bg-accentGreen px-5 py-2 text-sm font-bold text-white hover:opacity-70"
+            className="justify-self-end rounded-full bg-accentGreen px-5 py-2 text-sm font-bold text-white hover:opacity-70 mt-2"
           >
             Add your review
           </Link>
@@ -90,10 +92,10 @@ export default async function EventHome({
         <section className="px-3">
           <div className="flex items-center justify-between border-b-[0.2px] border-gray-300 pb-2">
             <h2 className="font-semibold">
-              {isReviewTime ? "Who Was There" : "Who is coming"}
+              {hasEventStartedOneHourAgo ? "Who Was There" : "Who is coming"}
             </h2>
             <p className="text-sm font-medium text-textSub">
-              <span>{guests.length}</span> {isReviewTime ? "Went" : "Going"}
+              <span>{guests.length}</span> {hasEventStartedOneHourAgo ? "Went" : "Going"}
             </p>
           </div>
           <div className="flex w-full flex-col">
@@ -126,7 +128,7 @@ export default async function EventHome({
         </section>
       )}
 
-      {isReviewTime && (
+      {hasEventStartedOneHourAgo && (
         <>
           <ReviewSection
             eventId={eventId}

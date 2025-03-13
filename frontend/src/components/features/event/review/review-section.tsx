@@ -43,7 +43,22 @@ export default async function ReviewSection({
       )}
       {reviewsData.length > 0 && (
         <div className="mt-2 flex flex-col gap-4">
-          <SlickCarousel images={reviewImages} />
+          {reviewImages.length >= 3 ? (
+            <SlickCarousel images={reviewImages} />
+          ) : (
+            <div className="flex gap-1">
+              {reviewImages.map((image) => (
+                <Image
+                  key={image}
+                  src={image}
+                  alt={`Review image - ${image}`}
+                  width={150}
+                  height={120}
+                  className="h-[120px] rounded-xl object-cover p-1"
+                />
+              ))}
+            </div>
+          )}
           <ul className="grid max-h-72 gap-4 overflow-scroll">
             {reviewsData.map((review) => (
               <li key={review.id} className="flex gap-2">
