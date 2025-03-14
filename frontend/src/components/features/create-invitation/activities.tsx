@@ -4,7 +4,7 @@ import { getActivityLocations } from "@/lib/actions/create-invitation/create-inv
 import { useMapStore } from "@/lib/store/use-map-store";
 import { showErrorToast } from "@/lib/toast/toast-utils";
 import { ActivityPlaceType } from "@/types/event";
-import { RefreshCcw } from "lucide-react";
+import { Info, MapPin, RefreshCcw, Star } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
@@ -19,6 +19,7 @@ type ActivitiesProps = {
   }) => void;
   setPlace: (id: string) => void;
 };
+
 interface Place {
   id: string;
   name: string;
@@ -26,6 +27,35 @@ interface Place {
   address: string;
   type: string;
 }
+
+const RatingStars = ({ rating }: { rating: number }) => {
+  const totalStars = 5;
+  const fullStars = Math.round(rating);
+  const emptyStars = totalStars - fullStars;
+
+  return (
+    <div className="flex items-center gap-0.5">
+      {[...Array(fullStars)].map((_, index) => (
+        <Star
+          key={`full-${index}`}
+          className="text-primary"
+          size={16}
+          fill="currentColor"
+        />
+      ))}
+      {[...Array(emptyStars)].map((_, index) => (
+        <Star
+          key={`empty-${index}`}
+          className="text-primary"
+          size={16}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.5}
+        />
+      ))}
+    </div>
+  );
+};
 
 export default function Activities({
   addMarkers,
@@ -185,7 +215,7 @@ export default function Activities({
     <div
       ref={drawerRef}
       className={`absolute bottom-0 w-full rounded-tl-xl rounded-tr-xl bg-background p-4 transition-all duration-500 ease-in-out ${
-        isShowActivityList ? "h-[200px]" : "h-[72px]"
+        isShowActivityList ? "h-[280px]" : "h-[72px]"
       }`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -220,14 +250,74 @@ export default function Activities({
       </div>
       {placeId && selectedPlace ? (
         <div
-          className={`mt-4 overflow-y-auto transition-all duration-500 ease-in-out ${
-            isShowActivityList ? "max-h-[120px]" : "max-h-0"
+          className={`mt-4 h-full overflow-y-auto rounded-lg border border-textBorderLight bg-white p-3 transition-all duration-500 ease-in-out ${
+            isShowActivityList ? "max-h-[210px]" : "max-h-0"
           }`}
         >
-          <p className="text-lg font-semibold">{selectedPlace.name}</p>
-          <p className="text-sm text-gray-600">
-            {selectedPlace.location.address}
-          </p>
+          <Image
+            src={selectedPlace.photos[0]}
+            alt={selectedPlace.name}
+            width={400}
+            height={400}
+            className="mb-3 h-20 w-full rounded-md object-cover"
+          />
+          <div>
+            <p className="text-lg font-bold">{selectedPlace.name}</p>
+            <div className="flex gap-2">
+              <div>
+                <p className="text-xs font-bold">{selectedPlace.rating}</p>
+              </div>
+              <RatingStars rating={selectedPlace.rating ?? 0} />
+              <p className="text-xs font-bold">
+                ({selectedPlace.userRatingsTotal})
+              </p>
+            </div>
+          </div>
+          <div className="mt-3 space-y-4 rounded-lg bg-textBorderLight px-2 py-4">
+            <div className="">
+              <div className="flex items-center gap-1 uppercase text-accentGreen">
+                <MapPin size={16} />
+                <p className="font-bold text-accentGreen">address</p>
+              </div>
+              <p className="text-sm font-medium text-gray-600">
+                {selectedPlace.location.address}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-1 uppercase text-accentGreen">
+                <Info size={16} />
+                <p className="font-bold text-accentGreen">information</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-bold">Opening hours</p>
+                {selectedPlace.openingHours?.map((day, index) => {
+                  return (
+                    <p
+                      key={index}
+                      className="text-sm font-medium text-gray-600"
+                    >
+                      {day}
+                    </p>
+                  );
+                })}
+              </div>
+              <div>
+                <p className="text-sm font-bold">Web site</p>
+                <a
+                  href={selectedPlace.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="break-words text-sm font-bold text-accentBlue underline hover:text-accentBlue/70"
+                >
+                  {selectedPlace.website}
+                </a>
+              </div>
+              <div>
+                <p className="text-sm font-bold">Phone number</p>
+                <p className="text-sm font-medium">{selectedPlace.phone}</p>
+              </div>
+            </div>
+          </div>
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -237,6 +327,7 @@ export default function Activities({
                 address: selectedPlace.location.address,
               });
               setPlace(selectedPlace.location.address);
+              setIsShowActivityList(false);
             }}
           >
             Button
