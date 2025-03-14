@@ -66,7 +66,7 @@ export const getActivityLocations = async ({
   requestData: ActivityLocationRequest;
 }): Promise<{
   success: boolean;
-  data: ActivityPlaceType;
+  data: ActivityPlaceType[];
 }> => {
   try {
     const axiosInstance = await getServerAxiosInstance();

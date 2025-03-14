@@ -43,6 +43,7 @@ export default function MapWithMarkers({
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [placeId, setPlaceId] = useState<string>("");
 
   const { toast } = useToast();
   // Initialize the map
@@ -91,24 +92,33 @@ export default function MapWithMarkers({
         animation: google.maps.Animation.DROP,
       });
 
-      const infoWindow = new google.maps.InfoWindow({
-        content: `
+      clearMarkers();
+      setPlace("");
+
+      if (isSetActivity) {
+        marker.addListener("click", () => {
+          setPlaceId(place.id);
+        });
+      } else {
+        const infoWindow = new google.maps.InfoWindow({
+          content: `
           <div>
             <h3 style="margin: 0; font-size: 16px;">${place.name}</h3>
             <p style="margin: 5px 0 0;">${place.address}</p>
             <p style="margin: 5px 0 0; color: #666;">${place.type}</p>
           </div>
         `,
-      });
-
-      marker.addListener("click", () => {
-        infoWindow.open({ anchor: marker, map });
-        onPlaceSelect?.({
-          latitude: place.location.lat,
-          longitude: place.location.lng,
-          address: place.address,
         });
-      });
+
+        marker.addListener("click", () => {
+          infoWindow.open({ anchor: marker, map });
+          onPlaceSelect?.({
+            latitude: place.location.lat,
+            longitude: place.location.lng,
+            address: place.address,
+          });
+        });
+      }
 
       return marker;
     });
@@ -324,7 +334,13 @@ export default function MapWithMarkers({
       </div>
       <div className="relative">
         <div ref={mapRef} className="h-[320px] w-full rounded border"></div>
-        {isSetActivity && <Activities addMarkers={() => addMarkers} />}
+        {isSetActivity && (
+          <Activities
+            addMarkers={addMarkers}
+            placeId={placeId}
+            setPlaceId={setPlaceId}
+          />
+        )}
       </div>
     </div>
   );
