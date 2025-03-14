@@ -25,6 +25,7 @@ model Users {
   eventParticipants EventParticipants[]
   participantNecessities ParticipantNecessities[]
   pictures Pictures[]
+  reviews Reviews[]
 
   @@map("users")
 }
@@ -58,6 +59,7 @@ model Events {
   noteForThingsToBuy String  @map("note_for_things_to_buy")
   noteForNecessities String  @map("note_for_necessities")
   budget Int  @default(0)
+
   eventParticipants EventParticipants[]
   eventTempParticipant EventTempParticipant[]
   necessities Necessities[]
@@ -65,6 +67,7 @@ model Events {
   timelines Timelines[]
   medias Medias[]
   pictures Pictures[]
+  reviews Reviews[]
 
   @@map("events")
 }
@@ -161,7 +164,7 @@ model Pictures {
   user       Users @relation(fields: [userId], references: [id])
   userId  Int    @map("user_id")
   imageUrl String    @map("image_url")
-  imagePublicId String    @map("image_public_url")
+  imagePublicId String    @map("image_public_id")
 
   facePictures FacePictures[]
 
@@ -175,4 +178,23 @@ model FacePictures {
   tag       String
 
   @@map("face_pictures")
+}
+
+model Reviews {
+  id        Int      @id @default(autoincrement())
+  event       Events @relation(fields: [eventId], references: [id])
+  eventId     Int  @map("event_id")
+  user       Users @relation(fields: [userId], references: [id])
+  userId  Int    @map("user_id")
+  reviewText  String  @map("review_text")
+  imageUrl1 String    @map("image_url1")
+  imageUrl2 String    @map("image_url2")
+  imageUrl3 String    @map("image_url3")
+  imageUrl4 String    @map("image_url4")
+  imagePublicId1 String    @map("image_public_id1")
+  imagePublicId2 String    @map("image_public_id2")
+  imagePublicId3 String    @map("image_public_id3")
+  imagePublicId4 String    @map("image_public_id4")
+
+  @@map("reviews")
 }

@@ -89,3 +89,14 @@ body {
     display: none;
   }
 }
+
+.slick-prev {
+  left: 8px !important;
+  z-index: 99;
+}
+
+.slick-next {
+  right: 8px !important;
+  z-index: 99;
+
+}
