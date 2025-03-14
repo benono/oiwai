@@ -22,6 +22,7 @@ import { useCallback, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Loader from "../album/loader";
+import ReviewImageGuide from "./review-image-guide";
 
 const MAX_FILE_SIZE_MB = 3;
 const MAX_TOTAL_SIZE_MB = 15;
@@ -265,6 +266,7 @@ export default function CreateReviewForm({
               </li>
             ))}
           </ul>
+          <ReviewImageGuide />
 
           <FormMessage>{form.formState.errors.images?.message}</FormMessage>
         </div>
