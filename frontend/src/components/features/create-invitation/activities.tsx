@@ -4,7 +4,7 @@ import { getActivityLocations } from "@/lib/actions/create-invitation/create-inv
 import { showErrorToast } from "@/lib/toast/toast-utils";
 import { RefreshCcw } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // import { Button } from "react-day-picker";
 // import { Bar, ResponsiveContainer } from "recharts";
@@ -41,6 +41,10 @@ export default function Activities({
 }: ActivitiesProps) {
   const [isShowActivityList, setIsShowActivityList] = useState<boolean>(false);
   const { toast } = useToast();
+  const drawerRef = useRef<HTMLDivElement | null>(null);
+  const swipeHandleRef = useRef<HTMLDivElement | null>(null);
+  const startY = useRef<number | null>(null);
+  const isMouseDown = useRef<boolean>(false);
 
   useEffect(() => {
     setIsShowActivityList(true);
@@ -49,7 +53,83 @@ export default function Activities({
   const handleToggleActivityList = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsShowActivityList((prev) => !prev);
+    resetPageScroll(); // ページのスクロールを元に戻す
   };
+
+  const handleSwipeUp = () => {
+    setIsShowActivityList(true);
+  };
+
+  const handleSwipeDown = () => {
+    setIsShowActivityList(false);
+  };
+
+  const resetPageScroll = () => {
+    document.body.style.overflow = "";
+  };
+
+  /* モバイルでのスワイプ処理 */
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!swipeHandleRef.current?.contains(e.target as Node)) return; // アクティビティリスト内ではスワイプを無効にする
+    startY.current = e.touches[0].clientY;
+    document.body.style.overflow = "hidden";
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!startY.current) return;
+    const deltaY = startY.current - e.touches[0].clientY;
+
+    if (Math.abs(deltaY) > 10) {
+      e.preventDefault(); // 10px以上スワイプした場合にページスクロールを無効にする
+    }
+
+    if (deltaY > 30) {
+      handleSwipeUp();
+    } else if (deltaY < -30) {
+      handleSwipeDown();
+    }
+  };
+
+  const handleTouchEnd = () => {
+    startY.current = null;
+    resetPageScroll();
+  };
+
+  /* デスクトップでのドラッグ処理 */
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!swipeHandleRef.current?.contains(e.target as Node)) return; // アクティビティリスト内ではスワイプを無効にする
+    isMouseDown.current = true;
+    startY.current = e.clientY;
+    document.body.style.overflow = "hidden";
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isMouseDown.current || startY.current === null) return;
+    const deltaY = startY.current - e.clientY;
+
+    if (deltaY > 30) {
+      handleSwipeUp();
+    } else if (deltaY < -30) {
+      handleSwipeDown();
+    }
+  };
+
+  const handleMouseUp = () => {
+    isMouseDown.current = false;
+    startY.current = null;
+    resetPageScroll(); // ページのスクロールを元に戻す
+  };
+
+  /* コンポーネントが読み込まれたらマウスイベントを追加し、アンマウント時に削除する */
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, []);
 
   const handleActivitySelect = async (activity: string) => {
     try {
@@ -94,26 +174,40 @@ export default function Activities({
 
   return (
     <div
+      ref={drawerRef}
       className={`absolute bottom-0 w-full rounded-tl-xl rounded-tr-xl bg-background p-4 transition-all duration-500 ease-in-out ${
         isShowActivityList ? "h-[200px]" : "h-[72px]"
       }`}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
-      <div className="h-2 w-full" onClick={handleToggleActivityList}>
-        <div className="mx-auto h-1 w-14 cursor-pointer rounded-md bg-gray-400" />
-      </div>
-      <div className="sticky top-0 z-10 mt-1 flex items-center justify-between bg-background">
-        <p className="text-xl font-bold">Activities</p>
-        <button
-          className="flex items-center justify-between gap-2 rounded-md bg-accentGreen px-2 py-1 font-semibold text-white hover:bg-accentGreen/70"
-          onClick={(e) => {
-            e.preventDefault();
-            setIsShowActivityList(true);
-            setPlaceId("");
-          }}
-        >
-          <RefreshCcw size={16} />
-          <p className="text-sm font-bold">change</p>
-        </button>
+      <div
+        ref={swipeHandleRef}
+        className="cursor-grab select-none"
+        onClick={handleToggleActivityList}
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
+      >
+        <div className="w-full">
+          <div className="mx-auto h-1 w-14 cursor-grab rounded-md bg-gray-400" />
+        </div>
+        <div className="sticky top-0 z-10 mt-1 flex items-center justify-between bg-background">
+          <p className="text-xl font-bold">Activities</p>
+          <button
+            className="flex items-center justify-between gap-2 rounded-md bg-accentGreen px-2 py-1 font-semibold text-white hover:bg-accentGreen/70"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsShowActivityList(true);
+              setPlaceId("");
+              resetPageScroll();
+            }}
+          >
+            <RefreshCcw size={16} />
+            <p className="text-sm font-bold">change</p>
+          </button>
+        </div>
       </div>
       {placeId ? (
         <div
