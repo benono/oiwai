@@ -6,20 +6,6 @@ import { RefreshCcw } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-// import { Button } from "react-day-picker";
-// import { Bar, ResponsiveContainer } from "recharts";
-// import { BarChart, Minus, Plus } from "lucide-react";
-// import {
-//   Drawer,
-//   DrawerClose,
-//   DrawerContent,
-//   DrawerDescription,
-//   DrawerFooter,
-//   DrawerHeader,
-//   DrawerTitle,
-//   DrawerTrigger,
-// } from "@/components/ui/drawer";
-
 type ActivitiesProps = {
   addMarkers: (places: Place[]) => void;
   placeId: string;
@@ -53,7 +39,7 @@ export default function Activities({
   const handleToggleActivityList = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsShowActivityList((prev) => !prev);
-    resetPageScroll(); // ページのスクロールを元に戻す
+    resetPageScroll();
   };
 
   const handleSwipeUp = () => {
@@ -68,9 +54,9 @@ export default function Activities({
     document.body.style.overflow = "";
   };
 
-  /* モバイルでのスワイプ処理 */
+  // Swipe handling for mobile
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!swipeHandleRef.current?.contains(e.target as Node)) return; // アクティビティリスト内ではスワイプを無効にする
+    if (!swipeHandleRef.current?.contains(e.target as Node)) return; // Disable swipe within the activity list
     startY.current = e.touches[0].clientY;
     document.body.style.overflow = "hidden";
   };
@@ -80,7 +66,7 @@ export default function Activities({
     const deltaY = startY.current - e.touches[0].clientY;
 
     if (Math.abs(deltaY) > 10) {
-      e.preventDefault(); // 10px以上スワイプした場合にページスクロールを無効にする
+      e.preventDefault(); // Disable page scrolling if swiped more than 10px
     }
 
     if (deltaY > 30) {
@@ -95,9 +81,9 @@ export default function Activities({
     resetPageScroll();
   };
 
-  /* デスクトップでのドラッグ処理 */
+  // Drag handling for desktop
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!swipeHandleRef.current?.contains(e.target as Node)) return; // アクティビティリスト内ではスワイプを無効にする
+    if (!swipeHandleRef.current?.contains(e.target as Node)) return; // Disable swipe within the activity list
     isMouseDown.current = true;
     startY.current = e.clientY;
     document.body.style.overflow = "hidden";
@@ -117,10 +103,10 @@ export default function Activities({
   const handleMouseUp = () => {
     isMouseDown.current = false;
     startY.current = null;
-    resetPageScroll(); // ページのスクロールを元に戻す
+    resetPageScroll(); // Restore page scrolling
   };
 
-  /* コンポーネントが読み込まれたらマウスイベントを追加し、アンマウント時に削除する */
+  // Add mouse event listeners when the component mounts and remove them on unmount
   useEffect(() => {
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
@@ -156,6 +142,7 @@ export default function Activities({
             type: value.activityType,
           };
         });
+
         setIsShowActivityList(false);
         return addMarkers(places);
       }
@@ -205,7 +192,7 @@ export default function Activities({
             }}
           >
             <RefreshCcw size={16} />
-            <p className="text-sm font-bold">change</p>
+            <p className="text-sm font-bold">Change</p>
           </button>
         </div>
       </div>
