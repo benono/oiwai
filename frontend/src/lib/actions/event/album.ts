@@ -7,7 +7,7 @@ import { AxiosError } from "axios";
 // Fetch all pictures
 export const getAllPictures = async (
   eventId: string,
-  limitNumber?: number
+  limitNumber?: number,
 ): Promise<BasePictureType[]> => {
   try {
     const axiosInstance = await getServerAxiosInstance();
@@ -90,12 +90,14 @@ export const deletePicture = async (
 };
 
 // Get preview picture by tag
-export const getPreviewPictureByTag = async (eventId: string): Promise<PreviewPictureType[]> => {
+export const getPreviewPictureByTag = async (
+  eventId: string,
+): Promise<PreviewPictureType[]> => {
   try {
     const axiosInstance = await getServerAxiosInstance();
     const response = await axiosInstance.get(`events/${eventId}/album/tags`);
 
-    return response.data;
+    return response.data.data.tags;
   } catch (err) {
     if (err instanceof AxiosError) {
       throw new AxiosError(err.response?.data.message);
@@ -109,18 +111,14 @@ export const getPreviewPictureByTag = async (eventId: string): Promise<PreviewPi
 export const getAllPicturesByTag = async (
   eventId: string,
   tag: string,
-): Promise<{
-  success: boolean;
-  message: string;
-  imageUrls: BasePictureType["imageUrl"][];
-}> => {
+): Promise<string[]> => {
   try {
     const axiosInstance = await getServerAxiosInstance();
     const response = await axiosInstance.get(
-      `events/${eventId}/album/${tag}`,
+      `events/${eventId}/album/tags/${tag}`,
     );
 
-    return response.data;
+    return response.data.data.pictures;
   } catch (err) {
     if (err instanceof AxiosError) {
       throw new AxiosError(err.response?.data.message);

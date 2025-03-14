@@ -57,22 +57,12 @@ export default function AllPictures({ eventId }: AllPicturesProps) {
   return (
     <section>
       <ul className="grid grid-cols-3 gap-1">
-        {/* TODO: check if we pass the input data to another page */}
-        {/* <li className="flex h-[100px] w-full cursor-pointer items-center justify-center hover:opacity-70">
-          <input
-            type="file"
-            name="images"
-            multiple
-            hidden
-            // onChange={handleFileChange}
-          />
-          <PlusIcon size={24} className="text-primary" />
-        </li> */}
         <Link
           href="post"
-          className="flex h-[100px] w-full cursor-pointer items-center justify-center hover:opacity-70"
+          className="flex h-[100px] w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-textBorderLight hover:opacity-70"
         >
-          <PlusIcon size={24} className="text-primary" />
+          <PlusIcon size={18} className="text-textSub" />
+          <p className="text-base font-bold text-textSub">Add</p>
         </Link>
         {pictures.map(({ id, isDeletable, imageUrl }) => (
           <Picture

@@ -1,7 +1,6 @@
-// import { getAllPicturesByTag } from "@/lib/actions/event/album";
+import { getAllPicturesByTag } from "@/lib/actions/event/album";
 import Image from "next/image";
-import Link from "next/link";
-// import { notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 
 type FacePicturesProps = {
   eventId: string;
@@ -9,34 +8,35 @@ type FacePicturesProps = {
 };
 
 export default async function FacePictures({
-  // eventId,
-  // tag,
+  eventId,
+  tag,
 }: FacePicturesProps) {
-  // let facePicturesData;
+  let facePicturesData: string[] = [];
 
-  // try {
-  //   facePicturesData = await getAllPicturesByTag(eventId, tag);
+  try {
+    facePicturesData = await getAllPicturesByTag(eventId, tag);
 
-  //   if (!facePicturesData) {
-  //     throw new Error("Face photo data is missing");
-  //   }
-  // } catch (err) {
-  //   console.error(err);
-  //   notFound();
-  // }
+    if (!facePicturesData) {
+      throw new Error(`No face data`);
+    }
+  } catch (err) {
+    console.error(err);
+    notFound();
+  }
 
   return (
     <section className="grid gap-4">
       <div className="grid grid-cols-2 gap-[6px]">
-        <Link href={`album/pictures?tag`} className="w-full cursor-pointer">
+        {facePicturesData.map((picture) => (
           <Image
-            src="/images/sample-thumbnail.png"
+            key={picture}
+            src={picture}
             alt="test"
             width={168}
             height={184}
             className="h-[184px] w-full rounded-lg object-cover"
           />
-        </Link>
+        ))}
       </div>
     </section>
   );
