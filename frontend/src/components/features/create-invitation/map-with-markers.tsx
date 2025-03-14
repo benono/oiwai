@@ -6,6 +6,7 @@ import { showErrorToast } from "@/lib/toast/toast-utils";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MapPin } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import Activities from "./activities";
 
 interface Place {
   id: string;
@@ -19,10 +20,12 @@ interface MapWithMarkersProps {
   apiKey: string;
   center?: { lat: number; lng: number };
   zoom?: number;
+  isSetActivity?: boolean;
   onPlaceSelect: (place: {
     latitude: number;
     longitude: number;
     address: string;
+    isSetActivity?: boolean;
   }) => void;
 }
 
@@ -31,6 +34,7 @@ export default function MapWithMarkers({
   center = { lat: 49.2827, lng: -123.1207 }, // Vancouver City Hall
   zoom = 14,
   onPlaceSelect,
+  isSetActivity,
 }: MapWithMarkersProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -318,7 +322,10 @@ export default function MapWithMarkers({
           Show Tim Hortons
         </button> */}
       </div>
-      <div ref={mapRef} className="h-[320px] w-full rounded border"></div>
+      <div className="relative">
+        <div ref={mapRef} className="h-[320px] w-full rounded border"></div>
+        {isSetActivity && <Activities addMarkers={() => addMarkers} />}
+      </div>
     </div>
   );
 }

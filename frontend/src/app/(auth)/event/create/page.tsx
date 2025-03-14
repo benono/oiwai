@@ -496,7 +496,10 @@ export default function CreateEventPage() {
                   <MemoizedMapComponent {...memoizedMapProps} />
                 </TabsContent>
                 <TabsContent value="Based on activities">
-                  <MemoizedMapComponent {...memoizedMapProps} />
+                  <MemoizedMapComponent
+                    {...memoizedMapProps}
+                    isSetActivity={true}
+                  />
                 </TabsContent>
               </Tabs>
             ) : (
