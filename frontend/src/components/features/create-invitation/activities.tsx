@@ -1,7 +1,9 @@
 import { ACTIVITY_LIST } from "@/constants/activities";
 import { useToast } from "@/hooks/use-toast";
 import { getActivityLocations } from "@/lib/actions/create-invitation/create-invitation";
+import { useMapStore } from "@/lib/store/use-map-store";
 import { showErrorToast } from "@/lib/toast/toast-utils";
+import { ActivityPlaceType } from "@/types/event";
 import { RefreshCcw } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -10,8 +12,13 @@ type ActivitiesProps = {
   addMarkers: (places: Place[]) => void;
   placeId: string;
   setPlaceId: (id: string) => void;
+  onPlaceSelect: (place: {
+    latitude: number;
+    longitude: number;
+    address: string;
+  }) => void;
+  setPlace: (id: string) => void;
 };
-
 interface Place {
   id: string;
   name: string;
@@ -24,6 +31,8 @@ export default function Activities({
   addMarkers,
   placeId,
   setPlaceId,
+  onPlaceSelect,
+  setPlace,
 }: ActivitiesProps) {
   const [isShowActivityList, setIsShowActivityList] = useState<boolean>(false);
   const { toast } = useToast();
@@ -31,9 +40,21 @@ export default function Activities({
   const swipeHandleRef = useRef<HTMLDivElement | null>(null);
   const startY = useRef<number | null>(null);
   const isMouseDown = useRef<boolean>(false);
+  const [selectedPlace, setSelectedPlace1] = useState<ActivityPlaceType | null>(
+    null,
+  );
+  const { suggestedLocations, setSuggestedLocations } = useMapStore();
 
   useEffect(() => {
     setIsShowActivityList(true);
+
+    if (placeId) {
+      const foundPlace = suggestedLocations.find(
+        (place) => place.place_id === placeId,
+      );
+
+      setSelectedPlace1(foundPlace || null);
+    }
   }, [placeId]);
 
   const handleToggleActivityList = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -143,6 +164,7 @@ export default function Activities({
           };
         });
 
+        setSuggestedLocations(response.data);
         setIsShowActivityList(false);
         return addMarkers(places);
       }
@@ -196,15 +218,29 @@ export default function Activities({
           </button>
         </div>
       </div>
-      {placeId ? (
+      {placeId && selectedPlace ? (
         <div
           className={`mt-4 overflow-y-auto transition-all duration-500 ease-in-out ${
             isShowActivityList ? "max-h-[120px]" : "max-h-0"
           }`}
         >
-          Place detail
-          {/* TODO: display place information */}
-          {/* TODO: display a button */}
+          <p className="text-lg font-semibold">{selectedPlace.name}</p>
+          <p className="text-sm text-gray-600">
+            {selectedPlace.location.address}
+          </p>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              onPlaceSelect({
+                latitude: selectedPlace.location.lat,
+                longitude: selectedPlace.location.lng,
+                address: selectedPlace.location.address,
+              });
+              setPlace(selectedPlace.location.address);
+            }}
+          >
+            Button
+          </button>
         </div>
       ) : (
         <ul

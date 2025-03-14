@@ -25,7 +25,6 @@ interface MapWithMarkersProps {
     latitude: number;
     longitude: number;
     address: string;
-    isSetActivity?: boolean;
   }) => void;
 }
 
@@ -339,6 +338,8 @@ export default function MapWithMarkers({
             addMarkers={addMarkers}
             placeId={placeId}
             setPlaceId={setPlaceId}
+            onPlaceSelect={onPlaceSelect}
+            setPlace={setPlace}
           />
         )}
       </div>
