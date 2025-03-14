@@ -6,6 +6,20 @@ import { RefreshCcw } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+// import { Button } from "react-day-picker";
+// import { Bar, ResponsiveContainer } from "recharts";
+// import { BarChart, Minus, Plus } from "lucide-react";
+// import {
+//   Drawer,
+//   DrawerClose,
+//   DrawerContent,
+//   DrawerDescription,
+//   DrawerFooter,
+//   DrawerHeader,
+//   DrawerTitle,
+//   DrawerTrigger,
+// } from "@/components/ui/drawer";
+
 type ActivitiesProps = {
   addMarkers: (places: Place[]) => void;
   placeId: string;
