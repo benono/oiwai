@@ -93,6 +93,7 @@ export default function Activities({
           className="flex items-center justify-between gap-2 rounded-md bg-accentGreen px-2 py-1 font-semibold text-white hover:bg-accentGreen/70"
           onClick={(e) => {
             e.preventDefault();
+            setIsShowActivityList(true);
             setPlaceId("");
           }}
         >
