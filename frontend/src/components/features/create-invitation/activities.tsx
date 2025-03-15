@@ -214,8 +214,8 @@ export default function Activities({
   return (
     <div
       ref={drawerRef}
-      className={`absolute bottom-0 w-full rounded-tl-xl rounded-tr-xl bg-background p-4 transition-all duration-500 ease-in-out ${
-        isShowActivityList ? "h-[280px]" : "h-[72px]"
+      className={`absolute bottom-0 w-full rounded-tl-xl rounded-tr-xl bg-background p-4 pb-0 transition-all duration-500 ease-in-out ${
+        isShowActivityList ? "h-[300px]" : "h-[64px]"
       }`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -250,8 +250,10 @@ export default function Activities({
       </div>
       {placeId && selectedPlace ? (
         <div
-          className={`mt-4 h-full overflow-y-auto rounded-lg border border-textBorderLight bg-white p-3 transition-all duration-500 ease-in-out ${
-            isShowActivityList ? "max-h-[210px]" : "max-h-0"
+          className={`mt-2 overflow-hidden rounded-lg border border-textBorderLight bg-white px-4 py-5 transition-all duration-500 ease-in-out ${
+            isShowActivityList
+              ? "max-h-[220px] overflow-y-auto"
+              : "max-h-0 opacity-0"
           }`}
         >
           <Image
@@ -259,7 +261,7 @@ export default function Activities({
             alt={selectedPlace.name}
             width={400}
             height={400}
-            className="mb-3 h-20 w-full rounded-md object-cover"
+            className="mb-3 h-24 w-full rounded-md object-cover"
           />
           <div>
             <p className="text-lg font-bold">{selectedPlace.name}</p>
@@ -283,40 +285,50 @@ export default function Activities({
                 {selectedPlace.location.address}
               </p>
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-1 uppercase text-accentGreen">
-                <Info size={16} />
-                <p className="font-bold text-accentGreen">information</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm font-bold">Opening hours</p>
-                {selectedPlace.openingHours?.map((day, index) => {
-                  return (
-                    <p
-                      key={index}
-                      className="text-sm font-medium text-gray-600"
+            {(selectedPlace.openingHours ||
+              selectedPlace.website ||
+              selectedPlace.phone) && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-1 uppercase text-accentGreen">
+                  <Info size={16} />
+                  <p className="font-bold text-accentGreen">information</p>
+                </div>
+                {selectedPlace.openingHours && (
+                  <div className="space-y-1">
+                    <p className="text-sm font-bold">Opening hours</p>
+                    {selectedPlace.openingHours?.map((day, index) => {
+                      return (
+                        <p
+                          key={index}
+                          className="text-sm font-medium text-gray-600"
+                        >
+                          {day}
+                        </p>
+                      );
+                    })}
+                  </div>
+                )}
+                {selectedPlace.website && (
+                  <div>
+                    <p className="text-sm font-bold">Web site</p>
+                    <a
+                      href={selectedPlace.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="break-words text-sm font-bold text-accentBlue underline hover:text-accentBlue/70"
                     >
-                      {day}
-                    </p>
-                  );
-                })}
+                      {selectedPlace.website}
+                    </a>
+                  </div>
+                )}
+                {selectedPlace.phone && (
+                  <div>
+                    <p className="text-sm font-bold">Phone number</p>
+                    <p className="text-sm font-medium">{selectedPlace.phone}</p>
+                  </div>
+                )}
               </div>
-              <div>
-                <p className="text-sm font-bold">Web site</p>
-                <a
-                  href={selectedPlace.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="break-words text-sm font-bold text-accentBlue underline hover:text-accentBlue/70"
-                >
-                  {selectedPlace.website}
-                </a>
-              </div>
-              <div>
-                <p className="text-sm font-bold">Phone number</p>
-                <p className="text-sm font-medium">{selectedPlace.phone}</p>
-              </div>
-            </div>
+            )}
           </div>
           <button
             onClick={(e) => {
@@ -336,13 +348,13 @@ export default function Activities({
       ) : (
         <ul
           className={`mt-4 grid grid-cols-3 gap-2 overflow-y-auto transition-all duration-500 ease-in-out ${
-            isShowActivityList ? "max-h-[120px]" : "max-h-0"
+            isShowActivityList ? "max-h-[220px]" : "max-h-0"
           }`}
         >
           {ACTIVITY_LIST.map((activity, index) => (
             <li
               key={index}
-              className="relative flex h-16 cursor-pointer items-center justify-center"
+              className="group relative flex h-16 cursor-pointer items-center justify-center p-3 transition-all duration-300 ease-in-out"
               onClick={() => handleActivitySelect(activity.name)}
             >
               <Image
@@ -351,8 +363,8 @@ export default function Activities({
                 fill
                 className="rounded-md object-cover"
               />
-              <div className="absolute inset-0 rounded-md bg-black/40"></div>
-              <p className="z-10 text-sm font-bold text-white">
+              <div className="absolute inset-0 rounded-md bg-black/40 opacity-70"></div>
+              <p className="z-10 whitespace-normal text-center text-sm font-bold text-white transition-all duration-300 ease-in-out group-hover:scale-105">
                 {activity.name}
               </p>
             </li>

@@ -1,5 +1,9 @@
 export const ACTIVITY_LIST = [
   {
+    name: "Cherry blossom viewing",
+    image: "/images/cherryBlossom.png",
+  },
+  {
     name: "Picnic",
     image: "/images/picnic.png",
   },
@@ -22,9 +26,5 @@ export const ACTIVITY_LIST = [
   {
     name: "Swimming",
     image: "/images/swimming.png",
-  },
-  {
-    name: "Cherry blossom viewing",
-    image: "/images/cherryBlossom.png",
   },
 ];
