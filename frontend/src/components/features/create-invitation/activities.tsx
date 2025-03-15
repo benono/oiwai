@@ -258,7 +258,7 @@ export default function Activities({
             </p>
           )}
           <button
-            className="flex items-center justify-between gap-2 rounded-md bg-accentGreen px-2 py-1 font-semibold text-white hover:bg-accentGreen/70"
+            className="group flex items-center justify-between gap-2 rounded-md bg-accentGreen px-2 py-1 font-semibold text-white"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -269,7 +269,10 @@ export default function Activities({
               isSetActivity("");
             }}
           >
-            <RefreshCcw size={16} />
+            <RefreshCcw
+              size={16}
+              className="transition-transform duration-700 group-hover:rotate-180"
+            />
             <p className="text-sm font-bold">Change</p>
           </button>
         </div>
