@@ -71,11 +71,12 @@ export default function Activities({
   const swipeHandleRef = useRef<HTMLDivElement | null>(null);
   const startY = useRef<number | null>(null);
   const isMouseDown = useRef<boolean>(false);
-  const [selectedPlace, setSelectedPlace1] = useState<ActivityPlaceType | null>(
+  const [selectedPlace, setSelectedPlace] = useState<ActivityPlaceType | null>(
     null,
   );
   const { suggestedLocations, setSuggestedLocations } = useMapStore();
   const activityListRef = useRef<HTMLDivElement | null>(null);
+  const [setActivity, isSetActivity] = useState<string>("");
 
   useEffect(() => {
     setIsShowActivityList(true);
@@ -85,7 +86,7 @@ export default function Activities({
         (place) => place.place_id === placeId,
       );
 
-      setSelectedPlace1(foundPlace || null);
+      setSelectedPlace(foundPlace || null);
     }
   }, [placeId]);
 
@@ -178,6 +179,7 @@ export default function Activities({
 
   const handleActivitySelect = async (activity: string) => {
     try {
+      isSetActivity(activity);
       const response = await getActivityLocations({
         requestData: {
           activity_type: activity,
@@ -240,15 +242,20 @@ export default function Activities({
           <div className="mx-auto h-1 w-14 cursor-grab rounded-md bg-gray-400" />
         </div>
         <div className="sticky top-0 z-10 mt-1 flex items-center justify-between bg-background">
-          <p className="text-xl font-bold">Activities</p>
+          <p className="font-bold">
+            <span>Activity</span>
+            {setActivity && <span>:&nbsp; {setActivity}</span>}
+          </p>
           <button
             className="flex items-center justify-between gap-2 rounded-md bg-accentGreen px-2 py-1 font-semibold text-white hover:bg-accentGreen/70"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               setIsShowActivityList(true);
+              setSelectedPlace(null);
               setPlaceId("");
               resetPageScroll();
+              isSetActivity("");
             }}
           >
             <RefreshCcw size={16} />
@@ -364,7 +371,7 @@ export default function Activities({
           {ACTIVITY_LIST.map((activity, index) => (
             <li
               key={index}
-              className="group relative flex h-16 cursor-pointer items-center justify-center p-3 transition-all duration-300 ease-in-out"
+              className="group relative flex h-16 cursor-pointer items-center justify-center p-3 transition-all duration-100 ease-in-out"
               onClick={() => handleActivitySelect(activity.name)}
             >
               <Image
@@ -375,7 +382,7 @@ export default function Activities({
                 className="rounded-md object-cover"
               />
               <div className="absolute inset-0 rounded-md bg-black/40 opacity-70"></div>
-              <p className="z-10 whitespace-normal text-center text-sm font-bold text-white transition-all duration-300 ease-in-out group-hover:scale-105">
+              <p className="z-10 whitespace-normal text-center text-sm font-bold text-white transition-all duration-100 ease-in-out group-hover:scale-105">
                 {activity.name}
               </p>
             </li>
