@@ -77,6 +77,7 @@ export default function Activities({
   const { suggestedLocations, setSuggestedLocations } = useMapStore();
   const activityListRef = useRef<HTMLDivElement | null>(null);
   const [setActivity, isSetActivity] = useState<string>("");
+  const [isSearchingPlaces, setIsSearchingPlaces] = useState<boolean>(false);
 
   useEffect(() => {
     setIsShowActivityList(true);
@@ -179,6 +180,7 @@ export default function Activities({
 
   const handleActivitySelect = async (activity: string) => {
     try {
+      setIsSearchingPlaces(true);
       isSetActivity(activity);
       const response = await getActivityLocations({
         requestData: {
@@ -218,6 +220,8 @@ export default function Activities({
           "An error occurred while processing your request. Please try again.",
         );
       }
+    } finally {
+      setIsSearchingPlaces(false);
     }
   };
 
@@ -242,10 +246,17 @@ export default function Activities({
           <div className="mx-auto h-1 w-14 cursor-grab rounded-md bg-gray-400" />
         </div>
         <div className="sticky top-0 z-10 mt-1 flex items-center justify-between bg-background">
-          <p className="font-bold">
-            <span>Activity</span>
-            {setActivity && <span>:&nbsp; {setActivity}</span>}
-          </p>
+          {isSearchingPlaces ? (
+            <div className="flex animate-pulse items-center justify-center gap-2 text-accentGreen">
+              <div className="h-4 w-4 animate-spin rounded-full border-4 border-accentGreen border-t-transparent"></div>
+              <span className="font-bold">Searching locations...</span>
+            </div>
+          ) : (
+            <p className="font-bold">
+              {setActivity ? <span>Activity</span> : <span>Activities</span>}
+              {setActivity && <span>:&nbsp; {setActivity}</span>}
+            </p>
+          )}
           <button
             className="flex items-center justify-between gap-2 rounded-md bg-accentGreen px-2 py-1 font-semibold text-white hover:bg-accentGreen/70"
             onClick={(e) => {
