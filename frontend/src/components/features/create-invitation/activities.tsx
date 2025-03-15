@@ -4,80 +4,40 @@ import { useToast } from "@/hooks/use-toast";
 import { getActivityLocations } from "@/lib/actions/create-invitation/create-invitation";
 import { useMapStore } from "@/lib/store/use-map-store";
 import { showErrorToast } from "@/lib/toast/toast-utils";
-import { ActivityPlaceType } from "@/types/event";
-import { Info, MapPin, RefreshCcw, Star } from "lucide-react";
+import { ActivityPlaceType, LocationType, PlaceType } from "@/types/map";
+import { Info, MapPin, RefreshCcw } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import RatingStars from "./rating-stars";
 
 type ActivitiesProps = {
-  addMarkers: (places: Place[]) => void;
-  placeId: string;
-  setPlaceId: (id: string) => void;
-  onPlaceSelect: (place: {
-    latitude: number;
-    longitude: number;
-    address: string;
-  }) => void;
-  setPlace: (id: string) => void;
-};
-
-interface Place {
-  id: string;
-  name: string;
-  location: { lat: number; lng: number };
-  address: string;
-  type: string;
-}
-
-const RatingStars = ({ rating }: { rating: number }) => {
-  const totalStars = 5;
-  const fullStars = Math.round(rating);
-  const emptyStars = totalStars - fullStars;
-
-  return (
-    <div className="flex items-center gap-0.5">
-      {[...Array(fullStars)].map((_, index) => (
-        <Star
-          key={`full-${index}`}
-          className="text-primary"
-          size={16}
-          fill="currentColor"
-        />
-      ))}
-      {[...Array(emptyStars)].map((_, index) => (
-        <Star
-          key={`empty-${index}`}
-          className="text-primary"
-          size={16}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={1.5}
-        />
-      ))}
-    </div>
-  );
+  addMarkers: (places: PlaceType[]) => void;
+  onPlaceSelect: (place: LocationType) => void;
 };
 
 export default function Activities({
   addMarkers,
-  placeId,
-  setPlaceId,
   onPlaceSelect,
-  setPlace,
 }: ActivitiesProps) {
   const [isShowActivityList, setIsShowActivityList] = useState<boolean>(false);
+  const [selectedActivityName, setSelectedActivityName] = useState<string>("");
+  const [isSearchingPlaces, setIsSearchingPlaces] = useState<boolean>(false);
+  const [selectedPlace, setSelectedPlace] = useState<ActivityPlaceType | null>(
+    null,
+  );
   const { toast } = useToast();
   const drawerRef = useRef<HTMLDivElement | null>(null);
   const swipeHandleRef = useRef<HTMLDivElement | null>(null);
   const startY = useRef<number | null>(null);
   const isMouseDown = useRef<boolean>(false);
-  const [selectedPlace, setSelectedPlace] = useState<ActivityPlaceType | null>(
-    null,
-  );
-  const { suggestedLocations, setSuggestedLocations } = useMapStore();
+  const {
+    suggestedLocations,
+    setSuggestedLocations,
+    placeId,
+    setPlaceId,
+    setPlace,
+  } = useMapStore();
   const activityListRef = useRef<HTMLDivElement | null>(null);
-  const [setActivity, isSetActivity] = useState<string>("");
-  const [isSearchingPlaces, setIsSearchingPlaces] = useState<boolean>(false);
 
   useEffect(() => {
     setIsShowActivityList(true);
@@ -91,6 +51,7 @@ export default function Activities({
     }
   }, [placeId]);
 
+  // Effect to scroll activity list to the top when it shows
   useEffect(() => {
     if (isShowActivityList && activityListRef.current) {
       activityListRef.current.scrollTop = 0;
@@ -103,21 +64,17 @@ export default function Activities({
     resetPageScroll();
   };
 
-  const handleSwipeUp = () => {
-    setIsShowActivityList(true);
+  // Swipe and drag handling
+  const handleSwipe = (deltaY: number) => {
+    if (deltaY > 30) {
+      setIsShowActivityList(true);
+    } else if (deltaY < -30) {
+      setIsShowActivityList(false);
+    }
   };
 
-  const handleSwipeDown = () => {
-    setIsShowActivityList(false);
-  };
-
-  const resetPageScroll = () => {
-    document.body.style.overflow = "";
-  };
-
-  // Swipe handling for mobile
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!swipeHandleRef.current?.contains(e.target as Node)) return; // Disable swipe within the activity list
+    if (!swipeHandleRef.current?.contains(e.target as Node)) return;
     startY.current = e.touches[0].clientY;
     document.body.style.overflow = "hidden";
   };
@@ -125,16 +82,8 @@ export default function Activities({
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (!startY.current) return;
     const deltaY = startY.current - e.touches[0].clientY;
-
-    if (Math.abs(deltaY) > 10) {
-      e.preventDefault(); // Disable page scrolling if swiped more than 10px
-    }
-
-    if (deltaY > 30) {
-      handleSwipeUp();
-    } else if (deltaY < -30) {
-      handleSwipeDown();
-    }
+    e.preventDefault();
+    handleSwipe(deltaY);
   };
 
   const handleTouchEnd = () => {
@@ -142,9 +91,8 @@ export default function Activities({
     resetPageScroll();
   };
 
-  // Drag handling for desktop
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!swipeHandleRef.current?.contains(e.target as Node)) return; // Disable swipe within the activity list
+    if (!swipeHandleRef.current?.contains(e.target as Node)) return;
     isMouseDown.current = true;
     startY.current = e.clientY;
     document.body.style.overflow = "hidden";
@@ -153,35 +101,34 @@ export default function Activities({
   const handleMouseMove = (e: MouseEvent) => {
     if (!isMouseDown.current || startY.current === null) return;
     const deltaY = startY.current - e.clientY;
-
-    if (deltaY > 30) {
-      handleSwipeUp();
-    } else if (deltaY < -30) {
-      handleSwipeDown();
-    }
+    handleSwipe(deltaY);
   };
 
   const handleMouseUp = () => {
     isMouseDown.current = false;
     startY.current = null;
-    resetPageScroll(); // Restore page scrolling
+    resetPageScroll();
   };
 
-  // Add mouse event listeners when the component mounts and remove them on unmount
   useEffect(() => {
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
-
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
   }, []);
 
+  const resetPageScroll = () => {
+    document.body.style.overflow = "";
+  };
+
+  // Handle activity selection and fetch places
   const handleActivitySelect = async (activity: string) => {
     try {
       setIsSearchingPlaces(true);
-      isSetActivity(activity);
+      setSelectedActivityName(activity);
+
       const response = await getActivityLocations({
         requestData: {
           activity_type: activity,
@@ -196,19 +143,18 @@ export default function Activities({
       }
 
       if (response.data) {
-        const places = response.data.map((value) => {
-          return {
-            id: value.place_id,
-            name: value.name,
-            location: { lat: value.location.lat, lng: value.location.lng },
-            address: value.location.address,
-            type: value.activityType,
-          };
-        });
+        const suggestedPlaces = response.data.map((value) => ({
+          id: value.place_id,
+          name: value.name,
+          location: { lat: value.location.lat, lng: value.location.lng },
+          address: value.location.address,
+          type: value.activityType,
+        }));
 
         setSuggestedLocations(response.data);
         setIsShowActivityList(false);
-        return addMarkers(places);
+
+        return addMarkers(suggestedPlaces);
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -225,12 +171,40 @@ export default function Activities({
     }
   };
 
+  const handleReselectedActivityName = (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsShowActivityList(true);
+    setSelectedPlace(null);
+    setPlaceId("");
+    resetPageScroll();
+    setSelectedActivityName("");
+  };
+
+  const handleSetPlace = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (selectedPlace) {
+      onPlaceSelect({
+        latitude: selectedPlace.location.lat,
+        longitude: selectedPlace.location.lng,
+        address: selectedPlace.location.address,
+      });
+    }
+
+    // Set an address to the location input field
+    if (selectedPlace) {
+      setPlace(selectedPlace.location.address);
+    }
+
+    setIsShowActivityList(false);
+  };
+
   return (
     <div
       ref={drawerRef}
-      className={`absolute bottom-0 w-full rounded-tl-xl rounded-tr-xl bg-background p-4 pb-0 transition-all duration-500 ease-in-out ${
-        isShowActivityList ? "h-[300px]" : "h-[64px]"
-      }`}
+      className={`absolute bottom-0 w-full rounded-tl-xl rounded-tr-xl bg-background p-4 pb-0 transition-all duration-500 ease-in-out ${isShowActivityList ? "h-[300px]" : "h-[64px]"}`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -253,21 +227,14 @@ export default function Activities({
             </div>
           ) : (
             <p className="font-bold">
-              {setActivity ? <span>Activity</span> : <span>Activities</span>}
-              {setActivity && <span>:&nbsp; {setActivity}</span>}
+              {selectedActivityName
+                ? `Activity: ${selectedActivityName}`
+                : "Activities"}
             </p>
           )}
           <button
             className="group flex items-center justify-between gap-2 rounded-md bg-accentGreen px-2 py-1 font-semibold text-white"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setIsShowActivityList(true);
-              setSelectedPlace(null);
-              setPlaceId("");
-              resetPageScroll();
-              isSetActivity("");
-            }}
+            onClick={handleReselectedActivityName}
           >
             <RefreshCcw
               size={16}
@@ -280,11 +247,7 @@ export default function Activities({
       {placeId && selectedPlace ? (
         <div
           ref={activityListRef}
-          className={`mt-2 overflow-hidden rounded-lg border border-textBorderLight bg-white px-4 py-5 transition-all duration-500 ease-in-out ${
-            isShowActivityList
-              ? "max-h-[220px] overflow-y-auto"
-              : "max-h-0 opacity-0"
-          }`}
+          className={`mt-2 overflow-hidden rounded-lg border border-textBorderLight bg-white px-4 py-5 transition-all duration-500 ease-in-out ${isShowActivityList ? "max-h-[220px] overflow-y-auto" : "max-h-0 opacity-0"}`}
         >
           <Image
             src={selectedPlace.photos[0]}
@@ -306,15 +269,13 @@ export default function Activities({
             </div>
           </div>
           <div className="mt-3 space-y-4 rounded-lg bg-textBorderLight px-2 py-4">
-            <div className="">
-              <div className="flex items-center gap-1 uppercase text-accentGreen">
-                <MapPin size={16} />
-                <p className="font-bold text-accentGreen">address</p>
-              </div>
-              <p className="text-sm font-medium text-gray-600">
-                {selectedPlace.location.address}
-              </p>
+            <div className="flex items-center gap-1 uppercase text-accentGreen">
+              <MapPin size={16} />
+              <p className="font-bold text-accentGreen">address</p>
             </div>
+            <p className="text-sm font-medium text-gray-600">
+              {selectedPlace.location.address}
+            </p>
             {(selectedPlace.openingHours ||
               selectedPlace.website ||
               selectedPlace.phone) && (
@@ -326,16 +287,14 @@ export default function Activities({
                 {selectedPlace.openingHours && (
                   <div className="space-y-1">
                     <p className="text-sm font-bold">Opening hours</p>
-                    {selectedPlace.openingHours?.map((day, index) => {
-                      return (
-                        <p
-                          key={index}
-                          className="text-sm font-medium text-gray-600"
-                        >
-                          {day}
-                        </p>
-                      );
-                    })}
+                    {selectedPlace.openingHours.map((day, index) => (
+                      <p
+                        key={index}
+                        className="text-sm font-medium text-gray-600"
+                      >
+                        {day}
+                      </p>
+                    ))}
                   </div>
                 )}
                 {selectedPlace.website && (
@@ -362,25 +321,14 @@ export default function Activities({
           </div>
           <Button
             className="left-15 absolute bottom-2 h-10 w-5/6 rounded-full border border-primary bg-white py-3 font-bold text-primary shadow-sm hover:bg-primary hover:text-white"
-            onClick={(e) => {
-              e.preventDefault();
-              onPlaceSelect({
-                latitude: selectedPlace.location.lat,
-                longitude: selectedPlace.location.lng,
-                address: selectedPlace.location.address,
-              });
-              setPlace(selectedPlace.location.address);
-              setIsShowActivityList(false);
-            }}
+            onClick={handleSetPlace}
           >
             Set Here
           </Button>
         </div>
       ) : (
         <ul
-          className={`mt-4 grid grid-cols-3 gap-2 overflow-y-auto transition-all duration-500 ease-in-out ${
-            isShowActivityList ? "max-h-[220px]" : "max-h-0"
-          }`}
+          className={`mt-4 grid grid-cols-3 gap-2 overflow-y-auto transition-all duration-500 ease-in-out ${isShowActivityList ? "max-h-[220px]" : "max-h-0"}`}
         >
           {ACTIVITY_LIST.map((activity, index) => (
             <li

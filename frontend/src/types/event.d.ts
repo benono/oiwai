@@ -40,28 +40,3 @@ export type CreateEventType = Omit<
 > & {
   thumbnail: File;
 };
-
-export type ActivityPlaceType = {
-  name: string;
-  place_id: string;
-  location: {
-    address: string;
-    lat: number;
-    lng: number;
-  };
-  rating?: number;
-  userRatingsTotal?: number;
-  photos: string[];
-  activityType: string;
-  website?: string;
-  phone?: string;
-  openingHours?: string[];
-  priceLevel: string;
-};
-
-type ActivityLocationRequest = {
-  activity_type: string;
-  latitude: number;
-  longitude: number;
-  radius: number;
-};

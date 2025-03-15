@@ -1,12 +1,8 @@
 "use server";
 
 import { getServerAxiosInstance } from "@/lib/api/axios-server";
-import {
-  ActivityLocationRequest,
-  ActivityPlaceType,
-  CreateEventType,
-  EventType,
-} from "@/types/event";
+import { CreateEventType, EventType } from "@/types/event";
+import { ActivityLocationRequestType, ActivityPlaceType } from "@/types/map";
 import { AxiosError } from "axios";
 
 // Create invitation
@@ -63,7 +59,7 @@ export const createInvitation = async ({
 export const getActivityLocations = async ({
   requestData,
 }: {
-  requestData: ActivityLocationRequest;
+  requestData: ActivityLocationRequestType;
 }): Promise<{
   success: boolean;
   data: ActivityPlaceType[];

@@ -2,30 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useMapStore } from "@/lib/store/use-map-store";
 import { showErrorToast } from "@/lib/toast/toast-utils";
+import { LocationType, PlaceType } from "@/types/map";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MapPin } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Activities from "./activities";
 
-interface Place {
-  id: string;
-  name: string;
-  location: { lat: number; lng: number };
-  address: string;
-  type: string;
-}
-
 interface MapWithMarkersProps {
   apiKey: string;
   center?: { lat: number; lng: number };
   zoom?: number;
-  isSetActivity?: boolean;
-  onPlaceSelect: (place: {
-    latitude: number;
-    longitude: number;
-    address: string;
-  }) => void;
+  isSuggest?: boolean;
+  onPlaceSelect: (place: LocationType) => void;
 }
 
 export default function MapWithMarkers({
@@ -33,16 +23,15 @@ export default function MapWithMarkers({
   center = { lat: 49.2827, lng: -123.1207 }, // Vancouver City Hall
   zoom = 14,
   onPlaceSelect,
-  isSetActivity,
+  isSuggest,
 }: MapWithMarkersProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [markers, setMarkers] = useState<google.maps.Marker[]>([]);
-  const [place, setPlace] = useState<string>("");
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<PlaceType | null>(null);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [placeId, setPlaceId] = useState<string>("");
+  const { setPlaceId, place, setPlace } = useMapStore();
 
   const { toast } = useToast();
   // Initialize the map
@@ -82,7 +71,8 @@ export default function MapWithMarkers({
     setMarkers([]);
   };
 
-  const addMarkers = (newPlaces: Place[]) => {
+  // Add pin on the map
+  const addMarkers = (newPlaces: PlaceType[]) => {
     const newMarkers = newPlaces.map((place) => {
       const marker = new google.maps.Marker({
         position: place.location,
@@ -94,7 +84,7 @@ export default function MapWithMarkers({
       clearMarkers();
       setPlace("");
 
-      if (isSetActivity) {
+      if (isSuggest) {
         marker.addListener("click", () => {
           setPlaceId(place.id);
         });
@@ -167,7 +157,7 @@ export default function MapWithMarkers({
           geocoder.geocode({ location }, (results, status) => {
             if (status === google.maps.GeocoderStatus.OK && results) {
               const result = results[0];
-              const selectedPlace: Place = {
+              const selectedPlace: PlaceType = {
                 id: "current-location",
                 name: result?.formatted_address || "Unknown Location",
                 location: { lat, lng },
@@ -201,33 +191,6 @@ export default function MapWithMarkers({
     }
   };
 
-  // Test code for suggesting multiple places↓
-  // const searchTimHortons = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   if (!map) return;
-
-  //   const service = new google.maps.places.PlacesService(map);
-  //   service.textSearch({ query: "Tim Hortons downtown" }, (results, status) => {
-  //     if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-  //       clearMarkers();
-
-  //       const limitedResults = results.slice(0, 3);
-  //       const searchResults: Place[] = limitedResults.map((result, index) => ({
-  //         id: `timhortons-${index}`,
-  //         name: result.name || "",
-  //         location: {
-  //           lat: result.geometry?.location?.lat() || 0,
-  //           lng: result.geometry?.location?.lng() || 0,
-  //         },
-  //         address: result.formatted_address || "",
-  //         type: "Coffee Shop",
-  //       }));
-
-  //       addMarkers(searchResults);
-  //     }
-  //   });
-  // };
-
   const searchPlace = (e: React.FormEvent) => {
     e.preventDefault();
     if (!map || !place) return;
@@ -237,7 +200,7 @@ export default function MapWithMarkers({
       if (status === google.maps.places.PlacesServiceStatus.OK && results) {
         clearMarkers();
 
-        const searchResults: Place[] = results.map((result, index) => ({
+        const searchResults: PlaceType[] = results.map((result, index) => ({
           id: `search-${index}`,
           name: result.name || "",
           location: {
@@ -323,24 +286,11 @@ export default function MapWithMarkers({
             <span className="text-sm font-bold">Searching...</span>
           </div>
         )}
-        {/* Test code for suggesting multiple places↓ */}
-        {/* <button
-          className="rounded bg-red-500 p-2 text-white"
-          onClick={searchTimHortons}
-        >
-          Show Tim Hortons
-        </button> */}
       </div>
       <div className="relative">
         <div ref={mapRef} className="h-[320px] w-full rounded border"></div>
-        {isSetActivity && (
-          <Activities
-            addMarkers={addMarkers}
-            placeId={placeId}
-            setPlaceId={setPlaceId}
-            onPlaceSelect={onPlaceSelect}
-            setPlace={setPlace}
-          />
+        {isSuggest && (
+          <Activities addMarkers={addMarkers} onPlaceSelect={onPlaceSelect} />
         )}
       </div>
     </div>
