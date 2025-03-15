@@ -232,16 +232,19 @@ export default function Activities({
                 : "Activities"}
             </p>
           )}
-          <button
-            className="group flex items-center justify-between gap-2 rounded-md bg-accentGreen px-2 py-1 font-semibold text-white"
-            onClick={handleReselectedActivityName}
-          >
-            <RefreshCcw
-              size={16}
-              className="transition-transform duration-700 group-hover:rotate-180"
-            />
-            <p className="text-sm font-bold">Change</p>
-          </button>
+
+          {selectedActivityName && (
+            <button
+              className="group flex items-center justify-between gap-2 rounded-md bg-accentGreen px-2 py-1 font-semibold text-white"
+              onClick={handleReselectedActivityName}
+            >
+              <RefreshCcw
+                size={16}
+                className="transition-transform duration-700 group-hover:rotate-180"
+              />
+              <p className="text-sm font-bold">Change</p>
+            </button>
+          )}
         </div>
       </div>
       {placeId && selectedPlace ? (
