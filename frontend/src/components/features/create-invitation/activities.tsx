@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { ACTIVITY_LIST } from "@/constants/activities";
 import { useToast } from "@/hooks/use-toast";
 import { getActivityLocations } from "@/lib/actions/create-invitation/create-invitation";
@@ -74,6 +75,7 @@ export default function Activities({
     null,
   );
   const { suggestedLocations, setSuggestedLocations } = useMapStore();
+  const activityListRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setIsShowActivityList(true);
@@ -86,6 +88,12 @@ export default function Activities({
       setSelectedPlace1(foundPlace || null);
     }
   }, [placeId]);
+
+  useEffect(() => {
+    if (isShowActivityList && activityListRef.current) {
+      activityListRef.current.scrollTop = 0;
+    }
+  }, [isShowActivityList]);
 
   const handleToggleActivityList = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -250,6 +258,7 @@ export default function Activities({
       </div>
       {placeId && selectedPlace ? (
         <div
+          ref={activityListRef}
           className={`mt-2 overflow-hidden rounded-lg border border-textBorderLight bg-white px-4 py-5 transition-all duration-500 ease-in-out ${
             isShowActivityList
               ? "max-h-[220px] overflow-y-auto"
