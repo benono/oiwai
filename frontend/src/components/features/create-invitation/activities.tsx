@@ -228,7 +228,7 @@ export default function Activities({
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
       >
-        <div className="w-full">
+        <div className="relative w-full">
           <div className="mx-auto h-1 w-14 cursor-grab rounded-md bg-gray-400" />
         </div>
         <div className="sticky top-0 z-10 mt-1 flex items-center justify-between bg-background">
@@ -330,7 +330,8 @@ export default function Activities({
               </div>
             )}
           </div>
-          <button
+          <Button
+            className="left-15 absolute bottom-2 h-10 w-5/6 rounded-full border border-primary bg-white py-3 font-bold text-primary shadow-sm hover:bg-primary hover:text-white"
             onClick={(e) => {
               e.preventDefault();
               onPlaceSelect({
@@ -342,8 +343,8 @@ export default function Activities({
               setIsShowActivityList(false);
             }}
           >
-            Button
-          </button>
+            Set Here
+          </Button>
         </div>
       ) : (
         <ul
