@@ -371,6 +371,7 @@ export default function Activities({
                 src={activity.image}
                 alt={activity.name}
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="rounded-md object-cover"
               />
               <div className="absolute inset-0 rounded-md bg-black/40 opacity-70"></div>
