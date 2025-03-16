@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ACTIVITY_LIST } from "@/constants/activities";
 import { useToast } from "@/hooks/use-toast";
 import { getActivityLocations } from "@/lib/actions/create-invitation/create-invitation";
+import { getCurrentLocation } from "@/lib/helpers/current-location";
 import { useMapStore } from "@/lib/store/use-map-store";
 import { showErrorToast } from "@/lib/toast/toast-utils";
 import { ActivityPlaceType, LocationType, PlaceType } from "@/types/map";
@@ -129,11 +130,14 @@ export default function Activities({
       setIsSearchingPlaces(true);
       setSelectedActivityName(activity);
 
+      // Get current location
+      const currentLocation = await getCurrentLocation();
+
       const response = await getActivityLocations({
         requestData: {
           activity_type: activity,
-          latitude: 49.2827,
-          longitude: -123.1169,
+          latitude: currentLocation.lat,
+          longitude: currentLocation.lng,
           radius: 30000,
         },
       });

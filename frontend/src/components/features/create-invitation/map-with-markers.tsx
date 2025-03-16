@@ -135,10 +135,11 @@ export default function MapWithMarkers({
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          const location = { lat, lng };
+        async (position) => {
+          const location = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
 
           addMarkers([
             {
@@ -160,7 +161,7 @@ export default function MapWithMarkers({
               const selectedPlace: PlaceType = {
                 id: "current-location",
                 name: result?.formatted_address || "Unknown Location",
-                location: { lat, lng },
+                location: { lat: location.lat, lng: location.lng },
                 address: result?.formatted_address || "No Address Found",
                 type: "Current Location",
               };
