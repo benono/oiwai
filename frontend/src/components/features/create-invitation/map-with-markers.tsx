@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useMapStore } from "@/lib/store/use-map-store";
 import { showErrorToast } from "@/lib/toast/toast-utils";
-import { LocationType, PlaceType } from "@/types/map";
+import { LocationType, PlaceInformationType } from "@/types/map";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MapPin } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -28,7 +28,8 @@ export default function MapWithMarkers({
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [markers, setMarkers] = useState<google.maps.Marker[]>([]);
-  const [selectedPlace, setSelectedPlace] = useState<PlaceType | null>(null);
+  const [selectedPlace, setSelectedPlace] =
+    useState<PlaceInformationType | null>(null);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { setPlaceId, place, setPlace } = useMapStore();
@@ -76,7 +77,7 @@ export default function MapWithMarkers({
   };
 
   // Add pin on the map
-  const addMarkers = (newPlaces: PlaceType[]) => {
+  const addMarkers = (newPlaces: PlaceInformationType[]) => {
     const newMarkers = newPlaces.map((place) => {
       const marker = new google.maps.Marker({
         position: place.location,
@@ -167,7 +168,7 @@ export default function MapWithMarkers({
           geocoder.geocode({ location }, (results, status) => {
             if (status === google.maps.GeocoderStatus.OK && results) {
               const result = results[0];
-              const selectedPlace: PlaceType = {
+              const selectedPlace: PlaceInformationType = {
                 id: "current-location",
                 name: result?.formatted_address || "Unknown Location",
                 location: { lat: location.lat, lng: location.lng },
@@ -210,16 +211,18 @@ export default function MapWithMarkers({
       if (status === google.maps.places.PlacesServiceStatus.OK && results) {
         clearMarkers();
 
-        const searchResults: PlaceType[] = results.map((result, index) => ({
-          id: `search-${index}`,
-          name: result.name || "",
-          location: {
-            lat: result.geometry?.location?.lat() || 0,
-            lng: result.geometry?.location?.lng() || 0,
-          },
-          address: result.formatted_address || "",
-          type: result.types?.join(", ") || "",
-        }));
+        const searchResults: PlaceInformationType[] = results.map(
+          (result, index) => ({
+            id: `search-${index}`,
+            name: result.name || "",
+            location: {
+              lat: result.geometry?.location?.lat() || 0,
+              lng: result.geometry?.location?.lng() || 0,
+            },
+            address: result.formatted_address || "",
+            type: result.types?.join(", ") || "",
+          }),
+        );
 
         if (searchResults.length > 0) {
           setSelectedPlace(searchResults[0]);

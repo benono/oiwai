@@ -5,14 +5,18 @@ import { getActivityLocations } from "@/lib/actions/create-invitation/create-inv
 import { getCurrentLocation } from "@/lib/helpers/current-location";
 import { useMapStore } from "@/lib/store/use-map-store";
 import { showErrorToast } from "@/lib/toast/toast-utils";
-import { ActivityPlaceType, LocationType, PlaceType } from "@/types/map";
+import {
+  ActivityPlaceType,
+  LocationType,
+  PlaceInformationType,
+} from "@/types/map";
 import { Info, MapPin, RefreshCcw } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import RatingStars from "./rating-stars";
 
 type ActivitiesProps = {
-  addMarkers: (places: PlaceType[]) => void;
+  addMarkers: (places: PlaceInformationType[]) => void;
   onPlaceSelect: (place: LocationType) => void;
 };
 

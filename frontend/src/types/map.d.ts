@@ -23,7 +23,7 @@ export type ActivityLocationRequestType = {
   radius: number;
 };
 
-export type PlaceType = {
+export type PlaceInformationType = {
   id: string;
   name: string;
   location: { lat: number; lng: number };
