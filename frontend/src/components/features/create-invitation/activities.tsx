@@ -26,6 +26,7 @@ export default function Activities({
   const [selectedPlace, setSelectedPlace] = useState<ActivityPlaceType | null>(
     null,
   );
+  const [showSetHereButton, setShowSetHereButton] = useState(false);
   const { toast } = useToast();
   const drawerRef = useRef<HTMLDivElement | null>(null);
   const swipeHandleRef = useRef<HTMLDivElement | null>(null);
@@ -50,7 +51,7 @@ export default function Activities({
 
       setSelectedPlace(foundPlace || null);
     }
-  }, [placeId]);
+  }, [placeId, selectedPlace]);
 
   // Effect to scroll activity list to the top when it shows
   useEffect(() => {
@@ -157,8 +158,7 @@ export default function Activities({
 
         setSuggestedLocations(response.data);
         setIsShowActivityList(false);
-
-        return addMarkers(suggestedPlaces);
+        addMarkers(suggestedPlaces);
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -208,7 +208,7 @@ export default function Activities({
   return (
     <div
       ref={drawerRef}
-      className={`absolute bottom-0 w-full rounded-tl-xl rounded-tr-xl bg-background p-4 pb-0 transition-all duration-500 ease-in-out ${isShowActivityList ? "h-[300px]" : "h-[64px]"}`}
+      className={`absolute bottom-0 w-full rounded-tl-xl rounded-tr-xl bg-background p-4 pb-0 transition-all duration-700 ease-in-out ${isShowActivityList ? "h-[300px]" : "h-[64px]"}`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -326,12 +326,20 @@ export default function Activities({
               </div>
             )}
           </div>
-          <Button
-            className="left-15 absolute bottom-2 h-10 w-5/6 rounded-full border border-primary bg-white py-3 font-bold text-primary shadow-sm hover:bg-primary hover:text-white"
-            onClick={handleSetPlace}
+          <div
+            className={`left-15 absolute bottom-2 w-5/6 transition-all duration-500 ease-out ${
+              showSetHereButton
+                ? "translate-y-0 opacity-100"
+                : "translate-y-4 opacity-0"
+            }`}
           >
-            Set Here
-          </Button>
+            <Button
+              className="h-10 w-full rounded-full border border-primary bg-white py-3 font-bold text-primary shadow-sm hover:bg-primary hover:text-white"
+              onClick={handleSetPlace}
+            >
+              Set Here
+            </Button>
+          </div>
         </div>
       ) : (
         <ul
