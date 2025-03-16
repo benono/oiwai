@@ -50,6 +50,10 @@ export default function Activities({
       );
 
       setSelectedPlace(foundPlace || null);
+      setShowSetHereButton(false);
+
+      const timer = setTimeout(() => setShowSetHereButton(true), 600);
+      return () => clearTimeout(timer);
     }
   }, [placeId, selectedPlace]);
 
@@ -144,7 +148,7 @@ export default function Activities({
       });
 
       if (!response?.success) {
-        throw new Error();
+        throw new Error("Failed to search locations.");
       }
 
       if (response.data) {
@@ -208,7 +212,7 @@ export default function Activities({
   return (
     <div
       ref={drawerRef}
-      className={`absolute bottom-0 w-full rounded-tl-xl rounded-tr-xl bg-background p-4 pb-0 transition-all duration-700 ease-in-out ${isShowActivityList ? "h-[300px]" : "h-[64px]"}`}
+      className={`absolute bottom-0 w-full rounded-tl-xl rounded-tr-xl bg-background p-4 pb-0 transition-all duration-500 ease-in-out ${isShowActivityList ? "h-[300px]" : "h-[64px]"}`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

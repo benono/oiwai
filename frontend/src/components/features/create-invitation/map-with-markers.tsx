@@ -38,6 +38,10 @@ export default function MapWithMarkers({
   useEffect(() => {
     if (!mapRef.current) return;
 
+    if (isSuggest) {
+      setPlaceId("");
+    }
+
     async function initMap() {
       try {
         if (!window.google) {
@@ -64,7 +68,7 @@ export default function MapWithMarkers({
     }
 
     initMap();
-  }, [apiKey, center, zoom, toast]);
+  }, [apiKey, center, zoom, toast, isSuggest, setPlaceId]);
 
   const clearMarkers = () => {
     markers.forEach((marker) => marker.setMap(null));

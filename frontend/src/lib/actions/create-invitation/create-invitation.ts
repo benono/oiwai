@@ -71,9 +71,9 @@ export const getActivityLocations = async ({
     return response.data;
   } catch (err) {
     if (err instanceof AxiosError) {
-      throw new AxiosError(err.response?.data.message);
+      throw new AxiosError("Failed to search locations. Please try again.");
     } else {
-      throw new AxiosError("Failed to find the locations. Please try again.");
+      throw new AxiosError("Failed to search locations. Please try again.");
     }
   }
 };
