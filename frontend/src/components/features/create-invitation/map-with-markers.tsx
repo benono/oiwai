@@ -86,7 +86,12 @@ export default function MapWithMarkers({
 
       if (isSuggest) {
         marker.addListener("click", () => {
-          setPlaceId(place.id);
+          setPlaceId("");
+
+          setTimeout(() => {
+            setPlaceId(place.id);
+            setSelectedPlace(null);
+          }, 10);
         });
       } else {
         const infoWindow = new google.maps.InfoWindow({
