@@ -18,6 +18,7 @@ import { showErrorToast } from "@/lib/toast/toast-utils";
 import { EventType } from "@/types/event";
 import { TimelineType } from "@/types/timeline";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -163,18 +164,38 @@ export function ActivityForm({ eventId, activityData }: ActivityFormProps) {
               <FormItem className="flex w-full flex-col space-y-2">
                 <FormLabel className="font-semibold">Start time</FormLabel>
                 <FormControl>
-                  <Controller
-                    name="startTime"
-                    control={form.control}
-                    render={({ field }) => (
-                      <input
-                        type="time"
-                        id="start-time"
-                        {...field}
-                        className="h-10 rounded-md border border-border p-4 font-medium"
-                      />
-                    )}
-                  />
+                  <div className="relative">
+                    <button
+                      type="button"
+                      className="absolute left-3 top-1/2 z-10 -translate-y-1/2 cursor-pointer"
+                      onClick={() => {
+                        const startTimeInput = document.getElementById(
+                          "start-time-input",
+                        ) as HTMLInputElement;
+                        startTimeInput?.showPicker();
+                      }}
+                    >
+                      <Clock size={16} />
+                    </button>
+                    <Controller
+                      name="startTime"
+                      control={form.control}
+                      render={({ field }) => (
+                        <input
+                          type="time"
+                          id="start-time-input"
+                          {...field}
+                          className="font-base h-12 w-full rounded-md border border-border p-4 pl-10"
+                          onClick={() => {
+                            const startTimeInput = document.getElementById(
+                              "start-time-input",
+                            ) as HTMLInputElement;
+                            startTimeInput?.showPicker();
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -187,18 +208,38 @@ export function ActivityForm({ eventId, activityData }: ActivityFormProps) {
               <FormItem className="flex w-full flex-col space-y-2">
                 <FormLabel className="font-semibold">End time</FormLabel>
                 <FormControl>
-                  <Controller
-                    name="endTime"
-                    control={form.control}
-                    render={({ field }) => (
-                      <input
-                        type="time"
-                        id="end-time"
-                        {...field}
-                        className="h-10 rounded-md border border-border p-4 font-medium"
-                      />
-                    )}
-                  />
+                  <div className="relative">
+                    <button
+                      type="button"
+                      className="absolute left-3 top-1/2 z-10 -translate-y-1/2 cursor-pointer"
+                      onClick={() => {
+                        const endTimeInput = document.getElementById(
+                          "end-time-input",
+                        ) as HTMLInputElement;
+                        endTimeInput?.showPicker();
+                      }}
+                    >
+                      <Clock size={16} />
+                    </button>
+                    <Controller
+                      name="endTime"
+                      control={form.control}
+                      render={({ field }) => (
+                        <input
+                          type="time"
+                          id="end-time-input"
+                          {...field}
+                          className="font-base h-12 w-full rounded-md border border-border p-4 pl-10"
+                          onClick={() => {
+                            const endTimeInput = document.getElementById(
+                              "end-time-input",
+                            ) as HTMLInputElement;
+                            endTimeInput?.showPicker();
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
