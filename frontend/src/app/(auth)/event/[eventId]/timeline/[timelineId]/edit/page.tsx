@@ -57,8 +57,10 @@ export default function EditActivity() {
         path={`/event/${eventId}/timeline`}
         previousPageName="Timeline"
       />
-      <h1 className="text-xl font-bold">Edit Activity</h1>
-      <ActivityForm eventId={eventId as string} activityData={activityData} />
+      <div className="grid gap-4 px-4 pb-20 pt-2">
+        <h1 className="text-xl font-bold">Edit Activity</h1>
+        <ActivityForm eventId={eventId as string} activityData={activityData} />
+      </div>
     </section>
   );
 }
