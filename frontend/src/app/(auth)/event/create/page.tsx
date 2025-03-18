@@ -244,7 +244,7 @@ export default function CreateEventPage() {
   );
 
   return (
-    <section className="container mx-auto space-y-6 p-4">
+    <section className="container mx-auto space-y-6 p-4 pb-20">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
@@ -496,7 +496,10 @@ export default function CreateEventPage() {
                   <MemoizedMapComponent {...memoizedMapProps} />
                 </TabsContent>
                 <TabsContent value="Based on activities">
-                  <MemoizedMapComponent {...memoizedMapProps} />
+                  <MemoizedMapComponent
+                    {...memoizedMapProps}
+                    isSuggest={true}
+                  />
                 </TabsContent>
               </Tabs>
             ) : (

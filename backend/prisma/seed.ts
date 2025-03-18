@@ -36,11 +36,11 @@ async function main() {
 
   // User 2 (Taro)
   const user2 = await prisma.users.upsert({
-    where: { email: "taro@example.com" },
+    where: { email: "ben.ono.work@gmail.com" },
     update: {},
     create: {
-      name: "Taro",
-      email: "taro@example.com",
+      name: "Naomi",
+      email: "ben.ono.work@gmail.com",
       profileImageUrl:
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
       isDeleted: false,

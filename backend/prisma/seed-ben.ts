@@ -91,42 +91,6 @@ export async function seedBen() {
       theme: "#7fffd4",
       noteForThingsToBuy: "",
       noteForNecessities: "",
-      eventParticipants: {
-        create: [
-          {
-            userId: user4.id,
-            userFamilyId: 10,
-            messageToHost: "",
-            restrictionNote: "",
-            isAccepted: true,
-            isAttended: false,
-          },
-          {
-            userId: user4.id,
-            userFamilyId: 11,
-            messageToHost: "",
-            restrictionNote: "",
-            isAccepted: true,
-            isAttended: true,
-          },
-        ],
-      },
-    },
-  });
-
-  // Participant for Event 3
-  await prisma.eventParticipants.upsert({
-    where: {
-      id: 1,
-    },
-    update: {},
-    create: {
-      eventId: event3.id,
-      userId: user4.id,
-      messageToHost: "",
-      restrictionNote: "",
-      isAccepted: true,
-      isAttended: false,
     },
   });
 

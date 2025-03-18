@@ -53,23 +53,25 @@ export default async function TimeLine({
         path={`/event/${eventId}`}
         previousPageName="Event Home"
       />
-      <div className="flex gap-3">
-        <p className="text-5xl font-bold">
-          {formatDateTime(new Date(eventData.startTime), dayFormatOptions)}
-        </p>
-        <div className="font-semibold">
-          <p>
-            {formatDateTime(
-              new Date(eventData.startTime),
-              weekdayFormatOptions,
-            )}
+      <div className="px-4 pb-20 pt-2">
+        <div className="flex gap-3">
+          <p className="text-5xl font-bold">
+            {formatDateTime(new Date(eventData.startTime), dayFormatOptions)}
           </p>
-          <p>
-            {formatDateTime(
-              new Date(eventData.startTime),
-              monthAndYearFormatOptions,
-            )}
-          </p>
+          <div className="font-semibold">
+            <p>
+              {formatDateTime(
+                new Date(eventData.startTime),
+                weekdayFormatOptions,
+              )}
+            </p>
+            <p>
+              {formatDateTime(
+                new Date(eventData.startTime),
+                monthAndYearFormatOptions,
+              )}
+            </p>
+          </div>
         </div>
       </div>
       <div>
