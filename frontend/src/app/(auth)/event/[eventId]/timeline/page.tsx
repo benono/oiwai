@@ -53,7 +53,7 @@ export default async function TimeLine({
         path={`/event/${eventId}`}
         previousPageName="Event Home"
       />
-      <div className="px-4 pb-20 pt-2">
+      <div className="px-4 pt-2">
         <div className="flex gap-3">
           <p className="text-5xl font-bold">
             {formatDateTime(new Date(eventData.startTime), dayFormatOptions)}
@@ -74,7 +74,7 @@ export default async function TimeLine({
           </div>
         </div>
       </div>
-      <div>
+      <div className="px-4 pb-20">
         {!isHost && timeline.length === 0 ? (
           <div className="flex min-h-[50vh] flex-col items-center justify-center">
             <p className="text-center font-semibold">
