@@ -14,7 +14,7 @@ export default function GuestNecessitiesContainer({
   const necessities = guestNecessities.necessities;
 
   return (
-    <section>
+    <section className="grid gap-4">
       <BreadcrumbNavigation
         path={`/event/${eventId}`}
         previousPageName="Event Home"

@@ -13,7 +13,7 @@ export default async function HostNecessitiesContainer({
   eventId,
 }: HostNecessitiesContainerProps) {
   return (
-    <section>
+    <section className="grid gap-4">
       <BreadcrumbNavigation
         path={`/event/${eventId}`}
         previousPageName="Event Home"

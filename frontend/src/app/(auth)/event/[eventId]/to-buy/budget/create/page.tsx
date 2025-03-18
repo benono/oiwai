@@ -20,7 +20,7 @@ export default async function CreateBudget({
 
   return (
     <section className="space-y-4">
-      <div>
+      <div className="grid gap-4">
         <BreadcrumbNavigation
           path={`/event/${eventId}`}
           previousPageName="Event Home"

@@ -41,7 +41,7 @@ export default async function Budget({
 
   return (
     <section className="space-y-4">
-      <div>
+      <div className="grid gap-4">
         <BreadcrumbNavigation {...breadcrumbProps} />
         <h1 className="px-4 text-xl font-bold">Add item</h1>
       </div>
