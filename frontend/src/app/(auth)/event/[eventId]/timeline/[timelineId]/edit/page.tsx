@@ -1,6 +1,7 @@
 "use client";
 
 import BreadcrumbNavigation from "@/components/features/event/breadcrumb-navigation";
+import Spinner from "@/components/features/spinner";
 import { ActivityForm } from "@/components/features/timeline/activity-form";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthAxios } from "@/lib/api/axios-client";
@@ -48,7 +49,7 @@ export default function EditActivity() {
   }, [eventId, timelineId, axios, toast]);
 
   if (!activityData) {
-    return <div>Loading...</div>;
+    return <Spinner color="text-primary" />;
   }
 
   return (

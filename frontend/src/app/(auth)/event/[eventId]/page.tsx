@@ -60,7 +60,7 @@ export default async function EventHome({
   const hasEventStartedOneHourAgo = now >= reviewStartTime;
 
   return (
-    <section className="pt-2">
+    <section className="pt-2 h-full flex flex-col min-h-screen justify-between">
       <div className="grid gap-8 px-4 pb-20">
         {eventData ? (
           <EventDetail eventData={eventData} isHost={isHost} />
