@@ -28,12 +28,9 @@ CREATE TABLE "events" (
     "thumbnail_url" TEXT NOT NULL,
     "start_time" TIMESTAMP(3) NOT NULL,
     "end_time" TIMESTAMP(3) NOT NULL,
-    "country" TEXT NOT NULL,
-    "postal_code" TEXT NOT NULL,
-    "province" TEXT NOT NULL,
-    "city" TEXT NOT NULL,
-    "address1" TEXT NOT NULL,
-    "address2" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
+    "latitude" DOUBLE PRECISION NOT NULL,
+    "longitude" DOUBLE PRECISION NOT NULL,
     "is_ask_restrictions" BOOLEAN NOT NULL,
     "theme" TEXT NOT NULL,
     "note_for_things_to_buy" TEXT NOT NULL,
@@ -123,7 +120,7 @@ CREATE TABLE "pictures" (
     "event_id" INTEGER NOT NULL,
     "user_id" INTEGER NOT NULL,
     "image_url" TEXT NOT NULL,
-    "image_public_url" TEXT NOT NULL,
+    "image_public_id" TEXT NOT NULL,
 
     CONSTRAINT "pictures_pkey" PRIMARY KEY ("id")
 );
@@ -133,9 +130,26 @@ CREATE TABLE "face_pictures" (
     "id" SERIAL NOT NULL,
     "picture_id" INTEGER NOT NULL,
     "tag" TEXT NOT NULL,
-    "confidence" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
 
     CONSTRAINT "face_pictures_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "reviews" (
+    "id" SERIAL NOT NULL,
+    "event_id" INTEGER NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "review_text" TEXT NOT NULL,
+    "image_url1" TEXT NOT NULL,
+    "image_url2" TEXT NOT NULL,
+    "image_url3" TEXT NOT NULL,
+    "image_url4" TEXT NOT NULL,
+    "image_public_id1" TEXT NOT NULL,
+    "image_public_id2" TEXT NOT NULL,
+    "image_public_id3" TEXT NOT NULL,
+    "image_public_id4" TEXT NOT NULL,
+
+    CONSTRAINT "reviews_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -191,3 +205,9 @@ ALTER TABLE "pictures" ADD CONSTRAINT "pictures_user_id_fkey" FOREIGN KEY ("user
 
 -- AddForeignKey
 ALTER TABLE "face_pictures" ADD CONSTRAINT "face_pictures_picture_id_fkey" FOREIGN KEY ("picture_id") REFERENCES "pictures"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "reviews" ADD CONSTRAINT "reviews_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "reviews" ADD CONSTRAINT "reviews_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
