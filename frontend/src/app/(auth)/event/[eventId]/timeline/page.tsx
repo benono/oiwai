@@ -52,61 +52,63 @@ export default async function TimeLine({
         path={`/event/${eventId}`}
         previousPageName="Event Home"
       />
-      <div className="flex gap-3">
-        <p className="text-5xl font-bold">
-          {formatDateTime(new Date(eventData.startTime), dayFormatOptions)}
-        </p>
-        <div className="font-semibold">
-          <p>
-            {formatDateTime(
-              new Date(eventData.startTime),
-              weekdayFormatOptions,
-            )}
+      <div className="px-4 pb-20 pt-2">
+        <div className="flex gap-3">
+          <p className="text-5xl font-bold">
+            {formatDateTime(new Date(eventData.startTime), dayFormatOptions)}
           </p>
-          <p>
-            {formatDateTime(
-              new Date(eventData.startTime),
-              monthAndYearFormatOptions,
-            )}
-          </p>
+          <div className="font-semibold">
+            <p>
+              {formatDateTime(
+                new Date(eventData.startTime),
+                weekdayFormatOptions,
+              )}
+            </p>
+            <p>
+              {formatDateTime(
+                new Date(eventData.startTime),
+                monthAndYearFormatOptions,
+              )}
+            </p>
+          </div>
         </div>
-      </div>
-      <div>
-        {timeline.map((activity, index) => {
-          const previousActivity = timeline[index - 1];
+        <div>
+          {timeline.map((activity, index) => {
+            const previousActivity = timeline[index - 1];
 
-          // Not display the add button if the end time of the previous activity matches the start time of the current activity.
-          const isHideAddButton =
-            previousActivity &&
-            new Date(previousActivity.endTime).getTime() ===
-              new Date(activity.startTime).getTime();
+            // Not display the add button if the end time of the previous activity matches the start time of the current activity.
+            const isHideAddButton =
+              previousActivity &&
+              new Date(previousActivity.endTime).getTime() ===
+                new Date(activity.startTime).getTime();
 
-          return (
-            <div key={activity.id}>
-              {isHost && !isHideAddButton && (
-                <Link href={`/event/${eventId}/timeline/create`}>
-                  <Button className="hover: mb-4 ml-auto flex w-4/5 border-[0.3px] border-textSub bg-white shadow-sm hover:bg-textSub/10">
-                    <Plus className="text-primary" />
-                  </Button>
-                </Link>
-              )}
-              <ActivityCard
-                activityData={activity}
-                key={activity.id}
-                isEven={index % 2 === 0}
-                eventId={eventId}
-                isHost={isHost}
-              />
-              {isHost && index === timeline.length - 1 && (
-                <Link href={`/event/${eventId}/timeline/create`}>
-                  <Button className="hover: mb-4 ml-auto flex w-4/5 border-[0.3px] border-textSub bg-white shadow-sm hover:bg-textSub/10">
-                    <Plus className="text-primary" />
-                  </Button>
-                </Link>
-              )}
-            </div>
-          );
-        })}
+            return (
+              <div key={activity.id}>
+                {isHost && !isHideAddButton && (
+                  <Link href={`/event/${eventId}/timeline/create`}>
+                    <Button className="hover: mb-4 ml-auto flex w-4/5 border-[0.3px] border-textSub bg-white shadow-sm hover:bg-textSub/10">
+                      <Plus className="text-primary" />
+                    </Button>
+                  </Link>
+                )}
+                <ActivityCard
+                  activityData={activity}
+                  key={activity.id}
+                  isEven={index % 2 === 0}
+                  eventId={eventId}
+                  isHost={isHost}
+                />
+                {isHost && index === timeline.length - 1 && (
+                  <Link href={`/event/${eventId}/timeline/create`}>
+                    <Button className="hover: mb-4 ml-auto flex w-4/5 border-[0.3px] border-textSub bg-white shadow-sm hover:bg-textSub/10">
+                      <Plus className="text-primary" />
+                    </Button>
+                  </Link>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
