@@ -121,12 +121,12 @@ export default async function EventHome({
                   </li>
                 ))}
               </ul>
-              <Link
+              <a
                 href={`/event/${eventId}/guests`}
                 className="ml-auto text-sm font-semibold text-accentBlue hover:text-accentBlue/60"
               >
                 See all
-              </Link>
+              </a>
             </div>
           </section>
         )}
