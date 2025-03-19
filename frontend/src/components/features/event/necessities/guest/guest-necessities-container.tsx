@@ -1,3 +1,4 @@
+import ScrollToTop from "@/components/features/scroll-to-top";
 import { GuestNecessitiesListType } from "@/types/necessities";
 import BreadcrumbNavigation from "../../breadcrumb-navigation";
 import GuestNecessitiesListItem from "./guest-necessities-list-item";
@@ -15,6 +16,7 @@ export default function GuestNecessitiesContainer({
 
   return (
     <section className="grid gap-4">
+      <ScrollToTop />
       <BreadcrumbNavigation
         path={`/event/${eventId}`}
         previousPageName="Event Home"

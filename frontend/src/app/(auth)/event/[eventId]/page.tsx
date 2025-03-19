@@ -3,6 +3,7 @@ import EventDetail from "@/components/features/event/event-detail";
 import MenuIcon from "@/components/features/event/menu-icon";
 import ReviewSection from "@/components/features/event/review/review-section";
 import { ShareLinks } from "@/components/features/rsvp/ShareLinks";
+import ScrollToTop from "@/components/features/scroll-to-top";
 import Spinner from "@/components/features/spinner";
 import { MENU_LIST_GUEST, MENU_LIST_HOST } from "@/constants/icons";
 import { getWhoIsComing } from "@/lib/actions/event/participant";
@@ -69,6 +70,7 @@ export default async function EventHome({
 
   return (
     <section className="flex h-full min-h-screen flex-col justify-between pt-2">
+      <ScrollToTop />
       <div className="grid gap-8 px-4 pb-20">
         {eventData ? (
           <EventDetail eventData={eventData} isHost={isHost} />
@@ -137,12 +139,12 @@ export default async function EventHome({
                   </li>
                 ))}
               </ul>
-              <a
+              <Link
                 href={`/event/${eventId}/guests`}
                 className="ml-auto text-sm font-semibold text-accentBlue hover:text-accentBlue/60"
               >
                 See all
-              </a>
+              </Link>
             </div>
           </section>
         )}

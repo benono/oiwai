@@ -1,6 +1,7 @@
 import { ICON_MAP } from "@/constants/icons";
 import { IconType } from "@/types/event";
 import { Plus } from "lucide-react";
+import Link from "next/link";
 
 type MenuIconProps = {
   iconDetail: {
@@ -17,7 +18,7 @@ export default function MenuIcon({ iconDetail, eventId }: MenuIconProps) {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <a href={`/event/${eventId}/${iconDetail.path}`} >
+      <Link href={`/event/${eventId}/${iconDetail.path}`} >
         <div
           className={`flex h-14 w-14 items-center justify-center rounded-full bg-${iconDetail.backgroundColor}`}
         >
@@ -26,7 +27,7 @@ export default function MenuIcon({ iconDetail, eventId }: MenuIconProps) {
         <p className="text-center text-sm font-semibold">
           {iconDetail.iconName}
         </p>
-      </a>
+      </Link>
     </div>
   );
 }
