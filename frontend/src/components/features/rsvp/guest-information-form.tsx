@@ -524,7 +524,15 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                       />
                     )}
                     <span className="text-sm font-medium text-text">
-                      I agree with the Terms and Conditions.
+                      I agree with the{" "}
+                      <span className="text-accentBlue hover:underline">
+                        Terms
+                      </span>{" "}
+                      and{" "}
+                      <span className="text-accentBlue hover:underline">
+                        Conditions
+                      </span>
+                      .
                     </span>
                   </button>
                 </FormControl>
