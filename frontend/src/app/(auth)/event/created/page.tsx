@@ -19,10 +19,8 @@ export default async function EventCreated({
   const eventUrl = getInvitationUrl(eventId);
 
   return (
-    <section className="bg-white pt-10 px-4 pb-20">
-      <p className="mb-6 text-center text-2xl font-bold">
-        Created your Event!
-      </p>
+    <section className="bg-white px-4 pb-20 pt-10">
+      <p className="mb-6 text-center text-2xl font-bold">Created your Event!</p>
       <div className="relative">
         <Image
           src={thumbnailUrl}
@@ -36,7 +34,9 @@ export default async function EventCreated({
           {title}
         </p>
       </div>
-      <ShareLinks eventUrl={eventUrl} />
+      <div className="mt-8">
+        <ShareLinks eventUrl={eventUrl} />
+      </div>
       <Link href={`/event/${eventId}`} className="mt-6 flex">
         <Button
           type="submit"
