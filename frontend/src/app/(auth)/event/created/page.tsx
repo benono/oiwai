@@ -1,4 +1,5 @@
 import { ShareLinks } from "@/components/features/rsvp/ShareLinks";
+import ScrollToTop from "@/components/features/scroll-to-top";
 import { Button } from "@/components/ui/button";
 import { getInvitationUrl } from "@/lib/helpers/url-utils";
 import Image from "next/image";
@@ -20,6 +21,7 @@ export default async function EventCreated({
 
   return (
     <section className="bg-white px-4 pb-20 pt-10">
+      <ScrollToTop />
       <p className="mb-6 text-center text-2xl font-bold">Created your Event!</p>
       <div className="relative">
         <Image
@@ -37,7 +39,7 @@ export default async function EventCreated({
       <div className="mt-8">
         <ShareLinks eventUrl={eventUrl} />
       </div>
-      <Link href={`/event/${eventId}`} className="mt-6 flex">
+      <Link href={`/event/${eventId}`} className="mt-2 flex">
         <Button
           type="submit"
           className="mt-8 h-12 w-full rounded-full text-base font-bold"
