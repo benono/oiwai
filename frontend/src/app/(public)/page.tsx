@@ -4,8 +4,11 @@ import Image from "next/image";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import FadeInScale from "@/components/animation/fade-in-scale";
 import Footer from "@/components/layouts/footer";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import FadeIn from "@/components/animation/fade-in";
+import HorizontalScroll from "@/components/animation/horizontal-scroll";
 
 const lato = Lato({
   weight: ["100", "300", "400", "700", "900"],
@@ -33,17 +36,32 @@ export default function Home() {
               CREATE EVENT
             </Button>
           </SignUpButton>
-          <Image
-            src="/images/main_image.png"
-            alt="Oiwai image"
-            width={0}
-            height={0}
-            sizes="100vw"
-            className="h-auto w-full"
-          />
+          <div className="relative h-[324px] w-full">
+            <FadeInScale delay={0}>
+              <Image
+                src="/images/main_image_bg.png"
+                alt="Oiwai image"
+                width={375}
+                height={324}
+                sizes="100vw"
+                className="absolute top-0 h-auto w-full"
+              />
+            </FadeInScale>
+            <FadeInScale delay={0.6}>
+              <Image
+                src="/images/main_image.png"
+                alt="Oiwai image"
+                width={375}
+                height={324}
+                sizes="100vw"
+                className="absolute top-0 h-auto w-full"
+              />
+            </FadeInScale>
+          </div>
         </section>
 
         <section className="mt-10">
+          <HorizontalScroll />
           <Tabs defaultValue="host">
             <div className="sticky top-[52px] bg-white py-2">
               <TabsList className="h-auto w-full border border-textBorder bg-white p-2">
@@ -82,38 +100,42 @@ export default function Home() {
                       Easily create event invitations with a few tap.
                     </p>
                   </div>
-                  <div className="grid gap-2 rounded-lg border border-border px-4 py-6 text-text">
-                    <h3 className={`text-lg font-bold ${lato.className}`}>
-                      Get AI-generated venue suggestions
-                    </h3>
-                    <p className="text-sm">
-                      Find recommended spots on the map based on activities.
-                    </p>
-                    <Image
-                      src="/images/eventhost_sub_image1.png"
-                      alt="AI gives recommendations for good places."
-                      className="h-auto w-full"
-                      width={0}
-                      height={0}
-                      sizes="100vw"
-                    />
-                  </div>
-                  <div className="grid gap-2 rounded-lg border border-border px-4 py-6 text-text">
-                    <h3 className={`text-lg font-bold ${lato.className}`}>
-                      Various invitation theme
-                    </h3>
-                    <p className="text-sm">
-                      Find recommended spots on the map based on activities.
-                    </p>
-                    <Image
-                      src="/images/eventhost_sub_image2.png"
-                      alt="Various invitation theme"
-                      className="h-auto w-full"
-                      width={0}
-                      height={0}
-                      sizes="100vw"
-                    />
-                  </div>
+                    <FadeIn>
+                      <div className="grid gap-2 rounded-lg border border-border px-4 py-6 text-text">
+                        <h3 className={`text-lg font-bold ${lato.className}`}>
+                          Get AI-generated venue suggestions
+                        </h3>
+                        <p className="text-sm">
+                          Find recommended spots on the map based on activities.
+                        </p>
+                        <Image
+                          src="/images/eventhost_sub_image1.png"
+                          alt="AI gives recommendations for good places."
+                          className="h-auto w-full"
+                          width={0}
+                          height={0}
+                          sizes="100vw"
+                        />
+                      </div>
+                    </FadeIn>
+                    <FadeIn>
+                      <div className="grid gap-2 rounded-lg border border-border px-4 py-6 text-text">
+                        <h3 className={`text-lg font-bold ${lato.className}`}>
+                          Various invitation theme
+                        </h3>
+                        <p className="text-sm">
+                          Find recommended spots on the map based on activities.
+                        </p>
+                        <Image
+                          src="/images/eventhost_sub_image2.png"
+                          alt="Various invitation theme"
+                          className="h-auto w-full"
+                          width={0}
+                          height={0}
+                          sizes="100vw"
+                        />
+                      </div>
+                    </FadeIn>
                 </div>
                 <div className="grid gap-6 text-text">
                   <h2
