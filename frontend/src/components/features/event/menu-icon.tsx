@@ -48,7 +48,6 @@ export default function MenuIcon({
             />
           </div>
         </SmoothAppearAnimation>
-
         <SmoothAppearAnimation {...animationSettings}>
           <p className="mt-2 text-center text-sm font-semibold">
             {iconDetail.iconName}
