@@ -11,7 +11,7 @@ export default function SmoothAppearAnimation({
   children,
   initial,
   animate,
-  transition = { duration: 0.6, ease: "easeInOut" },
+  transition,
 }: SmoothAppearAnimationProps) {
   return (
     <motion.div initial={initial} animate={animate} transition={transition}>
