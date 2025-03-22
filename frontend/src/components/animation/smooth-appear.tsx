@@ -1,25 +1,21 @@
-import { motion } from "framer-motion";
+import { motion, TargetAndTransition } from "framer-motion";
 
-import { TargetAndTransition, VariantLabels } from "framer-motion";
-
-type AnimatedElementProps = {
+type SmoothAppearAnimationProps = {
   children: React.ReactNode;
-  initial?: boolean | TargetAndTransition | VariantLabels;
-  animate?: TargetAndTransition | VariantLabels;
+  initial?: boolean | TargetAndTransition;
+  animate?: TargetAndTransition;
   transition?: TargetAndTransition["transition"];
 };
 
-const AnimatedElement = ({
+export default function SmoothAppearAnimation({
   children,
   initial = { opacity: 0 },
   animate = { opacity: 1 },
   transition = { duration: 0.6, ease: "easeInOut" },
-}: AnimatedElementProps) => {
+}: SmoothAppearAnimationProps) {
   return (
     <motion.div initial={initial} animate={animate} transition={transition}>
       {children}
     </motion.div>
   );
-};
-
-export default AnimatedElement;
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import AnimatedElement from "@/components/animation/smooth-appear";
+import SmoothAppearAnimation from "@/components/animation/smooth-appear";
 import { ICON_MAP } from "@/constants/icons";
 import { IconType } from "@/types/event";
 import { Plus } from "lucide-react";
@@ -37,7 +37,7 @@ export default function MenuIcon({
   return (
     <div className="flex flex-col items-center justify-center">
       <Link href={`/event/${eventId}/${iconDetail.path}`} className="group">
-        <AnimatedElement {...animationSettings}>
+        <SmoothAppearAnimation {...animationSettings}>
           <div className="relative flex h-14 w-14 items-center justify-center transition-transform duration-200 group-hover:scale-110">
             <div
               className={`absolute inset-0 rounded-full bg-${iconDetail.backgroundColor}`}
@@ -47,13 +47,13 @@ export default function MenuIcon({
               className={`text-${iconDetail.iconColor}`}
             />
           </div>
-        </AnimatedElement>
+        </SmoothAppearAnimation>
 
-        <AnimatedElement {...animationSettings}>
+        <SmoothAppearAnimation {...animationSettings}>
           <p className="mt-2 text-center text-sm font-semibold">
             {iconDetail.iconName}
           </p>
-        </AnimatedElement>
+        </SmoothAppearAnimation>
       </Link>
     </div>
   );
