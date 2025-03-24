@@ -3,9 +3,9 @@ import { Lato } from "next/font/google";
 import Image from "next/image";
 
 import FadeInScale from "@/components/animation/fade-in-scale";
+import TabSection from "@/components/features/landing-page/tab-section";
 import Footer from "@/components/layouts/footer";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
-import TabSection from "@/components/features/landing-page/tab-section";
 
 const lato = Lato({
   weight: ["100", "300", "400", "700", "900"],
@@ -56,7 +56,6 @@ export default function Home() {
             </FadeInScale>
           </div>
         </section>
-
         <TabSection font={lato} />
         <section className="mt-10 flex justify-between gap-4 text-sm">
           <SignInButton>

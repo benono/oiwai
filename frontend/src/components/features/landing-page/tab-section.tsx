@@ -15,33 +15,30 @@ export default function TabSection({ font }: TabSectionProps) {
   const hostRef = useRef<HTMLElement | null>(null);
   const participantsRef = useRef<HTMLElement | null>(null);
 
-  // const handleScroll = (ref: React.RefObject<HTMLElement | null>) => {
-  //   if (ref.current) {
-  //     ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
-
-  //     const elementTop =
-  //       ref.current.getBoundingClientRect().top + window.scrollY;
-
-  //     window.scrollBy({ top: elementTop + 400, behavior: "smooth" });
-  //   }
-  // };
+  const handleScrollTop = () => {
+    const tab = document.getElementById("tabContainer")
+    if (tab) {
+      window.scrollTo({
+        top: tab.offsetTop - 48,
+        behavior: "smooth",
+      });
+    }
+  };
 
   return (
-    <section className="mt-10">
-      <Tabs defaultValue="host">
-        <div className="sticky top-[52px] bg-white py-2">
+    <section className="mt-10" id="tabContainer">
+      <Tabs defaultValue="host" onValueChange={handleScrollTop}>
+        <div className="sticky top-[52px] bg-white py-2 z-50">
           <TabsList className="h-auto w-full border border-textBorder bg-white p-2">
             <TabsTrigger
               value="host"
               className="w-full border border-white font-bold hover:opacity-70 data-[state=active]:border data-[state=active]:border-accentGreen data-[state=active]:bg-white data-[state=active]:text-accentGreen data-[state=active]:shadow-none"
-              // onClick={() => handleScroll(hostRef)}
             >
               EVENT HOST
             </TabsTrigger>
             <TabsTrigger
               value="participants"
               className="w-full border border-white font-bold hover:opacity-70 data-[state=active]:border data-[state=active]:border-accentGreen data-[state=active]:bg-white data-[state=active]:text-accentGreen data-[state=active]:shadow-none"
-              // onClick={() => handleScroll(participantsRef)}
             >
               PARTICIPANTS
             </TabsTrigger>
@@ -133,7 +130,7 @@ export default function TabSection({ font }: TabSectionProps) {
           </section>
         </TabsContent>
         <TabsContent value="participants">
-          <section className="grid gap-10 pb-20" ref={participantsRef}>
+          <section className="grid gap-10" ref={participantsRef}>
             <div className="grid gap-6">
               <Image
                 src="/images/participants_main_image.png"
