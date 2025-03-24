@@ -459,14 +459,14 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                       src="/images/checked.svg"
                       width={16}
                       height={16}
-                      alt="icon for add checked"
+                      alt="icon for checked"
                     />
                   ) : (
                     <Image
                       src="/images/unchecked.svg"
                       width={16}
                       height={16}
-                      alt="icon for add unchecked"
+                      alt="icon for unchecked"
                     />
                   )}
                   <p className="text-sm font-medium">
