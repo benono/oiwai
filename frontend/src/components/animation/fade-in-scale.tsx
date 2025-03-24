@@ -10,14 +10,26 @@ type FadeInScaleProps = {
 const FadeInScale = ({ children, delay = 0, ...rest }: FadeInScaleProps) => {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{ opacity: 1, scale: 1, transformOrigin: "center"}}
+      variants={{
+        offscreen: {
+          opacity: 0,
+          scale: 0,
+        },
+        onscreen: {
+          opacity: 1,
+          scale: 1,
+          transformOrigin: "center",
+        },
+      }}
+      initial="offscreen"
+      animate="onscreen"
+      exit="offscreen"
       transition={{
         duration: 0.3,
         scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
         delay: delay,
       }}
-      viewport={{ once: false, amount: 0 }}
+      viewport={{ once: false, amount: 0.5 }}
       {...rest}
     >
       {children}
