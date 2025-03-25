@@ -132,7 +132,7 @@ export default async function EventHome({
                     key={id}
                   >
                     <Image
-                      src={profileImageUrl}
+                      src={profileImageUrl || "/images/profile_default.png"}
                       width={64}
                       height={64}
                       alt={name}

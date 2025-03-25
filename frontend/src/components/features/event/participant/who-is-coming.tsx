@@ -25,7 +25,7 @@ export default async function WhoIsComing({ eventId }: WhoIsComingProps) {
         {response.map(({ id, name, profileImageUrl }) => (
           <li className="grid h-auto w-16 justify-items-center gap-2" key={id}>
             <Image
-              src={profileImageUrl}
+              src={profileImageUrl || "/images/profile_default.png"}
               width={64}
               height={64}
               alt={name}
