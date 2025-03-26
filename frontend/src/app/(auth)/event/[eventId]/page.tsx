@@ -1,6 +1,7 @@
 import WaveColorAnimation from "@/components/features/event/common/wave-color-animation";
 import EventDetail from "@/components/features/event/event-detail";
 import MenuIcon from "@/components/features/event/menu-icon";
+import GuestProfile from "@/components/features/event/participant/guest-profile";
 import ReviewSection from "@/components/features/event/review/review-section";
 import { ShareLinks } from "@/components/features/rsvp/ShareLinks";
 import ScrollToTop from "@/components/features/scroll-to-top";
@@ -11,7 +12,6 @@ import { getAllReviews, getReviewImages } from "@/lib/actions/event/review";
 import { checkIsHost, getEventInformation } from "@/lib/api/event";
 import { getInvitationUrl } from "@/lib/helpers/url-utils";
 import { ThumbsUpIcon } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -127,21 +127,14 @@ export default async function EventHome({
             <div className="flex w-full flex-col">
               <ul className="grid grid-cols-5 gap-2 pt-4">
                 {guests.map(({ id, name, profileImageUrl }) => (
-                  <li
-                    className="grid h-auto w-16 justify-items-center gap-2"
+                  <GuestProfile
                     key={id}
-                  >
-                    <Image
-                      src={profileImageUrl}
-                      width={64}
-                      height={64}
-                      alt={name}
-                      className="h-14 w-14 rounded-full object-cover"
-                    />
-                    <p className="line-clamp-2 w-full break-words text-center text-sm font-medium">
-                      {name}
-                    </p>
-                  </li>
+                    name={name}
+                    profileImageUrl={profileImageUrl}
+                    size={14}
+                    fontSize="text-sm"
+                    fontWeight="font-medium"
+                  />
                 ))}
               </ul>
               <Link
