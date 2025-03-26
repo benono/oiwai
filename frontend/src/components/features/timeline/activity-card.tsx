@@ -1,6 +1,6 @@
 "use client";
 
-import AnimatedElement from "@/components/animation/smooth-appear";
+import SmoothAppearAnimation from "@/components/animation/smooth-appear";
 import { formatDateTime, timeFormatOptions } from "@/lib/helpers/format-date";
 import { TimelineType } from "@/types/timeline";
 import { ActionDropdown } from "./action-dropdown";
@@ -51,7 +51,7 @@ export default function ActivityCard({
   return isHost ? (
     activityContent
   ) : (
-    <AnimatedElement
+    <SmoothAppearAnimation
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{
@@ -61,6 +61,6 @@ export default function ActivityCard({
       }}
     >
       {activityContent}
-    </AnimatedElement>
+    </SmoothAppearAnimation>
   );
 }
