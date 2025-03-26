@@ -2,7 +2,7 @@
 
 import { motion, useAnimation } from "motion/react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 type ReviewRequestProps = {
   eventId: string;
@@ -10,8 +10,11 @@ type ReviewRequestProps = {
 
 export default function ReviewRequest({ eventId }: ReviewRequestProps) {
   const controls = useAnimation();
+  const isMounted = useRef(true);
 
   useEffect(() => {
+    isMounted.current = true;
+    
     const startAnimation = async () => {
       while (true) {
         await controls.start({ pathLength: 1 }, { duration: 0.5 });
@@ -21,11 +24,18 @@ export default function ReviewRequest({ eventId }: ReviewRequestProps) {
           { duration: 0.6, delay: 1, ease: "easeInOut" },
         );
         await new Promise((resolve) => setTimeout(resolve, 4000));
+
+        if (!isMounted.current) break;
+
         await controls.start({ pathLength: 0, rotate: 0 }, { duration: 0 });
       }
     };
 
     startAnimation();
+
+    return () => {
+      isMounted.current = false;
+    };
   }, [controls]);
   return (
     <Link
