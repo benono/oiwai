@@ -1,6 +1,7 @@
 import WaveColorAnimation from "@/components/features/event/common/wave-color-animation";
 import EventDetail from "@/components/features/event/event-detail";
 import MenuIcon from "@/components/features/event/menu-icon";
+import ReviewRequest from "@/components/features/event/review/review-request";
 import GuestProfile from "@/components/features/event/participant/guest-profile";
 import ReviewSection from "@/components/features/event/review/review-section";
 import { ShareLinks } from "@/components/features/rsvp/ShareLinks";
@@ -11,7 +12,6 @@ import { getWhoIsComing } from "@/lib/actions/event/participant";
 import { getAllReviews, getReviewImages } from "@/lib/actions/event/review";
 import { checkIsHost, getEventInformation } from "@/lib/api/event";
 import { getInvitationUrl } from "@/lib/helpers/url-utils";
-import { ThumbsUpIcon } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -97,21 +97,7 @@ export default async function EventHome({
           </div>
         )}
         {!isHost && hasEventStartedOneHourAgo && !hasPostedReview && (
-          <div className="grid gap-2 rounded-lg border border-textSub bg-background p-4">
-            <h2 className="flex items-center gap-2 text-lg font-bold">
-              <ThumbsUpIcon size={32} className="text-accentGreen" />
-              How Was the Event?
-            </h2>
-            <p className="text-xs font-medium">
-              We&apos;d love to hear your thoughts and memories from the day!
-            </p>
-            <Link
-              href={`/event/${eventId}/review/create`}
-              className="mt-2 justify-self-end rounded-full bg-accentGreen px-5 py-2 text-sm font-bold text-white hover:opacity-70"
-            >
-              Add your review
-            </Link>
-          </div>
+          <ReviewRequest eventId={eventId} />
         )}
         {!isHost && (
           <section className="px-3">
