@@ -461,7 +461,7 @@ export default function CreateEventPage() {
                 <SelectItem value="homeParty">
                   <div className="flex h-6 items-center gap-2 text-base">
                     <House size={16} className="text-textSub" />
-                    Home party
+                    House party
                   </div>
                 </SelectItem>
                 <SelectItem value="outside">
