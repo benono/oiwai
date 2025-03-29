@@ -10,9 +10,9 @@ import { notFound } from "next/navigation";
 export default async function Announcements({
   params,
 }: {
-  params: { eventId: string };
+  params: Promise<{ eventId: string }>;
 }) {
-  const { eventId } = params;
+  const { eventId } = await params;
   let isHost = false;
   let announcements: AnnouncementType[] = [];
 
