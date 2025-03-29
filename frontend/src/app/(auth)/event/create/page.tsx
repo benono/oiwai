@@ -475,7 +475,7 @@ export default function CreateEventPage() {
           </FormItem>
 
           <div>
-            <p className="mb-2 text-sm font-semibold">location</p>
+            <p className="mb-2 text-sm font-semibold">Location</p>
             {eventType === "outside" ? (
               <Tabs defaultValue="Current location" className="w-full">
                 <TabsList className="mb-2 flex w-full bg-transparent">
