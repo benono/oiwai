@@ -467,7 +467,7 @@ export default function CreateEventPage() {
                 <SelectItem value="outdoor">
                   <div className="flex h-6 items-center gap-2 text-base">
                     <FerrisWheel size={16} className="text-textSub" />
-                    Out door
+                    Outdoor
                   </div>
                 </SelectItem>
               </SelectContent>
