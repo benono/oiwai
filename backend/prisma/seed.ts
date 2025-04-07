@@ -13,16 +13,19 @@ async function main() {
       email: "alice@example.com",
       profileImageUrl:
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+      isDeleted: false,
       userFamilies: {
         create: [
           {
             name: "Ken",
             profileImageUrl: "",
+            isDeleted: false,
           },
           {
             name: "Laura",
             profileImageUrl:
               "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+            isDeleted: false,
           },
         ],
       },
@@ -33,13 +36,14 @@ async function main() {
 
   // User 2 (Taro)
   const user2 = await prisma.users.upsert({
-    where: { email: "taro@example.com" },
+    where: { email: "ben.ono.work@gmail.com" },
     update: {},
     create: {
-      name: "Taro",
-      email: "taro@example.com",
+      name: "Naomi",
+      email: "ben.ono.work@gmail.com",
       profileImageUrl:
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+      isDeleted: false,
     },
   });
 
@@ -54,11 +58,13 @@ async function main() {
       email: "jane@example.com",
       profileImageUrl:
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+      isDeleted: false,
       userFamilies: {
         create: {
           name: "Emma",
           profileImageUrl:
             "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
+          isDeleted: false,
         },
       },
     },
@@ -79,12 +85,9 @@ async function main() {
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
       startTime: new Date("2025-04-01T10:00:00.000Z"),
       endTime: new Date("2025-04-01T16:00:00.000Z"),
-      country: "Canada",
-      postalCode: "V6Z 1L2",
-      province: "BC",
-      city: "Vancouver",
-      address1: "978 Granvill St",
-      address2: "",
+      address: "V6Z 1L2 Canada, BC, Vancouver, 978 Granvill St",
+      latitude: 49.27952393542969,
+      longitude: -123.122483396198,
       isAskRestrictions: false,
       theme: "#7fffd4",
       noteForThingsToBuy: "",
@@ -135,12 +138,9 @@ async function main() {
         "https://res.cloudinary.com/dfv5exqy3/image/upload/v1733782881/cld-sample-4.png",
       startTime: new Date("2025-04-02T12:00:00.000Z"),
       endTime: new Date("2025-04-02T17:00:00.000Z"),
-      country: "Canada",
-      postalCode: "V6Z 1L2",
-      province: "BC",
-      city: "Vancouver",
-      address1: "978 Granvill St",
-      address2: "",
+      address: "V6Z 1L2 Canada, BC, Vancouver, 978 Granvill St",
+      latitude: 49.27952393542969,
+      longitude: -123.122483396198,
       isAskRestrictions: true,
       theme: "#4169e1",
       noteForThingsToBuy: "Canadian Tire or Walmart",

@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import { getAuth } from '@clerk/express';
+import { getAuth } from "@clerk/express";
+import { NextFunction, Request, Response } from "express";
+import { UnauthorizedError } from "../errors";
 
 const requireAuthMiddleware = (
   req: Request,
@@ -8,8 +9,7 @@ const requireAuthMiddleware = (
 ) => {
   const { userId } = getAuth(req);
   if (!userId) {
-    res.status(401).json({ error: 'Unauthorized' });
-    return;
+    throw new UnauthorizedError();
   }
   next();
 };

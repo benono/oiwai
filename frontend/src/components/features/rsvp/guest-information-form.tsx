@@ -22,6 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthAxios } from "@/lib/api/axios-client";
 import { showErrorToast } from "@/lib/toast/toast-utils";
+import { useThemeStore } from "@/store/use-theme-store";
 import { RsvpResponseType } from "@/types/rsvp-response";
 import { UserType } from "@/types/user";
 import { useAuth } from "@clerk/clerk-react";
@@ -61,6 +62,8 @@ type GuestInformationFormProps = {
 };
 
 const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
+  const defaultColor = "#FF8549";
+  const { themeColor } = useThemeStore();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -83,6 +86,7 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
   const [termsAccepted, setTermsAccepted] = useState(
     form.getValues("termsAccepted"),
   );
+  const [showCompanionName, setShowCompanionName] = useState<boolean>(true);
   const [isEmailFetched, setIsEmailFetched] = useState(false);
   const [newCompanionName, setNewCompanionName] = useState<string>("");
   const [registeredFamilyMembers, setRegisteredFamilyMembers] = useState<
@@ -247,9 +251,15 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
     form.setValue("termsAccepted", !termsAccepted);
   };
 
+  // Toggle visibility of companion name
+  const handleShowCompanionName = () => {
+    setShowCompanionName(!showCompanionName);
+    // TODO: set value to the form field
+  };
+
   return (
     <div>
-      <h2 className="mb-4 mt-12 text-xl font-bold">Your Information</h2>
+      <h2 className="mb-4 mt-8 text-xl font-bold">Your Information</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mb-6 space-y-8">
           <div className="space-y-6">
@@ -419,12 +429,50 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                     onClick={() => {
                       setIsAddingPerson(true);
                     }}
-                    className="ml-auto flex items-center gap-2 rounded-full border border-primary bg-white px-4 py-2 text-sm font-bold text-primary hover:opacity-70"
+                    className="ml-auto flex items-center gap-2 rounded-full border bg-white px-4 py-2 text-sm font-bold text-primary hover:opacity-70"
+                    style={{
+                      borderColor: themeColor || defaultColor,
+                    }}
                   >
-                    <Plus size={16} />
-                    <span>Add person</span>
+                    <Plus
+                      size={16}
+                      style={{
+                        color: themeColor || defaultColor,
+                      }}
+                    />
+                    <span
+                      style={{
+                        color: themeColor || defaultColor,
+                      }}
+                    >
+                      Add person
+                    </span>
                   </button>
                 )}
+                <button
+                  type="button"
+                  onClick={handleShowCompanionName}
+                  className="flex items-center gap-2 rounded-full font-bold hover:opacity-70"
+                >
+                  {showCompanionName ? (
+                    <Image
+                      src="/images/checked.svg"
+                      width={16}
+                      height={16}
+                      alt="icon for checked"
+                    />
+                  ) : (
+                    <Image
+                      src="/images/unchecked.svg"
+                      width={16}
+                      height={16}
+                      alt="icon for unchecked"
+                    />
+                  )}
+                  <p className="text-sm font-medium">
+                    I agree to share companion name with other attendees
+                  </p>
+                </button>
               </div>
             </div>
           )}
@@ -496,18 +544,26 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
                         src="/images/checked.svg"
                         width={16}
                         height={16}
-                        alt="icon for add unchecked"
+                        alt="icon for checked"
                       />
                     ) : (
                       <Image
                         src="/images/unchecked.svg"
                         width={16}
                         height={16}
-                        alt="icon for add checked"
+                        alt="icon for unchecked"
                       />
                     )}
                     <span className="text-sm font-medium text-text">
-                      I agree with the Terms and Conditions.
+                      I agree with the{" "}
+                      <span className="text-accentBlue hover:underline">
+                        Terms
+                      </span>{" "}
+                      and{" "}
+                      <span className="text-accentBlue hover:underline">
+                        Conditions
+                      </span>
+                      .
                     </span>
                   </button>
                 </FormControl>
@@ -518,6 +574,9 @@ const GuestInformationForm = ({ selection }: GuestInformationFormProps) => {
           <Button
             type="submit"
             className="w-full rounded-[40px] py-8 text-lg font-bold hover:opacity-70"
+            style={{
+              backgroundColor: themeColor || defaultColor,
+            }}
           >
             Submit
           </Button>
