@@ -1,4 +1,4 @@
-# Oiwai - Event Planning Application
+# Oiwai - Event Management Platform
 
 ## Screenshots
 
