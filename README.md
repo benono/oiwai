@@ -1,5 +1,9 @@
 # Oiwai - Event Planning Application
 
+## Screenshots
+
+<img src="https://github.com/benono/oiwai/blob/main/oiwai.png" alt="Oiwai Landing Page" width="100%">
+
 ## Project Overview
 
 Oiwai is a web application designed to support the planning and management of family and friend events (birthdays, anniversaries, etc.). It provides features covering the entire event lifecycle, from creating invitations to RSVP management and photo sharing.
@@ -69,10 +73,6 @@ February 2025 - March 2025 (4 weeks)
 - Communication and progress management in team development
 - Performance optimization
 - Integration of AI features with the application
-
-## Screenshots
-
-<img src="https://github.com/benono/oiwai/blob/main/oiwai.png" alt="Oiwai Landing Page" width="100%">
 
 ## Future Plans
 
