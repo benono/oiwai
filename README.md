@@ -72,14 +72,11 @@ February 2025 - March 2025 (4 weeks)
 
 ## Screenshots
 
-<img src="https://github.com/benono/oiwai/raw/main/assets/oiwai-landing-page.png" alt="Oiwai Landing Page" width="100%">
-
-## Demo
-
-Deployment URL: [https://oiwai.example.com](https://oiwai.example.com)
+<img src="https://github.com/benono/oiwai/blob/main/oiwai.png" alt="Oiwai Landing Page" width="100%">
 
 ## Future Plans
 
 - Mobile app development
+- Realtime notifications
 - Expansion of AI features
 - Multi-language support
