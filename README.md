@@ -1,49 +1,85 @@
-## Project Documentation
-### Project objective and problem statement
-in progress
+# Oiwai - Event Planning Application
 
+## Project Overview
 
-### User Stories
-[User Stories](https://docs.google.com/spreadsheets/d/1It13BWouW99uSM98JpU-bYHHyT9SF0IAGl1NFlD872o/edit?usp=sharing)
+Oiwai is a web application designed to support the planning and management of family and friend events (birthdays, anniversaries, etc.). It provides features covering the entire event lifecycle, from creating invitations to RSVP management and photo sharing.
 
-### MVP features list
-- **Authentication:**  
-  - Allows users to sign up and log in using their email or google account. (Clerk)
-- **Event Date and Time Selection:**  
-  - Allows the host to select the date and time for the event.
-- **Event Place Suggestion:**  
-  Provides venue suggestions based on the user's location.
-- **Digital Invitation Creation:**  
-  - Customizable invitation templates with birthday themes (e.g., superheroes, princesses, animals, etc.).
-- **Allegic Food Management:**  
-  - Allows the host to ask guests to select their allegic food.
-- **RSVP Management:**  
-  - Online RSVP functionality enabling guests to confirm attendance.
-  - Real-time attendance tracking and updates.
-- **Reminder Notifications:**  
-  Automated notifications for RSVP follow-ups and party detail reminders.
-- **Attendance Tracking:**  
-  - Tracks attendance at the event.
-  - Sends reminders for RSVP follow-ups and party detail reminders.
-- **Checklist Management:**  
-  - Organizes party supplies and task lists.
-  - Sends reminders for pending tasks.
-- **AI powered Schedule Planner:**  
-  - Automatically suggests a schedule for the event based on the RSVPs, selected date and time, and the event details.
-- **Private Group Timeline:**  
-  - Centralized communication hub for event-related discussions among invitees.
-  - Reaction to the messages
-- **Shopping List:**  
-  - Allows the host to create a shopping list for the event.
-- **Shared Photo Album:**  
-  Allows all attendees to upload, manage, and view event photos.
-- **AI powered Photo Organization:**  
-  - Automatically categorizes uploaded photos by people using facial recognition
-  - Groups photos of the same person together for easy viewing and sharing
-  - Helps identify and organize photos of the birthday child and guests
+## Key Features
 
-### Tech stack specifications
-[Tech Stack Specifications](docs/teck-stack.md)
+- **User Authentication**: Sign-up/login using Google authentication or email address (using Clerk)
+- **Event Creation & Management**: Date/time selection, venue suggestions, theme customization
+- **Digital Invitation**: Creation and distribution of customizable digital invitations
+- **RSVP Management**: Collection, tracking of confirmations, and automated reminder notifications
+- **Allergy Information Management**: Collection and management of guests' food allergy information
+- **Checklist Functionality**: Task management for event preparation
+- **Shopping List**: Creation and management of shopping lists for event needs
+- **Timeline Feature**: Communication hub for event participants
+- **Photo Sharing Album**: Shared album where all participants can upload and view photos
+- **AI Features**: Photo organization using facial recognition, event schedule suggestions, etc.
 
-### Weekly Development Plan
-[Weekly Development Plan](docs/weekly-plan.md)
+## Technology Stack
+
+### Frontend
+
+- **Framework**: Next.js (React 19)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: Radix UI
+- **State Management**: Zustand
+- **Form Handling**: React Hook Form, Zod
+
+### Backend
+
+- **Language**: TypeScript (Node.js)
+- **Framework**: Express
+- **Database**: PostgreSQL (Prisma ORM)
+- **Authentication**: Clerk
+- **File Storage**: Cloudinary
+- **Email Service**: Resend
+
+### AI Features
+
+- Facial recognition for photo organization
+- AI-powered event schedule suggestions
+
+## Development Team and My Role
+
+This project was developed collaboratively in a team environment. As the Product Manager and Backend Engineer, I was responsible for:
+
+- Technology stack selection
+- Code reviews and technical problem-solving
+- Development of AI image recognition features
+- Backend API development and database design
+- Technical leadership and mentoring junior developers
+
+## Development Period
+
+January 2024 - March 2024 (12 weeks)
+
+## Development Process
+
+- Agile development methodology
+- Weekly sprints with feature implementation and retrospectives
+- Version control using GitHub Flow
+
+## Learning Outcomes & Challenges Solved
+
+- Component design using the latest version of React
+- Implementation and integration of authentication systems
+- Communication and progress management in team development
+- Performance optimization
+- Integration of AI features with the application
+
+## Screenshots
+
+<img src="https://github.com/benono/oiwai/raw/main/assets/oiwai-landing-page.png" alt="Oiwai Landing Page" width="100%">
+
+## Demo
+
+Deployment URL: [https://oiwai.example.com](https://oiwai.example.com)
+
+## Future Plans
+
+- Mobile app development
+- Expansion of AI features
+- Multi-language support
