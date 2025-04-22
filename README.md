@@ -48,13 +48,13 @@ This project was developed collaboratively in a team environment. As the Product
 
 - Technology stack selection
 - Code reviews and technical problem-solving
-- Development of AI image recognition features
+- Development of AI face recognition features
 - Backend API development and database design
 - Technical leadership and mentoring junior developers
 
 ## Development Period
 
-January 2024 - March 2024 (12 weeks)
+February 2025 - March 2025 (4 weeks)
 
 ## Development Process
 
